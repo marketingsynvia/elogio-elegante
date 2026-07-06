@@ -569,7 +569,7 @@ footer a:hover{text-decoration:underline;}
   </div>
   <div class="f-main">Todos os bilhetes são públicos e passaram por aprovação.</div>
   <div class="links">
-    <a href="mailto:marketing@synvia.com">Precisa de ajuda?</a>
+    <a href="/cdn-cgi/l/email-protection#731e12011816071a1d1433000a1d051a125d101c1e">Precisa de ajuda?</a>
   </div>
 </footer>
 
@@ -639,7 +639,7 @@ footer a:hover{text-decoration:underline;}
 </template>
 
 <!-- Planilha de exemplo embutida (fallback offline; o site hospedado busca o bilhetes.csv real) -->
-<script type="application/csv" id="csvFallback">
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="application/csv" id="csvFallback">
 Destinatário,Setor,Mensagem,Remetente,Anônimo,Status
 Vanessa Pereira,Enfermagem,"Juroproce que oce é linda de mais uai,com esses zoi verde",,Sim,Aprovada
 Andrea Anesi,Suprimentos,"Muito obrigada por nos incentivar, apoiar, dar suporte e nos auxiliar a desenvolver toda resiliência necessária! Continue sendo essa profissional excelente no que faz.",,Sim,Aprovada
@@ -944,8 +944,8 @@ const REACTION_FIREBASE = {
   projectId: "contagem-de-likes"
 };
 
-const EMOJIS=['❤️','🔥','👏','🤗'];
-const EMOJI_SLUG={'❤️':'heart','🔥':'fire','👏':'clap','🤗':'hug'};
+const EMOJIS=['❤️','😂','👏','🤗'];
+const EMOJI_SLUG={'❤️':'heart','😂':'fire','👏':'clap','🤗':'hug'};
 const SLUG_EMOJI=Object.fromEntries(Object.entries(EMOJI_SLUG).map(([e,s])=>[s,e]));
 const RKEY='esquenta_reacoes_v1', MKEY='esquenta_minhas_reacoes_v1';
 function loadJSON(k){try{return JSON.parse(localStorage.getItem(k))||{};}catch(e){return {};}}
