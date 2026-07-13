@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Escreva um elogio · Elogio Elegante</title>
+<meta name="description" content="Deixe um recado de carinho no Elogio Elegante do Arraiá da Synvia." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --green-deep:#1a8f41;
+  --ink:#22201f;
+  --ink-soft:#4a4744;
+  --mist:#e6e8e7;
+  --fest-forest:#16352a;
+  --fest-green:#36a847;
+  --fest-yellow:#f4b81b;
+  --fest-orange:#e8590c;
+  --fest-cream:#f6f1df;
+  --note:#fffdf7;
+  --danger:#c0392b;
+  --font:"Manrope",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  --shadow:0 1px 2px rgba(34,32,31,.06), 0 12px 34px -16px rgba(34,32,31,.3);
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;font-family:var(--font);color:var(--ink);
+  background:
+    radial-gradient(120% 70% at 50% -10%, rgba(244,184,27,.18) 0%, transparent 55%),
+    linear-gradient(180deg,#ffffff 0%, var(--fest-cream) 100%);
+  min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased;
+}
+:focus-visible{outline:3px solid var(--fest-green);outline-offset:2px;border-radius:8px;}
+.bunting{height:34px;width:100%;background:var(--fest-forest);}
+.bunting svg{display:block;width:100%;height:100%;}
+
+.wrap{max-width:600px;margin:0 auto;padding:26px 22px 70px;}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px;}
+.brand{display:flex;align-items:center;gap:12px;}
+.brand .mark{width:38px;height:38px;border-radius:11px;background:var(--fest-forest);display:grid;place-items:center;color:var(--fest-yellow);flex:none;}
+.brand .mark svg{width:20px;height:20px;}
+.brand .campaign{font-weight:800;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);}
+.back{font-size:.9rem;font-weight:700;color:var(--green-deep);text-decoration:none;}
+.back:hover{text-decoration:underline;}
+
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--fest-forest);background:var(--fest-yellow);border-radius:999px;padding:7px 15px;margin-bottom:16px;box-shadow:0 2px 0 rgba(22,53,42,.18);}
+.kicker svg{width:14px;height:14px;}
+h1{font-size:clamp(1.6rem,4.4vw,2.2rem);line-height:1.1;font-weight:800;letter-spacing:-.02em;margin:0 0 12px;text-wrap:balance;}
+h1 .warm{background:linear-gradient(100deg,var(--fest-orange),var(--fest-yellow));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.lead{font-size:1.05rem;color:var(--ink-soft);margin:0 0 26px;text-wrap:pretty;}
+
+.card{background:var(--note);border:1px solid rgba(34,32,31,.07);border-radius:20px;box-shadow:var(--shadow);padding:26px 24px;position:relative;overflow:hidden;}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(180deg,var(--fest-green),var(--fest-orange));}
+.field{margin-bottom:18px;}
+.field label{display:block;font-size:.92rem;font-weight:800;margin-bottom:4px;}
+.field .help{font-size:.82rem;color:var(--ink-soft);margin:0 0 8px;}
+.field input,.field textarea{
+  width:100%;font-family:var(--font);font-size:1.02rem;color:var(--ink);
+  border:1.6px solid var(--mist);border-radius:12px;padding:13px 15px;background:#fff;transition:border-color .15s;
+}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--fest-green);}
+.field textarea{min-height:130px;resize:vertical;line-height:1.55;}
+.counter{text-align:right;font-size:.76rem;color:var(--ink-soft);margin-top:5px;}
+.privacy{display:flex;gap:9px;align-items:flex-start;font-size:.86rem;color:var(--ink-soft);background:var(--fest-cream);border-radius:12px;padding:11px 14px;margin:2px 0 20px;}
+.privacy svg{width:17px;height:17px;flex:none;margin-top:2px;color:var(--fest-orange);}
+.send{width:100%;font-family:var(--font);font-size:1.05rem;font-weight:800;cursor:pointer;border:none;border-radius:999px;padding:15px;color:#fff;background:var(--fest-green);transition:background .15s,transform .1s;display:inline-flex;align-items:center;justify-content:center;gap:9px;}
+.send:hover{background:#2f9440;}
+.send:active{transform:translateY(1px);}
+.send[disabled]{opacity:.6;cursor:not-allowed;}
+.send svg{width:19px;height:19px;}
+.err{color:var(--danger);font-size:.9rem;font-weight:600;margin:12px 0 0;text-align:center;min-height:1em;}
+
+/* Sucesso */
+.done{text-align:center;padding:10px 6px;}
+.done .big{font-size:3rem;line-height:1;margin-bottom:14px;}
+.done h2{font-size:1.5rem;font-weight:800;margin:0 0 8px;}
+.done p{color:var(--ink-soft);margin:0 auto 22px;max-width:400px;}
+.done .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn{font-family:var(--font);font-size:.95rem;font-weight:700;cursor:pointer;text-decoration:none;border-radius:999px;padding:12px 20px;border:1.6px solid var(--mist);background:#fff;color:var(--ink);display:inline-flex;align-items:center;gap:8px;}
+.btn:hover{border-color:var(--fest-green);}
+.btn-primary{background:var(--fest-green);border-color:var(--fest-green);color:#fff;}
+.btn-primary:hover{background:#2f9440;}
+.hidden{display:none !important;}
+.loading{text-align:center;color:var(--ink-soft);padding:20px;}
+</style>
+</head>
+<body>
+<div class="bunting" aria-hidden="true">
+  <svg viewBox="0 0 120 26" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><g id="flags"></g></svg>
+</div>
+
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <span class="mark">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7-4.5-9.5-9C1 9 2.5 5.5 6 5.5c2 0 3 1.2 4 2.5 1-1.3 2-2.5 4-2.5 3.5 0 5 3.5 3.5 6.5C19 16.5 12 21 12 21Z"/></svg>
+      </span>
+      <span class="campaign">Arraiá Synvia 2026</span>
+    </div>
+    <a class="back" href="index.html">Ver o mural</a>
+  </div>
+
+  <!-- Formulário -->
+  <div id="formView">
+    <span class="kicker">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1 3-1 4.5-2.2 6C8.3 9.7 7 11.5 7 14a5 5 0 0 0 10 0c0-2-1-3.4-1.6-4.4-.4 1-.9 1.6-1.7 1.9.6-2.3-.3-4.7-1.7-6.5C11.4 4.3 11.7 3 12 2Z"/></svg>
+      Elogio Elegante
+    </span>
+    <h1>Espalhe um <span class="warm">reconhecimento</span> por aqui</h1>
+    <p class="lead">No clima do Arraiá, deixe um recado de carinho pra quem faz a diferença. Êta trem bão!</p>
+
+    <div class="card">
+      <div class="field">
+        <label for="dest">Para quem é o seu elogio?</label>
+        <p class="help">Escreva o nome completo da pessoa.</p>
+        <input id="dest" type="text" maxlength="160" autocomplete="off" placeholder="Nome completo" />
+      </div>
+      <div class="field">
+        <label for="setor">A pessoa é de qual setor?</label>
+        <p class="help">O nome do departamento da pessoa elogiada.</p>
+        <input id="setor" type="text" maxlength="120" autocomplete="off" placeholder="Ex.: Operações Clínicas" />
+      </div>
+      <div class="field">
+        <label for="msg">Escreva seu elogio</label>
+        <p class="help">Dica: pense em algo sincero, leve, especial e criativo.</p>
+        <textarea id="msg" maxlength="2000" placeholder="Seu recado de carinho..."></textarea>
+        <div class="counter"><span id="msgCount">0</span> / 2000</div>
+      </div>
+      <div class="privacy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span>Os elogios aparecem no mural sem o nome de quem escreveu, e passam por uma conferência rápida antes de serem publicados.</span>
+      </div>
+      <button class="send" id="sendBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Enviar elogio
+      </button>
+      <p class="err" id="err"></p>
+    </div>
+  </div>
+
+  <!-- Sucesso -->
+  <div id="doneView" class="hidden">
+    <div class="card">
+      <div class="done">
+        <div class="big" aria-hidden="true">💚</div>
+        <h2>Elogio enviado!</h2>
+        <p>Ele vai passar por uma conferência rápida e logo aparece no mural. Obrigado por espalhar carinho!</p>
+        <div class="row">
+          <button class="btn btn-primary" id="againBtn">Escrever outro</button>
+          <a class="btn" href="index.html">Ver o mural</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const FIREBASE = {
+  apiKey: "AIzaSyAJ-pmFFidThLK1KV6A7cUJrmF0RXXHr2c",
+  authDomain: "contagem-de-likes.firebaseapp.com",
+  databaseURL: "https://contagem-de-likes-default-rtdb.firebaseio.com",
+  projectId: "contagem-de-likes"
+};
+
+/* Bandeirinha */
+(function(){
+  const cols=['#f4b81b','#36a847','#e8590c','#f6f1df','#36a847','#f4b81b'];
+  const g=document.getElementById('flags'); if(!g) return;
+  const n=26,w=120/n;
+  for(let i=0;i<n;i++){
+    const x=i*w;
+    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('d',`M${x+0.4} 2 L${x+w-0.4} 2 L${x+w/2} ${15+(i%2?0:1.5)} Z`);
+    p.setAttribute('fill',cols[i%cols.length]);
+    g.appendChild(p);
+  }
+})();
+
+const $=id=>document.getElementById(id);
+function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
+
+/* Contador de caracteres da mensagem */
+$('msg').addEventListener('input',()=>{ $('msgCount').textContent=$('msg').value.length; });
+
+/* Inicializa Firebase */
+let db=null, ready=false;
+(async function init(){
+  try{
+    await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
+    await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js');
+    if(!firebase.apps.length) firebase.initializeApp(FIREBASE);
+    db=firebase.database();
+    ready=true;
+  }catch(err){
+    console.error(err);
+    $('err').textContent='Não deu pra conectar agora. Verifique sua internet e recarregue a página.';
+  }
+})();
+
+/* Envio */
+$('sendBtn').addEventListener('click', enviar);
+async function enviar(){
+  const dest=$('dest').value.trim();
+  const setor=$('setor').value.trim();
+  const msg=$('msg').value.trim();
+  $('err').textContent='';
+
+  if(!dest){ $('err').textContent='Diga pra quem é o elogio.'; $('dest').focus(); return; }
+  if(!msg){ $('err').textContent='Escreva a mensagem do elogio.'; $('msg').focus(); return; }
+  if(!ready || !db){ $('err').textContent='Ainda estamos conectando. Espere um instante e tente de novo.'; return; }
+
+  const btn=$('sendBtn');
+  btn.disabled=true;
+  const original=btn.innerHTML;
+  btn.textContent='Enviando...';
+  try{
+    await db.ref('bilhetes_pendentes').push({
+      dest: dest,
+      setor: setor,
+      msg: msg,
+      anon: 'Sim',
+      ts: Date.now()
+    });
+    $('formView').classList.add('hidden');
+    $('doneView').classList.remove('hidden');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }catch(err){
+    console.error(err);
+    $('err').textContent='Não deu pra enviar agora. Tente de novo em alguns segundos.';
+    btn.disabled=false;
+    btn.innerHTML=original;
+  }
+}
+
+/* Escrever outro */
+$('againBtn').addEventListener('click',()=>{
+  $('dest').value=''; $('setor').value=''; $('msg').value=''; $('msgCount').textContent='0';
+  $('err').textContent='';
+  const btn=$('sendBtn'); btn.disabled=false;
+  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar elogio';
+  $('doneView').classList.add('hidden');
+  $('formView').classList.remove('hidden');
+  $('dest').focus();
+});
+</script>
+</body>
+</html>
