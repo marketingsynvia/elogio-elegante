@@ -944,8 +944,10 @@ const REACTION_FIREBASE = {
   projectId: "contagem-de-likes"
 };
 
-const EMOJIS=['❤️','🔥','👏','🤗'];
-const EMOJI_SLUG={'❤️':'heart','🔥':'fire','👏':'clap','🤗':'hug'};
+const EMOJIS=['❤️','😂','👏','🤗'];
+// Obs: a segunda reação virou 😂, mas o "slug" continua 'fire' de propósito,
+// assim as curtidas que já existiam nesse botão são preservadas.
+const EMOJI_SLUG={'❤️':'heart','😂':'fire','👏':'clap','🤗':'hug'};
 const SLUG_EMOJI=Object.fromEntries(Object.entries(EMOJI_SLUG).map(([e,s])=>[s,e]));
 const RKEY='esquenta_reacoes_v1', MKEY='esquenta_minhas_reacoes_v1';
 function loadJSON(k){try{return JSON.parse(localStorage.getItem(k))||{};}catch(e){return {};}}
@@ -1219,23 +1221,51 @@ function applyMap(map, source){
   if(source==='import') toast(`${ALL.length} bilhete(s) aprovado(s) importado(s).`);
 }
 
-/* ============ Mural ao vivo (Firebase) ============
-   Lê o nó "bilhetes_aprovados" em tempo real. Cada bilhete que você aprova
-   no painel (admin.html) aparece aqui na hora, sem republicar o site. */
+/* ============ Mural ao vivo (Firebase) + acervo antigo (CSV) ============
+   Junta os bilhetes da edição anterior (guardados no próprio site) com os novos
+   que chegam pelo Firebase. Os novos vêm no topo, do mais recente pro mais antigo.
+   As reações são preservadas: cada bilhete tem o mesmo identificador de antes. */
+
+// Bilhetes da edição anterior, lidos uma vez do CSV embutido no site.
+function getEmbeddedRecords(){
+  try{
+    const fb=document.getElementById('csvFallback');
+    if(!fb) return [];
+    const txt=fb.textContent.trim();
+    if(txt.length<40) return [];
+    const rows=parseCSV(txt);
+    if(rows.length<2) return [];
+    const map=detectMap(rows[0]);
+    if(map.destinatario<0 || map.mensagem<0) return [];
+    return buildRecords(rows, map);
+  }catch(e){ console.warn('CSV embutido:',e); return []; }
+}
+
 let _bilhetesSub=false;
+let _oldRecs=null;   // acervo antigo (embaralhado de forma estável)
+function montarMural(fbRecs){
+  fbRecs = fbRecs || [];
+  fbRecs.sort((a,b)=>(b.ts||0)-(a.ts||0));            // novos: mais recente primeiro
+  const fbIds=new Set(fbRecs.map(r=>r.id));
+  const antigos=_oldRecs.filter(r=>!fbIds.has(r.id)); // evita repetir um antigo reenviado
+  ALL = [makeOficial(), ...fbRecs, ...antigos];
+  const ls=document.getElementById('loadingState'); if(ls) ls.style.display='none';
+  renderChips(); render();
+}
 async function subscribeBilhetes(){
   if(_bilhetesSub) return;
   let db=null;
   try{ db=await ensureFirebase(); }catch(err){ console.warn('Bilhetes: Firebase indisponível.',err); }
+  if(_oldRecs===null) _oldRecs=shuffle(getEmbeddedRecords());
   if(!db){
-    // Sem Firebase: cai no CSV embutido/arquivo (modo offline dos organizadores).
-    loadDataCSV();
+    // Sem Firebase: mostra só o acervo antigo.
+    montarMural([]);
     return;
   }
   _bilhetesSub=true;
   db.ref('bilhetes_aprovados').on('value', snap=>{
     const val = snap.val() || {};
-    const recs = Object.keys(val).map(k=>{
+    const fbRecs = Object.keys(val).map(k=>{
       const b = val[k] || {};
       const rec = {
         dest:  (b.dest  ||'').trim(),
@@ -1249,13 +1279,10 @@ async function subscribeBilhetes(){
       rec.id = noteId(rec);
       return rec;
     }).filter(r=> r.dest || r.msg);
-    ALL = shuffle(recs);
-    ALL.unshift(makeOficial());
-    const ls=document.getElementById('loadingState'); if(ls) ls.style.display='none';
-    renderChips(); render();
+    montarMural(fbRecs);
   }, err=>{
-    console.warn('Bilhetes: erro ao ler do Firebase, tentando CSV.', err);
-    loadDataCSV();
+    console.warn('Bilhetes: erro ao ler do Firebase, mostrando só o acervo antigo.', err);
+    montarMural([]);
   });
 }
 
