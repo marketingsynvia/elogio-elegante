@@ -569,7 +569,7 @@ footer a:hover{text-decoration:underline;}
   </div>
   <div class="f-main">Todos os bilhetes são públicos e passaram por aprovação.</div>
   <div class="links">
-    <a href="/cdn-cgi/l/email-protection#731e12011816071a1d1433000a1d051a125d101c1e">Precisa de ajuda?</a>
+    <a href="mailto:marketing@synvia.com">Precisa de ajuda?</a>
   </div>
 </footer>
 
@@ -639,7 +639,7 @@ footer a:hover{text-decoration:underline;}
 </template>
 
 <!-- Planilha de exemplo embutida (fallback offline; o site hospedado busca o bilhetes.csv real) -->
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="application/csv" id="csvFallback">
+<script type="application/csv" id="csvFallback">
 Destinatário,Setor,Mensagem,Remetente,Anônimo,Status
 Vanessa Pereira,Enfermagem,"Juroproce que oce é linda de mais uai,com esses zoi verde",,Sim,Aprovada
 Andrea Anesi,Suprimentos,"Muito obrigada por nos incentivar, apoiar, dar suporte e nos auxiliar a desenvolver toda resiliência necessária! Continue sendo essa profissional excelente no que faz.",,Sim,Aprovada
@@ -729,8 +729,8 @@ Juliana Ferreira,Marketing,"Você não é o cronograma do evento, mas já bagun�
 Carlos Machado,Marketing,"Você não é uma paleta de cores, mas já pintou meu dia inteiro.",,Sim,Aprovada
 Bianca Bernandes,Marketing,"Se palavra bonita fosse quitute de festa junina, seu texto era o mais disputado da barraca. Escrever bem é um dom, escrever com a sua sensibilidade é outro nível. Sorte da Synvia, sorte nossa.",,Sim,Aprovada
 Felipe Piquione,Marketing,"Trabalhar em dupla contigo é aquele raro caso de layout que nasce alinhado. Talento, bom gosto e parceria no mesmo pacote.",,Sim,Aprovada
-Juliana Ferreira,Marketing,"Tem gente que organiza evento, e tem gente que faz mágica com planilha e cronograma. Você é do segundo time. <3",,Sim,Aprovada
-Eduardo Camargo,Marketing,"Coordenar um time criativo é tipo conduzir quadrilha: cada um pra um lado e você mantendo todo mundo no passo, com paciência e bom humor. Obrigado por liderar desse jeito que dá vontade de fazer bonito.",,Sim,Aprovada
+Juliana Ferreira,Eventos,"Tem gente que organiza evento, e tem gente que faz mágica com planilha e cronograma. Você é do segundo time. <3",,Sim,Aprovada
+Eduardo Camargo,Coordenação,"Coordenar um time criativo é tipo conduzir quadrilha: cada um pra um lado e você mantendo todo mundo no passo, com paciência e bom humor. Obrigado por liderar desse jeito que dá vontade de fazer bonito.",,Sim,Aprovada
 Laís Kanegae,Marketing,"Liderar com firmeza é comum. Liderar com firmeza, escuta e leveza é raro, e é o que você faz todo dia. Esse time dança no ritmo certo porque tem você dando o tom da quadrilha.",,Sim,Aprovada
 </script>
 
@@ -944,8 +944,8 @@ const REACTION_FIREBASE = {
   projectId: "contagem-de-likes"
 };
 
-const EMOJIS=['❤️','😂','👏','🤗'];
-const EMOJI_SLUG={'❤️':'heart','😂':'fire','👏':'clap','🤗':'hug'};
+const EMOJIS=['❤️','🔥','👏','🤗'];
+const EMOJI_SLUG={'❤️':'heart','🔥':'fire','👏':'clap','🤗':'hug'};
 const SLUG_EMOJI=Object.fromEntries(Object.entries(EMOJI_SLUG).map(([e,s])=>[s,e]));
 const RKEY='esquenta_reacoes_v1', MKEY='esquenta_minhas_reacoes_v1';
 function loadJSON(k){try{return JSON.parse(localStorage.getItem(k))||{};}catch(e){return {};}}
@@ -979,26 +979,39 @@ function refreshReactionDOM(){
   });
 }
 function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
-async function initReactions(){
+
+// Inicializa o Firebase uma única vez e devolve o database.
+// É compartilhado pelas reações (escrita/leitura de contagem) e pelos bilhetes (leitura ao vivo do mural).
+let _fbReady=null;
+function ensureFirebase(){
+  if(_fbReady) return _fbReady;
   const cfg=REACTION_FIREBASE;
   if(!cfg || !cfg.databaseURL || !/^https?:\/\//.test(cfg.databaseURL)){
-    // Sem backend configurado → contagem local por dispositivo.
-    REACTS=loadJSON(RKEY); RB.mode='local'; refreshReactionDOM(); return;
+    _fbReady=Promise.resolve(null);
+    return _fbReady;
   }
-  try{
+  _fbReady=(async()=>{
     await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
     await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js');
-    firebase.initializeApp(cfg);
+    if(!firebase.apps.length) firebase.initializeApp(cfg);
     RB.db=firebase.database(); RB.mode='firebase';
-    RB.db.ref('reactions').on('value',snap=>{
-      const val=snap.val()||{}; const next={};
-      for(const id in val){ next[id]={}; for(const slug in val[id]){ const emo=SLUG_EMOJI[slug]; if(emo) next[id][emo]=val[id][slug]; } }
-      REACTS=next; refreshReactionDOM();
-    });
-  }catch(err){
-    console.warn('Reações: Firebase indisponível — usando contagem local.',err);
-    REACTS=loadJSON(RKEY); RB.mode='local'; refreshReactionDOM();
+    return RB.db;
+  })();
+  return _fbReady;
+}
+
+async function initReactions(){
+  let db=null;
+  try{ db=await ensureFirebase(); }catch(err){ console.warn('Firebase indisponível, usando contagem local.',err); }
+  if(!db){
+    // Sem backend configurado, contagem local por dispositivo.
+    REACTS=loadJSON(RKEY); RB.mode='local'; refreshReactionDOM(); return;
   }
+  db.ref('reactions').on('value',snap=>{
+    const val=snap.val()||{}; const next={};
+    for(const id in val){ next[id]={}; for(const slug in val[id]){ const emo=SLUG_EMOJI[slug]; if(emo) next[id][emo]=val[id][slug]; } }
+    REACTS=next; refreshReactionDOM();
+  });
 }
 function highlight(text, q){
   if(!q) return esc(text);
@@ -1185,9 +1198,8 @@ function ingest(text, source){
   }
   applyMap(map, source);
 }
-function applyMap(map, source){
-  ALL=shuffle(buildRecords(lastRows, map));
-  // Recado oficial da Synvia — sempre em primeiro, endereçado a toda a empresa.
+// Recado oficial da Synvia, sempre em primeiro, endereçado a toda a empresa.
+function makeOficial(){
   const oficial={
     official:true,
     dest:'Toda a Synvia',
@@ -1197,10 +1209,54 @@ function applyMap(map, source){
     anon:false
   };
   oficial.id='oficial-synvia';
-  ALL.unshift(oficial);
+  return oficial;
+}
+function applyMap(map, source){
+  ALL=shuffle(buildRecords(lastRows, map));
+  ALL.unshift(makeOficial());
   document.getElementById('loadingState').style.display='none';
   renderChips();render();
   if(source==='import') toast(`${ALL.length} bilhete(s) aprovado(s) importado(s).`);
+}
+
+/* ============ Mural ao vivo (Firebase) ============
+   Lê o nó "bilhetes_aprovados" em tempo real. Cada bilhete que você aprova
+   no painel (admin.html) aparece aqui na hora, sem republicar o site. */
+let _bilhetesSub=false;
+async function subscribeBilhetes(){
+  if(_bilhetesSub) return;
+  let db=null;
+  try{ db=await ensureFirebase(); }catch(err){ console.warn('Bilhetes: Firebase indisponível.',err); }
+  if(!db){
+    // Sem Firebase: cai no CSV embutido/arquivo (modo offline dos organizadores).
+    loadDataCSV();
+    return;
+  }
+  _bilhetesSub=true;
+  db.ref('bilhetes_aprovados').on('value', snap=>{
+    const val = snap.val() || {};
+    const recs = Object.keys(val).map(k=>{
+      const b = val[k] || {};
+      const rec = {
+        dest:  (b.dest  ||'').trim(),
+        setor: (b.setor ||'').trim() || 'Synvia',
+        msg:   (b.msg   ||'').trim(),
+        sender: b.anon ? '' : (b.sender||'').trim(),
+        anon:  !!b.anon,
+        winner:!!b.winner,
+        ts:    b.ts || 0
+      };
+      rec.id = noteId(rec);
+      return rec;
+    }).filter(r=> r.dest || r.msg);
+    ALL = shuffle(recs);
+    ALL.unshift(makeOficial());
+    const ls=document.getElementById('loadingState'); if(ls) ls.style.display='none';
+    renderChips(); render();
+  }, err=>{
+    console.warn('Bilhetes: erro ao ler do Firebase, tentando CSV.', err);
+    loadDataCSV();
+  });
 }
 
 /* ============ Mapping modal ============ */
@@ -1364,49 +1420,51 @@ document.addEventListener('fullscreenchange',()=>{
   }
 });
 
-/* ============ Abertura programada do mural ============ */
-// ⬇️  AJUSTE AQUI a data e hora de abertura (horário de Brasília).
-//     Antes dessa data o mural fica "fechadinho" com contagem regressiva.
-//     Depois dela, a planilha bilhetes.csv é carregada e a busca libera.
-const ABERTURA = new Date('2026-07-06T08:00:00-03:00');
+/* ============ Encerramento programado do mural ============ */
+// ⬇️  AJUSTE AQUI a data e hora em que o correio FECHA (horário de Brasília).
+//     O mural fica aberto desde já, com uma contagem regressiva pra fechar.
+//     Ao chegar nessa hora, o mural congela como está e mostra a despedida.
+const FECHAMENTO = new Date('2026-07-23T12:00:00-03:00');
 
-let revealed = false;
+let closedNow = false;    // vira true quando a contagem zera nesta sessão
 let cdInt = null;
-let previewMode = null;   // 'antes' | 'depois' | null (modo prévia dos organizadores)
+let previewMode = null;   // 'aberto' | 'encerrado' | null (modo prévia dos organizadores)
 const $ = id => document.getElementById(id);
 
-function muralAberto(){
-  if(previewMode==='antes') return false;
-  if(previewMode==='depois') return true;
-  return revealed || Date.now() >= ABERTURA.getTime();
+// O mural agora fica sempre aberto para leitura (destaques sempre visíveis).
+function muralAberto(){ return true; }
+
+function muralFechado(){
+  if(previewMode==='aberto') return false;
+  if(previewMode==='encerrado') return true;
+  return closedNow || Date.now() >= FECHAMENTO.getTime();
 }
 
-function setPreOpening(on){
-  $('searchWrap').hidden = on;
-  $('countdown').hidden = !on;
-  document.querySelector('.controls').style.display = on ? 'none' : '';
-  $('mural').style.display = on ? 'none' : '';
-  $('telaoBtn').style.display = on ? 'none' : '';
+// Deixa a tela no estado "mural aberto": herói, busca, varal e telão à mostra.
+function showOpenChrome(){
+  $('searchWrap').hidden = false;
+  document.querySelector('.controls').style.display = '';
+  $('mural').style.display = '';
+  $('telaoBtn').style.display = '';
   const title=$('heroTitle');
-  if(title){
-    title.innerHTML = on
-      ? 'Em breve, um novo mural <span class="warm">pro cês vê</span>.'
-      : 'Será que tem <span class="warm">elogio</span> pra você?';
-  }
-  $('heroLead').textContent = on
-    ? 'Os Elogios Elegantes já foram escolhidos! Na segunda o mural abre e todo mundo vai poder buscar o próprio nome e ler os recados de carinho.'
-    : 'Digite seu nome e descubra os Elogios Elegantes que colegas escreveram pra você.';
+  if(title) title.innerHTML = 'Será que tem <span class="warm">elogio</span> pra você?';
+  $('heroLead').textContent = 'Digite seu nome e descubra os Elogios Elegantes que colegas escreveram pra você.';
 }
 
-function startCountdown(){
-  setPreOpening(true);
+// Banner com a contagem regressiva pra fechar (reaproveita o cartão #countdown).
+function startClosingCountdown(){
+  const box=$('countdown'); if(!box) return;
+  box.hidden = false;
+  const t=box.querySelector('.cd-title'); if(t) t.textContent='O correio fecha em';
+  const note=box.querySelector('.cd-note');
+  if(note) note.textContent='Escreva o seu antes da festa. Ao meio-dia do dia 23 o correio fecha e o mural congela do jeitinho que estiver.';
   try{
     const fmt=new Intl.DateTimeFormat('pt-BR',{weekday:'long',day:'2-digit',month:'long',hour:'2-digit',minute:'2-digit',timeZone:'America/Sao_Paulo'});
-    $('cdDateLabel').textContent=fmt.format(ABERTURA).replace(' às ',' · ');
+    $('cdDateLabel').textContent=fmt.format(FECHAMENTO).replace(' às ',' · ');
   }catch(e){}
   const tick=()=>{
-    const diff=ABERTURA.getTime()-Date.now();
-    if(diff<=0){ clearInterval(cdInt); reveal(); return; }
+    const diff=FECHAMENTO.getTime()-Date.now();
+    if(diff<=0){ clearInterval(cdInt); closeMural(); return; }
     const d=Math.floor(diff/86400000),
           h=Math.floor(diff%86400000/3600000),
           m=Math.floor(diff%3600000/60000),
@@ -1417,48 +1475,41 @@ function startCountdown(){
   tick(); cdInt=setInterval(tick,1000);
 }
 
-function reveal(){
-  if(revealed) return;
-  revealed=true;
+// Estado encerrado: troca o banner por uma despedida e esconde os links de escrever bilhete.
+function closeMural(){
+  closedNow=true;
   if(cdInt) clearInterval(cdInt);
-  setPreOpening(false);
-  setupWinner();
-  loadData();
-  playIntro(true);
-  setTimeout(()=>$('search').focus(),100);
+  const box=$('countdown');
+  if(box){
+    box.hidden=false;
+    const t=box.querySelector('.cd-title'); if(t) t.textContent='O correio elegante se encerrou 💚';
+    const timer=$('cdTimer'); if(timer){ timer.innerHTML=''; timer.style.display='none'; }
+    const dateRow=box.querySelector('.cd-date'); if(dateRow) dateRow.style.display='none';
+    const note=box.querySelector('.cd-note');
+    if(note) note.textContent='A festa passou, mas o carinho fica. Os bilhetes seguem aqui pra reler quando quiser.';
+  }
+  const title=$('heroTitle');
+  if(title) title.innerHTML='O correio elegante <span class="warm">se encerrou</span>.';
+  const lead=$('heroLead');
+  if(lead) lead.textContent='A festa passou, mas o carinho fica. Busque seu nome e releia os recados quando quiser.';
+  document.querySelectorAll('[data-write-link]').forEach(a=>{ a.style.display='none'; });
 }
 
-/* ============ Bilhete Vencedor: lacre até a revelação ============ */
+/* ============ Destaques (Elogios Elegantes): sempre visíveis ============ */
 function setupWinner(){
   const card=$('winnerCard'); if(!card) return;
-  if(muralAberto()){
-    card.classList.remove('locked');
-    card.classList.add('revealed');
-    return;
-  }
-  card.classList.add('locked');
-  card.classList.remove('revealed');
-  const lock=$('winnerLock');
-  const tease=()=>{
-    card.classList.add('peeking');
-    setTimeout(()=>card.classList.remove('peeking'),450);
-    toast('Sem espiar! 👀 A revelação é na segunda.');
-  };
-  card.querySelectorAll('.winner-quote').forEach(q=>{
-    if(!q._wired){ q.addEventListener('click',tease); q._wired=true; }
-  });
-  if(lock && !lock._wired){ lock.addEventListener('click',tease); lock._wired=true; }
+  card.classList.remove('locked');
+  card.classList.add('revealed');
 }
 
-// Importação manual libera o mural na hora (uso dos organizadores).
+// Importação manual de CSV (uso dos organizadores, modo offline).
 function revealForImport(){
-  revealed=true;
   if(cdInt) clearInterval(cdInt);
-  setPreOpening(false);
+  showOpenChrome();
   setupWinner();
 }
 
-async function loadData(){
+async function loadDataCSV(){
   $('loadingState').style.display='block';
   try{
     const res=await fetch('bilhetes.csv',{cache:'no-store'});
@@ -1483,27 +1534,37 @@ document.querySelectorAll('[data-write-link]').forEach(a=>{a.href=FORM_URL;});
 
 setupWinner();
 initReactions();
-if(muralAberto()){ setPreOpening(false); loadData(); playIntro(false); }
-else { startCountdown(); }
+showOpenChrome();
+subscribeBilhetes();
+if(muralFechado()){
+  closeMural();
+}else{
+  playIntro(false);
+  startClosingCountdown();
+}
 
 /* ============ Modo prévia (só para organizadores) ============
    Ative com  ?preview  no fim da URL. Ex.: .../index.html?preview
    Permite ver o "antes" (contagem) e o "depois" (mural aberto) sem mexer no relógio. */
-function previewAntes(){
-  previewMode='antes'; revealed=false;
+function previewAberto(){
+  previewMode='aberto'; closedNow=false;
   const intro=$('arraiaIntro'); if(intro){ intro.hidden=true; intro.classList.remove('out'); }
   _introDone=true;
-  setupWinner(); startCountdown();
-  markPreviewBtn('antes');
+  showOpenChrome(); setupWinner();
+  const timer=$('cdTimer'); if(timer) timer.style.display='';
+  const box=$('countdown'); if(box){ const dr=box.querySelector('.cd-date'); if(dr) dr.style.display=''; }
+  startClosingCountdown();
+  markPreviewBtn('aberto');
 }
-function previewDepois(){
-  previewMode='depois'; revealed=false;
-  reveal();
-  markPreviewBtn('depois');
+function previewEncerrado(){
+  previewMode='encerrado';
+  showOpenChrome(); setupWinner();
+  closeMural();
+  markPreviewBtn('encerrado');
 }
 function markPreviewBtn(which){
   const a=$('pvAntes'), d=$('pvDepois');
-  if(a&&d){ a.classList.toggle('on',which==='antes'); d.classList.toggle('on',which==='depois'); }
+  if(a&&d){ a.classList.toggle('on',which==='aberto'); d.classList.toggle('on',which==='encerrado'); }
 }
 (function initPreview(){
   const on = /[?&]preview\b/i.test(location.search) || location.hash.toLowerCase()==='#preview';
@@ -1512,8 +1573,8 @@ function markPreviewBtn(which){
   bar.id='previewBar';
   bar.innerHTML=`
     <span class="pv-tag">Prévia (só você)</span>
-    <button type="button" id="pvAntes">Antes · contagem</button>
-    <button type="button" id="pvDepois">Depois · mural aberto</button>`;
+    <button type="button" id="pvAntes">Aberto · contagem</button>
+    <button type="button" id="pvDepois">Encerrado</button>`;
   document.body.appendChild(bar);
   const css=document.createElement('style');
   css.textContent=`
@@ -1527,10 +1588,10 @@ function markPreviewBtn(which){
     #previewBar button.on{background:var(--fest-yellow);border-color:var(--fest-yellow);color:var(--fest-forest);}
     @media print{#previewBar{display:none;}}`;
   document.head.appendChild(css);
-  $('pvAntes').addEventListener('click',previewAntes);
-  $('pvDepois').addEventListener('click',previewDepois);
+  $('pvAntes').addEventListener('click',previewAberto);
+  $('pvDepois').addEventListener('click',previewEncerrado);
   // Começa mostrando o estado real atual
-  markPreviewBtn(muralAberto()?'depois':'antes');
+  markPreviewBtn(muralFechado()?'encerrado':'aberto');
 })();
 </script>
 </body>
