@@ -199,12 +199,19 @@ body{
 
   <div class="tabs" role="tablist">
     <button class="tab" id="tabAr" role="tab" aria-selected="true">No mural <span class="badge" id="countAr">0</span></button>
+    <button class="tab" id="tabLix" role="tab" aria-selected="false">Na lixeira <span class="badge" id="countLix">0</span></button>
   </div>
 
   <div id="viewAr">
     <p class="hint">Tudo que está publicado no mural agora. Edite o texto, ajuste o setor ou tire do ar a qualquer momento. As mudanças aparecem no mural na hora. (Os bilhetes da edição passada ficam fixos e não aparecem aqui.)</p>
     <div class="grid" id="arGrid"></div>
     <div class="state" id="arState"></div>
+  </div>
+
+  <div id="viewLix" class="hidden">
+    <p class="hint">Os bilhetes que você tirou do mural ficam guardados aqui. Dá pra devolver um pro mural ou apagar de vez. Nada some sozinho.</p>
+    <div class="grid" id="lixGrid"></div>
+    <div class="state" id="lixState"></div>
   </div>
 </div>
 
@@ -307,7 +314,7 @@ async function doLogin(){
 $('logoutBtn').addEventListener('click',()=>auth.signOut());
 
 /* ============ Painel ============ */
-let refAr=null;
+let refAr=null, refLix=null;
 function showPanel(user){
   $('loginView').classList.add('hidden');
   $('setupNotice').classList.add('hidden');
@@ -317,6 +324,7 @@ function showPanel(user){
 }
 function detachFeeds(){
   if(refAr){ refAr.off(); refAr=null; }
+  if(refLix){ refLix.off(); refLix=null; }
 }
 function attachFeeds(){
   detachFeeds();
@@ -325,6 +333,19 @@ function attachFeeds(){
     $('arState').innerHTML=`<h3>Sem acesso ao mural</h3><p>Confira se as regras do banco foram atualizadas e publicadas no Firebase.</p>`;
     console.warn(err);
   });
+  refLix=db.ref('bilhetes_rejeitados');
+  refLix.on('value',snap=>renderLixeira(snap.val()||{}), err=>console.warn(err));
+}
+
+/* ============ Abas ============ */
+$('tabAr').addEventListener('click',()=>switchTab('ar'));
+$('tabLix').addEventListener('click',()=>switchTab('lix'));
+function switchTab(which){
+  const ar=which==='ar';
+  $('tabAr').setAttribute('aria-selected',ar);
+  $('tabLix').setAttribute('aria-selected',!ar);
+  $('viewAr').classList.toggle('hidden',!ar);
+  $('viewLix').classList.toggle('hidden',ar);
 }
 
 /* ============ Render: bilhetes no mural (editável) ============ */
@@ -397,16 +418,94 @@ async function removerDoAr(card){
   if(!confirm('Tirar este bilhete do mural? Ele some da tela de todo mundo.')) return;
   card.querySelectorAll('button').forEach(b=>b.disabled=true);
   try{
-    // Guarda uma cópia no arquivo de removidos (segurança), depois tira do mural.
+    // Guarda uma cópia na lixeira (segurança), depois tira do mural.
     const snap=await db.ref('bilhetes_aprovados/'+key).get();
     if(snap.exists()){
       await db.ref('bilhetes_rejeitados/'+key).set(Object.assign({}, snap.val(), {removidoEm:Date.now()}));
     }
     await db.ref('bilhetes_aprovados/'+key).remove();
-    toast('Tirado do mural.');
+    toast('Tirado do mural. Está na lixeira.');
   }catch(err){
     console.error(err); toast('Não deu pra remover. Tente de novo.');
     card.querySelectorAll('button').forEach(b=>b.disabled=false);
+  }
+}
+
+/* ============ Render: lixeira ============ */
+let lixData={};
+function renderLixeira(data){
+  lixData=data||{};
+  const keys=Object.keys(lixData);
+  keys.sort((a,b)=>(Number(lixData[b].removidoEm)||0)-(Number(lixData[a].removidoEm)||0));
+  $('countLix').textContent=keys.length;
+  const grid=$('lixGrid'), state=$('lixState');
+  if(keys.length===0){
+    grid.innerHTML='';
+    state.innerHTML=`<h3>Lixeira vazia</h3><p>O que você tirar do mural aparece aqui, e pode voltar quando quiser.</p>`;
+    return;
+  }
+  state.innerHTML='';
+  grid.innerHTML=keys.map(k=>{
+    const b=lixData[k];
+    const dest=pick(b,['dest','destinatario','para','nome']);
+    const setor=pick(b,['setor','area','área','departamento','equipe'],'Synvia');
+    const msg=pick(b,['msg','mensagem','texto','recado','bilhete','conteudo']);
+    const anon=isYes(pick(b,['anon','anonimo','anônimo'],false));
+    const from=anon?'anônimo':(pick(b,['sender','remetente','de'])||'um colega');
+    return `<div class="card ro" data-key="${esc(k)}">
+      <div class="meta">
+        <span class="time">removido ${esc(fmtTime(b.removidoEm))}</span>
+      </div>
+      <p class="dest">${esc(dest)}</p>
+      <p class="setor">${esc(setor)}</p>
+      <p class="msg">${esc(msg)}</p>
+      <p class="from">de <b>${esc(from)}</b></p>
+      <div class="actions">
+        <button class="btn btn-primary act-back">Voltar pro mural</button>
+        <button class="btn btn-danger act-del">Apagar de vez</button>
+      </div>
+    </div>`;
+  }).join('');
+  grid.querySelectorAll('.card').forEach(card=>{
+    card.querySelector('.act-back').addEventListener('click',()=>restaurar(card));
+    card.querySelector('.act-del').addEventListener('click',()=>apagarDeVez(card));
+  });
+}
+
+async function restaurar(card){
+  const key=card.dataset.key;
+  const b=lixData[key]; if(!b) return;
+  const anon=isYes(pick(b,['anon','anonimo','anônimo'],false));
+  const rec={
+    dest: (pick(b,['dest','destinatario','para','nome'])||'').toString().slice(0,160),
+    setor: (pick(b,['setor','area','área','departamento','equipe'],'Synvia')||'Synvia').toString().slice(0,120),
+    msg: (pick(b,['msg','mensagem','texto','recado','bilhete','conteudo'])||'').toString().slice(0,2000),
+    sender: anon ? '' : (pick(b,['sender','remetente','de'])||'').toString().slice(0,160),
+    anon: anon,
+    ts: Number(b.ts)||Date.now()
+  };
+  if(!rec.dest || !rec.msg){ toast('Esse bilhete está sem nome ou mensagem.'); return; }
+  card.querySelectorAll('button').forEach(x=>x.disabled=true);
+  try{
+    await db.ref('bilhetes_aprovados').push(rec);
+    await db.ref('bilhetes_rejeitados/'+key).remove();
+    toast('De volta ao mural.');
+  }catch(err){
+    console.error(err); toast('Não deu pra voltar. Tente de novo.');
+    card.querySelectorAll('button').forEach(x=>x.disabled=false);
+  }
+}
+
+async function apagarDeVez(card){
+  const key=card.dataset.key;
+  if(!confirm('Apagar este bilhete de vez? Isso não tem como desfazer.')) return;
+  card.querySelectorAll('button').forEach(x=>x.disabled=true);
+  try{
+    await db.ref('bilhetes_rejeitados/'+key).remove();
+    toast('Apagado de vez.');
+  }catch(err){
+    console.error(err); toast('Não deu pra apagar. Tente de novo.');
+    card.querySelectorAll('button').forEach(x=>x.disabled=false);
   }
 }
 </script>
