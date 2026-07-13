@@ -357,37 +357,6 @@ footer a:hover{text-decoration:underline;}
 .maprow select{font-family:var(--font);font-size:.92rem;padding:9px 12px;border-radius:10px;border:1.5px solid var(--mist);background:#fff;min-width:200px;}
 .modal .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;}
 
-/* ---------- Telão (TV mode) ---------- */
-.telao{position:fixed;inset:0;z-index:300;display:none;flex-direction:column;
-  background:
-    radial-gradient(70% 55% at 50% 118%, rgba(232,89,12,.45) 0%, transparent 60%),
-    radial-gradient(90% 70% at 50% 120%, var(--fest-green) 0%, transparent 55%),
-    linear-gradient(180deg,#0f2a20 0%, var(--fest-forest) 100%);
-  color:#fff;padding:48px;overflow:hidden;}
-.telao.open{display:flex;}
-.telao .deco-fire-bg{position:absolute;bottom:-30px;left:50%;transform:translateX(-50%);width:min(340px,42vw);opacity:.9;pointer-events:none;z-index:0;}
-.telao .spark{z-index:1;}
-.telao-head{display:flex;align-items:center;justify-content:space-between;gap:20px;flex:none;position:relative;z-index:2;}
-.telao-head img{height:42px;}
-.telao-head .ttl{font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:1rem;color:var(--fest-yellow);}
-.telao-stage{flex:1;display:flex;align-items:center;justify-content:center;position:relative;min-height:0;z-index:2;}
-.telao-card{max-width:960px;width:100%;text-align:center;background:radial-gradient(120% 120% at 50% 45%, rgba(9,26,20,.82) 0%, rgba(9,26,20,.62) 60%, transparent 100%);border-radius:36px;padding:clamp(28px,4vw,52px) clamp(24px,5vw,64px);}
-.telao-card .tpara{font-size:1.3rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--fest-yellow);margin-bottom:16px;text-shadow:0 2px 10px rgba(0,0,0,.5);}
-.telao-card .tdest{font-size:clamp(2.4rem,6vw,4.6rem);font-weight:800;letter-spacing:-.02em;line-height:1.04;margin-bottom:34px;color:#fff;text-shadow:0 3px 18px rgba(0,0,0,.6);}
-.telao-card .tmsg{font-size:clamp(1.5rem,3.4vw,2.5rem);line-height:1.4;font-weight:500;color:#fff;margin-bottom:34px;text-wrap:pretty;white-space:pre-line;text-shadow:0 2px 14px rgba(0,0,0,.65);}
-.telao-card .tsender{font-size:clamp(1.05rem,2vw,1.4rem);color:rgba(255,255,255,.85);text-shadow:0 2px 10px rgba(0,0,0,.5);}
-.telao-card .tsender b{color:var(--fest-green);font-weight:800;}
-.telao-card.fade{animation:tfade .7s ease;}
-@keyframes tfade{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:none;}}
-.telao-foot{flex:none;display:flex;align-items:center;justify-content:space-between;gap:20px;position:relative;z-index:2;}
-.telao-prog{flex:1;height:5px;background:rgba(246,241,223,.16);border-radius:99px;overflow:hidden;}
-.telao-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--fest-green),var(--fest-yellow));border-radius:99px;}
-.telao .tctrl{display:flex;gap:10px;}
-.telao .tbtn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:999px;width:48px;height:48px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.telao .tbtn:hover{background:rgba(255,255,255,.22);}
-.telao .tbtn svg{width:22px;height:22px;}
-.telao .tcount{color:rgba(255,255,255,.6);font-size:1rem;font-variant-numeric:tabular-nums;min-width:70px;text-align:right;}
-
 /* ---------- Toast ---------- */
 .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:13px 22px;border-radius:12px;font-size:.92rem;font-weight:600;box-shadow:0 12px 30px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:400;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -462,12 +431,7 @@ footer a:hover{text-decoration:underline;}
       <span class="div" aria-hidden="true"></span>
       <span class="campaign">Arraiá Synvia 2026</span>
     </div>
-    <div class="tools">
-      <button class="btn" id="telaoBtn" title="Abrir o modo telão para exibir numa TV">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        Modo telão
-      </button>
-    </div>
+    <div class="tools"></div>
   </div>
 </header>
 
@@ -563,32 +527,6 @@ footer a:hover{text-decoration:underline;}
       <button class="btn btn-ghost" id="mapCancel">Cancelar</button>
       <button class="btn btn-primary" id="mapApply">Aplicar</button>
     </div>
-  </div>
-</div>
-
-<!-- Telão -->
-<div class="telao" id="telao" role="dialog" aria-modal="true" aria-label="Modo telão">
-  <img class="deco-fire-bg" src="assets/fogueira.png" alt="" aria-hidden="true" />
-  <span class="spark" style="top:16%;left:12%;"></span>
-  <span class="spark" style="top:24%;right:14%;width:20px;height:20px;animation-delay:1s;"></span>
-  <span class="spark" style="top:60%;left:8%;width:18px;height:18px;animation-delay:1.8s;"></span>
-  <span class="spark" style="top:50%;right:9%;animation-delay:.6s;"></span>
-  <div class="telao-head">
-    <img src="logo-synvia-white.png" alt="Synvia" />
-    <span class="ttl">Elogio Elegante · Arraiá da Synvia</span>
-  </div>
-  <div class="telao-stage">
-    <div class="telao-card" id="telaoCard"></div>
-  </div>
-  <div class="telao-foot">
-    <div class="tctrl">
-      <button class="tbtn" id="tPrev" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <button class="tbtn" id="tPlay" aria-label="Pausar"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></button>
-      <button class="tbtn" id="tNext" aria-label="Próximo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
-    </div>
-    <div class="telao-prog"><i id="tProg"></i></div>
-    <div class="tcount" id="tCount">—</div>
-    <button class="tbtn" id="tClose" aria-label="Sair do modo telão"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
 </div>
 
@@ -1351,124 +1289,89 @@ fileInput.addEventListener('change',e=>{
   fileInput.value='';
 });
 
-/* ============ Telão mode ============ */
-const telao=document.getElementById('telao');
-let tList=[],tIdx=0,tTimer=null,tStart=0,tPaused=false,tRaf=null;
-const T_DUR=7000;
+/* reduceMotion é usado pela animação de entrada dos cartões do mural. */
 const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-function openTelao(){
-  tList=currentFiltered();
-  if(tList.length===0){toast('Nada pra exibir no telão ainda.');return;}
-  tIdx=0;telao.classList.add('open');
-  if(telao.requestFullscreen) telao.requestFullscreen().catch(()=>{});
-  tPaused=false;updatePlayIcon();
-  showTelao(0);
-  document.getElementById('tClose').focus();
-}
-function closeTelao(){
-  telao.classList.remove('open');
-  if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
-  cancelAnimationFrame(tRaf);clearTimeout(tTimer);
-}
-function showTelao(i){
-  if(tList.length===0)return;
-  tIdx=(i+tList.length)%tList.length;
-  const n=tList[tIdx];
-  const card=document.getElementById('telaoCard');
-  const sender = n.anon ? anonPhrase(n.dest+n.msg) : ('de '+(n.sender||'um colega'));
-  card.innerHTML=`
-    <div class="tpara">Para</div>
-    <div class="tdest">${esc(n.dest)}</div>
-    <div class="tmsg">${esc(n.msg)}</div>
-    <div class="tsender"><b>${esc(sender)}</b> · ${esc(n.setor)}</div>`;
-  if(!reduceMotion){card.classList.remove('fade');void card.offsetWidth;card.classList.add('fade');}
-  document.getElementById('tCount').textContent=`${tIdx+1} / ${tList.length}`;
-  startProgress();
-}
-function startProgress(){
-  cancelAnimationFrame(tRaf);clearTimeout(tTimer);
-  const prog=document.getElementById('tProg');
-  if(tPaused){return;}
-  tStart=performance.now();
-  const step=now=>{
-    const p=Math.min(1,(now-tStart)/T_DUR);
-    prog.style.width=(p*100)+'%';
-    if(p<1){tRaf=requestAnimationFrame(step);}else{showTelao(tIdx+1);}
-  };
-  tRaf=requestAnimationFrame(step);
-}
-function updatePlayIcon(){
-  document.getElementById('tPlay').innerHTML = tPaused
-    ? '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>'
-    : '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
-}
-document.getElementById('telaoBtn').addEventListener('click',openTelao);
-document.getElementById('tClose').addEventListener('click',closeTelao);
-document.getElementById('tPrev').addEventListener('click',()=>showTelao(tIdx-1));
-document.getElementById('tNext').addEventListener('click',()=>showTelao(tIdx+1));
-document.getElementById('tPlay').addEventListener('click',()=>{
-  tPaused=!tPaused;updatePlayIcon();
-  if(tPaused){cancelAnimationFrame(tRaf);}else{startProgress();}
-});
-document.addEventListener('keydown',e=>{
-  if(!telao.classList.contains('open'))return;
-  if(e.key==='Escape')closeTelao();
-  else if(e.key==='ArrowRight')showTelao(tIdx+1);
-  else if(e.key==='ArrowLeft')showTelao(tIdx-1);
-  else if(e.key===' '){e.preventDefault();document.getElementById('tPlay').click();}
-});
-document.addEventListener('fullscreenchange',()=>{
-  if(!document.fullscreenElement && telao.classList.contains('open')){
-    telao.classList.remove('open');cancelAnimationFrame(tRaf);
-  }
-});
+/* ============ Contagem regressiva: correio fecha (12h) e festa (19h) ============ */
+// ⬇️  Datas no horário de Brasília. Ajuste aqui se precisar.
+const FECHAMENTO = new Date('2026-07-23T12:00:00-03:00'); // correio para de receber bilhetes
+const FESTA      = new Date('2026-07-23T19:00:00-03:00'); // início do Arraiá
 
-/* ============ Encerramento programado do mural ============ */
-// ⬇️  AJUSTE AQUI a data e hora em que o correio FECHA (horário de Brasília).
-//     O mural fica aberto desde já, com uma contagem regressiva pra fechar.
-//     Ao chegar nessa hora, o correio fecha e o mural mostra uma despedida.
-const FECHAMENTO = new Date('2026-07-23T12:00:00-03:00');
-
-let closedNow = false;    // vira true quando a contagem zera nesta sessão
+let closedNow = false;   // correio já fechou nesta sessão
+let partyDone = false;   // a festa já chegou nesta sessão
 let cdInt = null;
-let previewMode = null;   // 'aberto' | 'encerrado' | null (modo prévia dos organizadores)
+let previewMode = null;  // 'aberto' | 'encerrado' | null (prévia dos organizadores)
 const $ = id => document.getElementById(id);
 
-// O mural agora fica sempre aberto para leitura (destaques sempre visíveis).
+// O mural fica sempre aberto para leitura.
 function muralAberto(){ return true; }
-
 function muralFechado(){
   if(previewMode==='aberto') return false;
   if(previewMode==='encerrado') return true;
   return closedNow || Date.now() >= FECHAMENTO.getTime();
 }
 
-// Deixa a tela no estado "mural aberto": herói, busca, varal e telão à mostra.
+// Deixa a tela no estado "mural aberto": herói, busca e varal à mostra.
 function showOpenChrome(){
   $('searchWrap').hidden = false;
   document.querySelector('.controls').style.display = '';
   $('mural').style.display = '';
-  $('telaoBtn').style.display = '';
   const title=$('heroTitle');
   if(title) title.innerHTML = 'Será que tem <span class="warm">elogio</span> pra você?';
-  $('heroLead').textContent = 'Digite seu nome e descubra os Elogios Elegantes que colegas escreveram pra você.';
+  $('heroLead').textContent = 'Digite seu nome e descubra os elogios que colegas escreveram pra você.';
 }
 
-// Banner com a contagem regressiva pra fechar (reaproveita o cartão #countdown).
-function startClosingCountdown(){
+// Confete que cai na tela toda (ao tocar no cartão e quando a festa chega).
+function burstConfetti(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const box=document.createElement('div');
+  box.style.cssText='position:fixed;inset:0;z-index:500;pointer-events:none;overflow:hidden;';
+  const N=60;
+  for(let i=0;i<N;i++){
+    const d=document.createElement('div');
+    d.className='confetti-piece';
+    d.style.left=(Math.random()*100)+'%';
+    d.style.background=CONFETTI_COLORS[i%CONFETTI_COLORS.length];
+    d.style.animationDuration=(1.8+Math.random()*1.8)+'s';
+    d.style.animationDelay=(Math.random()*0.5)+'s';
+    d.style.opacity=(0.75+Math.random()*0.25).toFixed(2);
+    if(Math.random()<0.5) d.style.borderRadius='50%';
+    box.appendChild(d);
+  }
+  document.body.appendChild(box);
+  setTimeout(()=>box.remove(), 4200);
+}
+
+// Texto de apoio do cartão, refletindo se o correio ainda está aberto.
+function updateCorreioNote(){
   const box=$('countdown'); if(!box) return;
-  box.hidden = false;
-  const t=box.querySelector('.cd-title'); if(t) t.textContent='O correio fecha em';
-  const note=box.querySelector('.cd-note');
-  if(note) note.textContent='Escreva o seu antes da festa. O correio fecha às 12h do dia 23.';
+  const note=box.querySelector('.cd-note'); if(!note) return;
+  note.textContent = muralFechado()
+    ? 'O correio já fechou, mas o mural continua aqui. Nos vemos na festa! 💚'
+    : 'O correio fica aberto até as 12h do dia 23. Escreva o seu antes! ✍️';
+}
+
+// Contagem regressiva principal: pra festa (19h). O correio fecha sozinho às 12h.
+function startPartyCountdown(){
+  const box=$('countdown'); if(!box) return;
+  box.hidden=false;
+  box.style.cursor='pointer';
+  box.title='Toque pra soltar confete';
+  const t=box.querySelector('.cd-title'); if(t) t.textContent='O Arraiá começa em';
   try{
     const fmt=new Intl.DateTimeFormat('pt-BR',{weekday:'long',day:'2-digit',month:'long',hour:'2-digit',minute:'2-digit',timeZone:'America/Sao_Paulo'});
-    $('cdDateLabel').textContent=fmt.format(FECHAMENTO).replace(' às ',' · ');
+    $('cdDateLabel').textContent=fmt.format(FESTA).replace(' às ',' · ');
   }catch(e){}
+  updateCorreioNote();
+  if(!box._confettiWired){
+    box.addEventListener('click',burstConfetti);
+    box._confettiWired=true;
+  }
   const tick=()=>{
-    const diff=FECHAMENTO.getTime()-Date.now();
-    if(diff<=0){ clearInterval(cdInt); closeMural(); return; }
+    const now=Date.now();
+    if(previewMode!=='aberto' && !closedNow && now>=FECHAMENTO.getTime()) closeCorreio();
+    const diff=FESTA.getTime()-now;
+    if(diff<=0){ partyNow(); return; }
     const d=Math.floor(diff/86400000),
           h=Math.floor(diff%86400000/3600000),
           m=Math.floor(diff%3600000/60000),
@@ -1476,27 +1379,36 @@ function startClosingCountdown(){
     const unit=(n,l)=>`<div class="cd-unit"><div class="cd-num">${String(n).padStart(2,'0')}</div><div class="cd-lbl">${l}</div></div>`;
     $('cdTimer').innerHTML=unit(d,'dias')+unit(h,'horas')+unit(m,'min')+unit(s,'seg');
   };
+  if(cdInt) clearInterval(cdInt);
   tick(); cdInt=setInterval(tick,1000);
 }
 
-// Estado encerrado: troca o banner por uma despedida e esconde os links de escrever bilhete.
-function closeMural(){
+// Correio fecha (12h): esconde os botões de escrever e ajusta o texto. O mural segue legível.
+function closeCorreio(){
+  if(previewMode==='aberto') return;
   closedNow=true;
+  document.querySelectorAll('[data-write-link]').forEach(a=>{ a.style.display='none'; });
+  const title=$('heroTitle');
+  if(title) title.innerHTML='O correio <span class="warm">se encerrou</span>, mas o mural continua.';
+  const lead=$('heroLead');
+  if(lead) lead.textContent='Busque seu nome e releia os recados. E já vai contando os minutinhos pro Arraiá!';
+  updateCorreioNote();
+}
+
+// A festa chegou (19h): comemora.
+function partyNow(){
+  if(partyDone) return;
+  partyDone=true;
   if(cdInt) clearInterval(cdInt);
   const box=$('countdown');
   if(box){
-    box.hidden=false;
-    const t=box.querySelector('.cd-title'); if(t) t.textContent='O correio elegante se encerrou 💚';
-    const timer=$('cdTimer'); if(timer){ timer.innerHTML=''; timer.style.display='none'; }
+    const t=box.querySelector('.cd-title'); if(t) t.textContent='É hoje! 🎉';
+    const timer=$('cdTimer'); if(timer) timer.innerHTML='<div style="font-size:clamp(1.8rem,6vw,2.8rem);font-weight:800;color:#fff;">Viva o Arraiá!</div>';
     const dateRow=box.querySelector('.cd-date'); if(dateRow) dateRow.style.display='none';
-    const note=box.querySelector('.cd-note');
-    if(note) note.textContent='A festa passou, mas o carinho fica. Os bilhetes seguem aqui pra reler quando quiser.';
+    const note=box.querySelector('.cd-note'); if(note) note.textContent='A festa começou. Bora comemorar! 🔥';
   }
-  const title=$('heroTitle');
-  if(title) title.innerHTML='O correio elegante <span class="warm">se encerrou</span>.';
-  const lead=$('heroLead');
-  if(lead) lead.textContent='A festa passou, mas o carinho fica. Busque seu nome e releia os recados quando quiser.';
-  document.querySelectorAll('[data-write-link]').forEach(a=>{ a.style.display='none'; });
+  burstConfetti();
+  setTimeout(burstConfetti,900);
 }
 
 /* ============ Destaques (Elogios Elegantes): sempre visíveis ============ */
@@ -1540,30 +1452,29 @@ setupWinner();
 initReactions();
 showOpenChrome();
 subscribeBilhetes();
-if(muralFechado()){
-  closeMural();
-}else{
-  playIntro(false);
-  startClosingCountdown();
-}
+playIntro(false);
+startPartyCountdown();
 
 /* ============ Modo prévia (só para organizadores) ============
    Ative com  ?preview  no fim da URL. Ex.: .../index.html?preview
    Permite ver o "antes" (contagem) e o "depois" (mural aberto) sem mexer no relógio. */
 function previewAberto(){
-  previewMode='aberto'; closedNow=false;
+  previewMode='aberto'; closedNow=false; partyDone=false;
   const intro=$('arraiaIntro'); if(intro){ intro.hidden=true; intro.classList.remove('out'); }
   _introDone=true;
   showOpenChrome(); setupWinner();
   const timer=$('cdTimer'); if(timer) timer.style.display='';
   const box=$('countdown'); if(box){ const dr=box.querySelector('.cd-date'); if(dr) dr.style.display=''; }
-  startClosingCountdown();
+  startPartyCountdown();
   markPreviewBtn('aberto');
 }
 function previewEncerrado(){
-  previewMode='encerrado';
+  previewMode='encerrado'; partyDone=false;
+  const timer=$('cdTimer'); if(timer) timer.style.display='';
+  const box=$('countdown'); if(box){ const dr=box.querySelector('.cd-date'); if(dr) dr.style.display=''; }
   showOpenChrome(); setupWinner();
-  closeMural();
+  startPartyCountdown();
+  closeCorreio();
   markPreviewBtn('encerrado');
 }
 function markPreviewBtn(which){
