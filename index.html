@@ -499,42 +499,13 @@ footer a:hover{text-decoration:underline;}
         </div>
       </div>
 
-      <div style="margin:20px 0 4px;">
-        <a class="btn btn-primary" data-write-link href="escrever.html">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+      <div style="margin:26px 0 6px;">
+        <a class="btn btn-primary" data-write-link href="escrever.html"
+           style="font-size:1.1rem;font-weight:800;padding:16px 30px;box-shadow:0 10px 26px -10px rgba(26,143,65,.6);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:22px;height:22px;"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
           Escrever um elogio
         </a>
       </div>
-
-      <!-- Elogios Elegantes (destaques) -->
-      <section class="winner locked" id="winnerCard" aria-labelledby="winnerTitle">
-        <div class="winner-head">
-          <div class="winner-badge"><span class="trophy" aria-hidden="true">🏆</span> Elogios Elegantes</div>
-          <p class="winner-sub" id="winnerTitle">Os elogios mais elegantes desta edição</p>
-        </div>
-        <div class="winner-grid">
-          <article class="elogio">
-            <div class="elo-tag">Elogio Elegante</div>
-            <div class="winner-quote"><span class="qmark" aria-hidden="true">“</span><span class="winner-text">Você não é o flash benefícios, mas espero ansiosamente a sua chegada.</span></div>
-          </article>
-          <article class="elogio">
-            <div class="elo-tag">Elogio Elegante</div>
-            <div class="winner-quote"><span class="qmark" aria-hidden="true">“</span><span class="winner-text">Você é igual o Vini Jr, astro do time.</span></div>
-          </article>
-          <article class="elogio">
-            <div class="elo-tag">Elogio Elegante</div>
-            <div class="winner-quote"><span class="qmark" aria-hidden="true">“</span><span class="winner-text">Você não é parafuso, mas se falaram mal de você, eu sou uma chave defenda.</span></div>
-          </article>
-          <article class="elogio">
-            <div class="elo-tag">Elogio Elegante</div>
-            <div class="winner-quote"><span class="qmark" aria-hidden="true">“</span><span class="winner-text">Chefinha, você é a prova viva de que até na sala de freezer dá pra trabalhar com coração quentinho! ❤️❄️</span></div>
-          </article>
-        </div>
-        <button type="button" class="winner-lock" id="winnerLock" aria-live="polite">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <span id="winnerLockLabel">Revelação na segunda-feira · 06/07 às 8h</span>
-        </button>
-      </section>
 
       <div class="countdown" id="countdown" hidden>
         <p class="cd-title">O Elogio Elegante abre em</p>
@@ -894,8 +865,7 @@ function buildRecords(rows, map){
     const approved = map.status<0 ? true : /aprovad/.test(norm(statusRaw));
     if(!approved) continue;
     // Os Elogios Elegantes ganham destaque dourado e aparecem no mural com o destinatário.
-    const nm=norm(msg);
-    const isWinner=ELEGANTES.some(p=>nm.startsWith(p));
+    const isWinner=false;
     const anon = map.anonimo<0 ? false : isYes(get('anonimo'));
     const rec={
       dest, setor:get('setor')||'Synvia', msg,
@@ -1278,9 +1248,9 @@ async function subscribeBilhetes(){
         dest:  (b.dest  ||'').trim(),
         setor: (b.setor ||'').trim() || 'Synvia',
         msg:   (b.msg   ||'').trim(),
-        sender: b.anon ? '' : (b.sender||'').trim(),
-        anon:  !!b.anon,
-        winner:!!b.winner,
+        sender: isYes(b.anon) ? '' : (b.sender||'').trim(),
+        anon:  isYes(b.anon),
+        winner:false,
         ts:    b.ts || 0
       };
       rec.id = noteId(rec);
@@ -1457,7 +1427,7 @@ document.addEventListener('fullscreenchange',()=>{
 /* ============ Encerramento programado do mural ============ */
 // ⬇️  AJUSTE AQUI a data e hora em que o correio FECHA (horário de Brasília).
 //     O mural fica aberto desde já, com uma contagem regressiva pra fechar.
-//     Ao chegar nessa hora, o mural congela como está e mostra a despedida.
+//     Ao chegar nessa hora, o correio fecha e o mural mostra uma despedida.
 const FECHAMENTO = new Date('2026-07-23T12:00:00-03:00');
 
 let closedNow = false;    // vira true quando a contagem zera nesta sessão
@@ -1491,7 +1461,7 @@ function startClosingCountdown(){
   box.hidden = false;
   const t=box.querySelector('.cd-title'); if(t) t.textContent='O correio fecha em';
   const note=box.querySelector('.cd-note');
-  if(note) note.textContent='Escreva o seu antes da festa. Ao meio-dia do dia 23 o correio fecha e o mural congela do jeitinho que estiver.';
+  if(note) note.textContent='Escreva o seu antes da festa. O correio fecha às 12h do dia 23.';
   try{
     const fmt=new Intl.DateTimeFormat('pt-BR',{weekday:'long',day:'2-digit',month:'long',hour:'2-digit',minute:'2-digit',timeZone:'America/Sao_Paulo'});
     $('cdDateLabel').textContent=fmt.format(FECHAMENTO).replace(' às ',' · ');

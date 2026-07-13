@@ -198,18 +198,11 @@ body{
   </div>
 
   <div class="tabs" role="tablist">
-    <button class="tab" id="tabFila" role="tab" aria-selected="true">Na fila <span class="badge" id="countFila">0</span></button>
-    <button class="tab" id="tabAr" role="tab" aria-selected="false">No ar <span class="badge" id="countAr">0</span></button>
+    <button class="tab" id="tabAr" role="tab" aria-selected="true">No mural <span class="badge" id="countAr">0</span></button>
   </div>
 
-  <div id="viewFila">
-    <p class="hint">Revise o texto, ajuste o que precisar e aprove. Quem você aprova aparece no mural na hora. Quem você recusa sai da fila.</p>
-    <div class="grid" id="filaGrid"></div>
-    <div class="state" id="filaState"></div>
-  </div>
-
-  <div id="viewAr" class="hidden">
-    <p class="hint">Tudo que está publicado no mural agora. Você pode tirar um bilhete do ar a qualquer momento.</p>
+  <div id="viewAr">
+    <p class="hint">Tudo que está publicado no mural agora. Edite o texto, ajuste o setor ou tire do ar a qualquer momento. As mudanças aparecem no mural na hora. (Os bilhetes da edição passada ficam fixos e não aparecem aqui.)</p>
     <div class="grid" id="arGrid"></div>
     <div class="state" id="arState"></div>
   </div>
@@ -314,7 +307,7 @@ async function doLogin(){
 $('logoutBtn').addEventListener('click',()=>auth.signOut());
 
 /* ============ Painel ============ */
-let refFila=null, refAr=null;
+let refAr=null;
 function showPanel(user){
   $('loginView').classList.add('hidden');
   $('setupNotice').classList.add('hidden');
@@ -323,41 +316,26 @@ function showPanel(user){
   attachFeeds();
 }
 function detachFeeds(){
-  if(refFila){ refFila.off(); refFila=null; }
   if(refAr){ refAr.off(); refAr=null; }
 }
 function attachFeeds(){
   detachFeeds();
-  refFila=db.ref('bilhetes_pendentes');
-  refFila.on('value',snap=>renderFila(snap.val()||{}), err=>{
-    $('filaState').innerHTML=`<h3>Sem acesso à fila</h3><p>Verifique se as regras do banco liberam leitura de <code>bilhetes_pendentes</code> para usuários autenticados.</p>`;
+  refAr=db.ref('bilhetes_aprovados');
+  refAr.on('value',snap=>renderAr(snap.val()||{}), err=>{
+    $('arState').innerHTML=`<h3>Sem acesso ao mural</h3><p>Confira se as regras do banco foram atualizadas e publicadas no Firebase.</p>`;
     console.warn(err);
   });
-  refAr=db.ref('bilhetes_aprovados');
-  refAr.on('value',snap=>renderAr(snap.val()||{}));
 }
 
-/* ============ Abas ============ */
-$('tabFila').addEventListener('click',()=>switchTab('fila'));
-$('tabAr').addEventListener('click',()=>switchTab('ar'));
-function switchTab(which){
-  const fila=which==='fila';
-  $('tabFila').setAttribute('aria-selected',fila);
-  $('tabAr').setAttribute('aria-selected',!fila);
-  $('viewFila').classList.toggle('hidden',!fila);
-  $('viewAr').classList.toggle('hidden',fila);
-}
-
-/* ============ Render: fila de pendentes ============ */
-function renderFila(data){
+/* ============ Render: bilhetes no mural (editável) ============ */
+function renderAr(data){
   const keys=Object.keys(data);
-  // Mais antigos primeiro (ordem de chegada).
-  keys.sort((a,b)=>(Number(data[a].ts)||0)-(Number(data[b].ts)||0));
-  $('countFila').textContent=keys.length;
-  const grid=$('filaGrid'), state=$('filaState');
+  keys.sort((a,b)=>(Number(data[b].ts)||0)-(Number(data[a].ts)||0)); // mais recentes primeiro
+  $('countAr').textContent=keys.length;
+  const grid=$('arGrid'), state=$('arState');
   if(keys.length===0){
     grid.innerHTML='';
-    state.innerHTML=`<h3>Fila vazia por enquanto</h3><p>Quando alguém responder o formulário, o bilhete aparece aqui para você revisar.</p>`;
+    state.innerHTML=`<h3>Nada de novo no mural ainda</h3><p>Quando alguém escrever um elogio na página, ele aparece aqui pra você editar ou tirar do ar.</p>`;
     return;
   }
   state.innerHTML='';
@@ -371,32 +349,28 @@ function renderFila(data){
     return `<div class="card" data-key="${esc(k)}">
       <div class="meta">
         <span class="time">${esc(fmtTime(b.ts))}</span>
-        <span class="tag">novo</span>
+        <span class="tag">no mural</span>
       </div>
       <div class="field"><label>Para</label><input class="f-dest" value="${esc(dest)}" /></div>
       <div class="field"><label>Área</label><input class="f-setor" value="${esc(setor)}" placeholder="Synvia" /></div>
       <div class="field"><label>Mensagem</label><textarea class="f-msg">${esc(msg)}</textarea></div>
-      <div class="field"><label>De (remetente)</label><input class="f-sender" value="${esc(sender)}" placeholder="quem enviou" /></div>
+      <div class="field"><label>De (remetente)</label><input class="f-sender" value="${esc(sender)}" placeholder="deixe vazio para anônimo" /></div>
       <div class="opts">
-        <label class="check"><input type="checkbox" class="f-anon" ${anon?'checked':''}/> Anônimo</label>
-        <label class="check"><input type="checkbox" class="f-winner"/> Elogio Elegante (destaque)</label>
+        <label class="check"><input type="checkbox" class="f-anon" ${anon?'checked':''}/> Anônimo (esconde o remetente)</label>
       </div>
       <div class="actions">
-        <button class="btn btn-primary act-ok">Aprovar e publicar</button>
-        <button class="btn btn-danger act-no">Recusar</button>
+        <button class="btn btn-primary act-save">Salvar mudanças</button>
+        <button class="btn btn-danger act-rm">Tirar do mural</button>
       </div>
     </div>`;
   }).join('');
-  // Destaque visual quando marca winner + wiring dos botões
   grid.querySelectorAll('.card').forEach(card=>{
-    const win=card.querySelector('.f-winner');
-    win.addEventListener('change',()=>card.classList.toggle('is-winner',win.checked));
-    card.querySelector('.act-ok').addEventListener('click',()=>aprovar(card));
-    card.querySelector('.act-no').addEventListener('click',()=>recusar(card));
+    card.querySelector('.act-save').addEventListener('click',()=>salvar(card));
+    card.querySelector('.act-rm').addEventListener('click',()=>removerDoAr(card));
   });
 }
 
-async function aprovar(card){
+async function salvar(card){
   const key=card.dataset.key;
   const anon=card.querySelector('.f-anon').checked;
   const rec={
@@ -404,84 +378,35 @@ async function aprovar(card){
     setor: card.querySelector('.f-setor').value.trim() || 'Synvia',
     msg: card.querySelector('.f-msg').value.trim(),
     sender: anon ? '' : card.querySelector('.f-sender').value.trim(),
-    anon: anon,
-    winner: card.querySelector('.f-winner').checked,
-    ts: Date.now()
+    anon: anon
   };
   if(!rec.dest || !rec.msg){ toast('Precisa de destinatário e mensagem.'); return; }
   card.querySelectorAll('button').forEach(b=>b.disabled=true);
   try{
-    await db.ref('bilhetes_aprovados').push(rec);
-    await db.ref('bilhetes_pendentes/'+key).remove();
-    toast('Publicado no mural.');
+    await db.ref('bilhetes_aprovados/'+key).update(rec);
+    toast('Salvo. O mural já atualizou.');
   }catch(err){
-    console.error(err); toast('Não deu pra publicar. Tente de novo.');
+    console.error(err); toast('Não deu pra salvar. Tente de novo.');
+  }finally{
     card.querySelectorAll('button').forEach(b=>b.disabled=false);
   }
-}
-
-async function recusar(card){
-  const key=card.dataset.key;
-  if(!confirm('Recusar este bilhete? Ele sai da fila e não vai pro mural.')) return;
-  card.querySelectorAll('button').forEach(b=>b.disabled=true);
-  try{
-    // Guarda uma cópia no arquivo de recusados (segurança), depois remove da fila.
-    const snap=await db.ref('bilhetes_pendentes/'+key).get();
-    if(snap.exists()){
-      await db.ref('bilhetes_rejeitados/'+key).set(Object.assign({}, snap.val(), {rejeitadoEm:Date.now()}));
-    }
-    await db.ref('bilhetes_pendentes/'+key).remove();
-    toast('Recusado.');
-  }catch(err){
-    console.error(err); toast('Não deu pra recusar. Tente de novo.');
-    card.querySelectorAll('button').forEach(b=>b.disabled=false);
-  }
-}
-
-/* ============ Render: no ar ============ */
-function renderAr(data){
-  const keys=Object.keys(data);
-  keys.sort((a,b)=>(Number(data[b].ts)||0)-(Number(data[a].ts)||0)); // mais recentes primeiro
-  $('countAr').textContent=keys.length;
-  const grid=$('arGrid'), state=$('arState');
-  if(keys.length===0){
-    grid.innerHTML='';
-    state.innerHTML=`<h3>Nada no ar ainda</h3><p>Os bilhetes que você aprovar aparecem aqui e no mural.</p>`;
-    return;
-  }
-  state.innerHTML='';
-  grid.innerHTML=keys.map(k=>{
-    const b=data[k];
-    const from=b.anon ? 'anônimo' : (b.sender||'um colega');
-    return `<div class="card ro ${b.winner?'is-winner':''}" data-key="${esc(k)}">
-      <div class="meta">
-        <span class="time">${esc(fmtTime(b.ts))}</span>
-        ${b.winner?'<span class="tag">Elogio Elegante</span>':''}
-      </div>
-      <p class="dest">${esc(b.dest)}</p>
-      <p class="setor">${esc(b.setor||'Synvia')}</p>
-      <p class="msg">${esc(b.msg)}</p>
-      <p class="from">de <b>${esc(from)}</b></p>
-      <div class="actions">
-        <button class="btn btn-danger act-rm">Tirar do mural</button>
-      </div>
-    </div>`;
-  }).join('');
-  grid.querySelectorAll('.act-rm').forEach(btn=>{
-    btn.addEventListener('click',()=>removerDoAr(btn.closest('.card')));
-  });
 }
 
 async function removerDoAr(card){
   const key=card.dataset.key;
   if(!confirm('Tirar este bilhete do mural? Ele some da tela de todo mundo.')) return;
-  card.querySelector('button').disabled=true;
+  card.querySelectorAll('button').forEach(b=>b.disabled=true);
   try{
+    // Guarda uma cópia no arquivo de removidos (segurança), depois tira do mural.
+    const snap=await db.ref('bilhetes_aprovados/'+key).get();
+    if(snap.exists()){
+      await db.ref('bilhetes_rejeitados/'+key).set(Object.assign({}, snap.val(), {removidoEm:Date.now()}));
+    }
     await db.ref('bilhetes_aprovados/'+key).remove();
     toast('Tirado do mural.');
   }catch(err){
     console.error(err); toast('Não deu pra remover. Tente de novo.');
-    card.querySelector('button').disabled=false;
+    card.querySelectorAll('button').forEach(b=>b.disabled=false);
   }
 }
 </script>
