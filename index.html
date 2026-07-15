@@ -727,6 +727,54 @@ const norm = s => (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g
 const esc = s => (s||'').toString().replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const isYes = s => /^(sim|s|y|yes|true|1|x|verdadeiro)$/i.test((s||'').toString().trim());
 
+/* ============ Padronização de setores ============
+   Junta as muitas variações digitadas num nome oficial só, só na exibição.
+   Não altera o banco nem o identificador do bilhete (as reações ficam intactas). */
+function _normSetor(s){
+  return (s||'').toString().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,' ').trim();
+}
+const SETOR_MAP = {
+  'operacoes clinicas':'Operações Clínicas','operacoes clinica':'Operações Clínicas','operacao clinica':'Operações Clínicas','operacao clinicas':'Operações Clínicas','operacoes clinicas ii':'Operações Clínicas','operacoes clinicas administrativas':'Operações Clínicas','operacoes adm':'Operações Clínicas','operacaes clinicas':'Operações Clínicas','operacaos clinicas':'Operações Clínicas','coordenadora operacoes clinicas':'Operações Clínicas','lider operacoes clinicas':'Operações Clínicas','lider de operacoes clinicas':'Operações Clínicas','lider plantao noturno b':'Operações Clínicas','tecnica de operacoes clinica':'Operações Clínicas','tecnica de operacoes clinicas':'Operações Clínicas','tecnica em operacoes clinicas':'Operações Clínicas','tecnico operacoes clinicas':'Operações Clínicas',
+  'pesquisa clinica':'Pesquisa Clínica','pesquisa clinica campinas':'Pesquisa Clínica','pesquisa clinica paulinia':'Pesquisa Clínica','supervisora pesquisa clinica':'Pesquisa Clínica','tecnico pesquisa clinica':'Pesquisa Clínica',
+  'enfermagem':'Enfermagem','enfermeira':'Enfermagem','enfermeira plantao b noturno':'Enfermagem',
+  'bioequivalencia':'Bioequivalência','bioequivalencia campinas':'Bioequivalência',
+  'captacao':'Captação de Participantes','captacao de participantes':'Captação de Participantes','captacao de participantes bqv':'Captação de Participantes','captacao de pesquisa clinica':'Captação de Participantes',
+  'marketing':'Marketing','comunicacao e marketing':'Marketing',
+  'excelencia operacional':'Excelência Operacional',
+  'financas e controladoria':'Finanças e Controladoria',
+  'gente e gestao':'Gente e Gestão','gente gestao':'Gente e Gestão',
+  'gerenciamento de dados':'Gerenciamento de Dados',
+  'produtos software':'Produtos & Software','produtos e desenvolvimento de software':'Produtos & Software','produto desenvolvimento':'Produtos & Software',
+  'suporte e infraestrutura de t i':'Suporte e Infraestrutura de TI','suporte e infraestrutura de ti':'Suporte e Infraestrutura de TI','suporte e infraestrutura ti':'Suporte e Infraestrutura de TI',
+  'suprimentos':'Suprimentos',
+  'logistica':'Logística','gerente de logistica':'Logística',
+  'laboratorio bioanalitico':'Laboratório Bioanalítico',
+  'laboratorio toxicologico':'Laboratório Toxicológico','arquivo toxicologico':'Laboratório Toxicológico','arquivo toxicologico campinas':'Laboratório Toxicológico','auxiliar de laboratorio toxicologico':'Laboratório Toxicológico','auxiliar laboratorio toxicologico':'Laboratório Toxicológico',
+  'laboratorio clinico':'Laboratório Clínico',
+  'farmacia':'Farmácia',
+  'garantia da qualidade':'Garantia da Qualidade',
+  'documentacao clinica':'Documentação Clínica','documentacao operacoes clinicas':'Documentação Clínica',
+  'administracao comercial':'Administração Comercial',
+  'comercial diagnosticos':'Comercial Diagnósticos','triagem diagnostico':'Comercial Diagnósticos',
+  'assistente de atendimento':'Atendimento / SAC','atendimento sac':'Atendimento / SAC','auxiliar de atendimento':'Atendimento / SAC',
+  'estatistica':'Estatística',
+  'eventos':'Eventos',
+  'juridico':'Jurídico',
+  'facilities':'Facilities',
+  'recrutamento':'Recrutamento',
+  'viabilidade de projetos':'Viabilidade de Projetos',
+  'servicos de apoio':'Serviços de Apoio',
+  'arquivo':'Arquivo',
+  'synvia':'Synvia','toda a synvia':'Synvia','toda a equipe':'Synvia','todos os setores':'Synvia'
+};
+function canonSetor(s){
+  const n=_normSetor(s);
+  if(SETOR_MAP[n]) return SETOR_MAP[n];
+  return (s||'').toString().trim() || 'Synvia';
+}
+
 function toast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;t.classList.add('show');
@@ -1153,7 +1201,9 @@ function getEmbeddedRecords(){
     if(rows.length<2) return [];
     const map=detectMap(rows[0]);
     if(map.destinatario<0 || map.mensagem<0) return [];
-    return buildRecords(rows, map);
+    const recs=buildRecords(rows, map);
+    recs.forEach(r=>{ r.setor=canonSetor(r.setor); }); // padroniza só na exibição
+    return recs;
   }catch(e){ console.warn('CSV embutido:',e); return []; }
 }
 
@@ -1193,6 +1243,7 @@ async function subscribeBilhetes(){
         ts:    b.ts || 0
       };
       rec.id = noteId(rec);
+      rec.setor = canonSetor(rec.setor); // padroniza só na exibição
       return rec;
     }).filter(r=> r.dest || r.msg);
     montarMural(fbRecs);

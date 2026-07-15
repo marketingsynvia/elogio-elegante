@@ -62,6 +62,8 @@ h1 .warm{background:linear-gradient(100deg,var(--fest-orange),var(--fest-yellow)
   border:1.6px solid var(--mist);border-radius:12px;padding:13px 15px;background:#fff;transition:border-color .15s;
 }
 .field input:focus,.field textarea:focus{outline:none;border-color:var(--fest-green);}
+.field select{width:100%;font-family:var(--font);font-size:1.02rem;color:var(--ink);border:1.6px solid var(--mist);border-radius:12px;padding:13px 42px 13px 15px;background-color:#fff;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2316352a' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 15px center;}
+.field select:focus{outline:none;border-color:var(--fest-green);}
 .field textarea{min-height:130px;resize:vertical;line-height:1.55;}
 .counter{text-align:right;font-size:.76rem;color:var(--ink-soft);margin-top:5px;}
 .privacy{display:flex;gap:9px;align-items:flex-start;font-size:.86rem;color:var(--ink-soft);background:var(--fest-cream);border-radius:12px;padding:11px 14px;margin:2px 0 20px;}
@@ -120,8 +122,53 @@ h1 .warm{background:linear-gradient(100deg,var(--fest-orange),var(--fest-yellow)
       </div>
       <div class="field">
         <label for="setor">A pessoa é de qual setor?</label>
-        <p class="help">O nome do departamento da pessoa elogiada.</p>
-        <input id="setor" type="text" maxlength="120" autocomplete="off" placeholder="Ex.: Operações Clínicas" />
+        <p class="help">Escolha a área da pessoa elogiada.</p>
+        <select id="setor">
+          <option value="" selected disabled>Selecione a área...</option>
+          <optgroup label="Operação e Pesquisa">
+            <option>Operações Clínicas</option>
+            <option>Pesquisa Clínica</option>
+            <option>Bioequivalência</option>
+            <option>Enfermagem</option>
+            <option>Farmácia</option>
+            <option>Documentação Clínica</option>
+            <option>Captação de Participantes</option>
+            <option>Viabilidade de Projetos</option>
+          </optgroup>
+          <optgroup label="Laboratórios">
+            <option>Laboratório Bioanalítico</option>
+            <option>Laboratório Toxicológico</option>
+            <option>Laboratório Clínico</option>
+          </optgroup>
+          <optgroup label="Dados e Qualidade">
+            <option>Gerenciamento de Dados</option>
+            <option>Estatística</option>
+            <option>Garantia da Qualidade</option>
+            <option>Excelência Operacional</option>
+          </optgroup>
+          <optgroup label="Tecnologia">
+            <option>Produtos &amp; Software</option>
+            <option>Suporte e Infraestrutura de TI</option>
+          </optgroup>
+          <optgroup label="Comercial e Marketing">
+            <option>Marketing</option>
+            <option>Eventos</option>
+            <option>Comercial Diagnósticos</option>
+            <option>Administração Comercial</option>
+            <option>Atendimento / SAC</option>
+          </optgroup>
+          <optgroup label="Corporativo">
+            <option>Finanças e Controladoria</option>
+            <option>Gente e Gestão</option>
+            <option>Recrutamento</option>
+            <option>Jurídico</option>
+            <option>Suprimentos</option>
+            <option>Logística</option>
+            <option>Facilities</option>
+          </optgroup>
+          <option value="__outro">Outro (não listado)</option>
+        </select>
+        <input id="setorOutro" type="text" maxlength="120" autocomplete="off" placeholder="Digite a área" class="hidden" style="margin-top:10px;" />
       </div>
       <div class="field">
         <label for="msg">Escreva seu elogio</label>
@@ -208,6 +255,18 @@ if(correioFechado){
 /* Contador de caracteres da mensagem */
 $('msg').addEventListener('input',()=>{ $('msgCount').textContent=$('msg').value.length; });
 
+/* Setor: mostra o campo "Outro" quando escolhido */
+$('setor').addEventListener('change',()=>{
+  const outro = $('setor').value==='__outro';
+  $('setorOutro').classList.toggle('hidden', !outro);
+  if(outro) $('setorOutro').focus();
+});
+function lerSetor(){
+  const v=$('setor').value;
+  if(v==='__outro') return $('setorOutro').value.trim() || 'Outro';
+  return v || '';
+}
+
 /* Inicializa Firebase */
 let db=null, ready=false;
 (async function init(){
@@ -228,11 +287,12 @@ $('sendBtn').addEventListener('click', enviar);
 async function enviar(){
   if(correioFechado) return;
   const dest=$('dest').value.trim();
-  const setor=$('setor').value.trim();
+  const setor=lerSetor();
   const msg=$('msg').value.trim();
   $('err').textContent='';
 
   if(!dest){ $('err').textContent='Diga pra quem é o elogio.'; $('dest').focus(); return; }
+  if(!setor){ $('err').textContent='Escolha a área da pessoa.'; $('setor').focus(); return; }
   if(!msg){ $('err').textContent='Escreva a mensagem do elogio.'; $('msg').focus(); return; }
   if(!ready || !db){ $('err').textContent='Ainda estamos conectando. Espere um instante e tente de novo.'; return; }
 
@@ -261,7 +321,7 @@ async function enviar(){
 
 /* Escrever outro */
 $('againBtn').addEventListener('click',()=>{
-  $('dest').value=''; $('setor').value=''; $('msg').value=''; $('msgCount').textContent='0';
+  $('dest').value=''; $('setor').value=''; $('setorOutro').value=''; $('setorOutro').classList.add('hidden'); $('msg').value=''; $('msgCount').textContent='0';
   $('err').textContent='';
   const btn=$('sendBtn'); btn.disabled=false;
   btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar elogio';
