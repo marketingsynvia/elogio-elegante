@@ -4,171 +4,301 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Elogio ao Vivo · Arraiá Synvia</title>
+<link rel="icon" type="image/png" href="assets/favicon.png?v=2" />
 <meta name="description" content="Escreva um elogio agora e veja aparecer no telão da festa!" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 <style>
 :root{
-  --green:#86bd2c; --green-deep:#1a8f41;
-  --fest-forest:#16352a; --fest-green:#36a847; --fest-yellow:#f4b81b;
-  --fest-orange:#e8590c; --fest-navy:#2b3a6b; --fest-cream:#f6f1df;
+  --green-deep:#1a8f41;
+  --ink:#22201f;
+  --ink-soft:#4a4744;
+  --mist:#e6e8e7;
+  --fest-forest:#16352a;
+  --fest-green:#36a847;
+  --fest-yellow:#f4b81b;
+  --fest-orange:#e8590c;
+  --fest-cream:#f6f1df;
   --gold:#e8a300;
-  --ink:#22201f; --ink-soft:#4a4744; --mist:#e6e8e7;
+  --note:#fffdf7;
+  --danger:#c0392b;
   --font:"Manrope",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  --shadow:0 1px 2px rgba(34,32,31,.06), 0 12px 34px -16px rgba(34,32,31,.3);
 }
 *{box-sizing:border-box;}
 body{
-  margin:0;font-family:var(--font);color:var(--ink);min-height:100vh;line-height:1.5;
-  -webkit-font-smoothing:antialiased;
+  margin:0;font-family:var(--font);color:var(--ink);
   background:
-    radial-gradient(90% 55% at 50% 118%, rgba(232,89,12,.30), transparent 60%),
-    radial-gradient(120% 80% at 50% -10%, #33507f 0%, var(--fest-navy) 42%, var(--fest-forest) 100%);
+    radial-gradient(120% 70% at 50% -10%, rgba(244,184,27,.22) 0%, transparent 55%),
+    linear-gradient(180deg,#ffffff 0%, var(--fest-cream) 100%);
+  min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased;
 }
-.bunting{position:fixed;top:0;left:0;width:100%;height:34px;display:flex;justify-content:center;z-index:2;pointer-events:none;}
-.flag{width:44px;height:32px;clip-path:polygon(0 0,100% 0,50% 100%);margin:0 -1px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.3));}
-.wrap{max-width:560px;margin:0 auto;padding:60px 20px 60px;position:relative;z-index:1;}
-.head{text-align:center;color:#fff;margin-bottom:22px;}
-.badge{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#5a3d00;background:linear-gradient(100deg,var(--fest-yellow),#ffd257);border-radius:999px;padding:8px 16px;box-shadow:0 3px 0 rgba(0,0,0,.2);margin-bottom:16px;}
-.head h1{font-size:clamp(1.7rem,6vw,2.3rem);font-weight:800;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance;}
-.head p{margin:0;color:rgba(246,241,223,.85);font-size:1.02rem;text-wrap:pretty;}
-.card{background:var(--fest-cream);border-radius:24px;padding:26px 24px 24px;box-shadow:0 24px 60px -20px rgba(0,0,0,.55),0 0 0 6px rgba(255,255,255,.12);}
-.field{margin-bottom:16px;}
-.field label{display:block;font-size:.82rem;font-weight:800;letter-spacing:.02em;text-transform:uppercase;color:var(--fest-forest);margin-bottom:6px;}
-.field .req{color:var(--fest-orange);}
-.field input,.field textarea{width:100%;font-family:var(--font);font-size:1.05rem;color:var(--ink);border:2px solid #e4dcc4;border-radius:13px;padding:13px 15px;background:#fff;transition:border-color .15s;}
+:focus-visible{outline:3px solid var(--fest-green);outline-offset:2px;border-radius:8px;}
+.bunting{height:34px;width:100%;background:var(--fest-forest);}
+.bunting svg{display:block;width:100%;height:100%;}
+.wrap{max-width:600px;margin:0 auto;padding:26px 22px 70px;}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px;}
+.brand{display:flex;align-items:center;gap:12px;}
+.brand .mark{width:38px;height:38px;border-radius:11px;background:var(--fest-forest);display:grid;place-items:center;color:var(--fest-yellow);flex:none;}
+.brand .mark svg{width:20px;height:20px;}
+.brand .campaign{font-weight:800;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);}
+.back{font-size:.9rem;font-weight:700;color:var(--green-deep);text-decoration:none;}
+.back:hover{text-decoration:underline;}
+.kicker{display:inline-flex;align-items:center;gap:9px;font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#5a3d00;background:linear-gradient(100deg,var(--fest-yellow),#ffd257);border-radius:999px;padding:7px 15px;margin-bottom:16px;box-shadow:0 2px 0 rgba(180,120,10,.28);}
+.kicker svg{width:14px;height:14px;}
+/* Selo AO VIVO */
+.kicker.live{color:#fff;background:linear-gradient(100deg,#e11d2a,#f0392f);box-shadow:0 2px 0 rgba(120,10,15,.35);}
+.livedot{width:11px;height:11px;border-radius:50%;background:#fff;position:relative;flex:none;}
+.livedot::after{content:"";position:absolute;inset:0;border-radius:50%;background:#fff;animation:lvpulse 1.3s ease-out infinite;}
+@keyframes lvpulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.75)}100%{box-shadow:0 0 0 9px rgba(255,255,255,0)}}
+h1{font-size:clamp(1.6rem,4.4vw,2.2rem);line-height:1.1;font-weight:800;letter-spacing:-.02em;margin:0 0 12px;text-wrap:balance;}
+h1 .warm{background:linear-gradient(100deg,var(--fest-orange),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.lead{font-size:1.05rem;color:var(--ink-soft);margin:0 0 26px;text-wrap:pretty;}
+.card{background:var(--note);border:1px solid rgba(34,32,31,.07);border-radius:20px;box-shadow:var(--shadow);padding:26px 24px;position:relative;overflow:hidden;}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(180deg,var(--gold),var(--fest-orange));}
+.field{margin-bottom:18px;}
+.field label{display:block;font-size:.92rem;font-weight:800;margin-bottom:4px;}
+.field .help{font-size:.82rem;color:var(--ink-soft);margin:0 0 8px;}
+.field input,.field textarea{
+  width:100%;font-family:var(--font);font-size:1.02rem;color:var(--ink);
+  border:1.6px solid var(--mist);border-radius:12px;padding:13px 15px;background:#fff;transition:border-color .15s;
+}
 .field input:focus,.field textarea:focus{outline:none;border-color:var(--fest-green);}
-.field textarea{min-height:110px;resize:vertical;line-height:1.5;}
-.count{text-align:right;font-size:.78rem;color:var(--ink-soft);margin-top:5px;}
-.check{display:inline-flex;align-items:center;gap:9px;font-size:.96rem;font-weight:600;cursor:pointer;color:var(--ink-soft);}
-.check input{width:20px;height:20px;accent-color:var(--fest-green);cursor:pointer;}
-.send{width:100%;margin-top:8px;border:0;border-radius:14px;padding:16px;font-family:var(--font);font-size:1.14rem;font-weight:800;cursor:pointer;
-  background:linear-gradient(100deg,var(--fest-orange),#f4820c);color:#fff;box-shadow:0 10px 24px -8px rgba(232,89,12,.7);transition:transform .1s,filter .15s;display:inline-flex;align-items:center;justify-content:center;gap:10px;}
+.field select{width:100%;font-family:var(--font);font-size:1.02rem;color:var(--ink);border:1.6px solid var(--mist);border-radius:12px;padding:13px 42px 13px 15px;background-color:#fff;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2316352a' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 15px center;}
+.field select:focus{outline:none;border-color:var(--fest-green);}
+.field textarea{min-height:120px;resize:vertical;line-height:1.55;}
+.counter{text-align:right;font-size:.76rem;color:var(--ink-soft);margin-top:5px;}
+.privacy{display:flex;gap:9px;align-items:flex-start;font-size:.86rem;color:var(--ink-soft);background:var(--fest-cream);border-radius:12px;padding:11px 14px;margin:2px 0 20px;}
+.privacy svg{width:17px;height:17px;flex:none;margin-top:2px;color:var(--fest-orange);}
+.send{width:100%;font-family:var(--font);font-size:1.05rem;font-weight:800;cursor:pointer;border:none;border-radius:999px;padding:15px;color:#fff;background:linear-gradient(100deg,var(--fest-orange),#f4820c);box-shadow:0 10px 24px -10px rgba(232,89,12,.7);transition:filter .15s,transform .1s;display:inline-flex;align-items:center;justify-content:center;gap:9px;}
 .send:hover{filter:brightness(1.05);}
 .send:active{transform:translateY(1px);}
 .send[disabled]{opacity:.6;cursor:not-allowed;}
-.err{color:#b42318;font-weight:700;font-size:.9rem;margin:10px 0 0;min-height:1em;text-align:center;}
-.foot{text-align:center;color:rgba(246,241,223,.7);font-size:.82rem;margin-top:20px;font-weight:600;letter-spacing:.04em;}
+.send svg{width:19px;height:19px;}
+.err{color:var(--danger);font-size:.9rem;font-weight:600;margin:12px 0 0;text-align:center;min-height:1em;}
 /* Sucesso */
-.done{display:none;text-align:center;background:linear-gradient(165deg,#fffaf0,#ffeec2);border-radius:24px;padding:40px 26px;box-shadow:0 24px 60px -20px rgba(0,0,0,.55),0 0 0 6px var(--gold);}
-.done.show{display:block;animation:pop .5s cubic-bezier(.2,.9,.3,1.3);}
-@keyframes pop{0%{transform:scale(.8);opacity:0;}100%{transform:scale(1);opacity:1;}}
-.done .big{font-size:3.2rem;line-height:1;margin-bottom:12px;}
-.done h2{font-size:1.6rem;font-weight:800;color:#5a3d00;margin:0 0 8px;}
-.done p{color:#7a5a10;margin:0 0 22px;font-size:1.05rem;text-wrap:pretty;}
-.done .again{border:2px solid var(--fest-orange);background:#fff;color:var(--fest-orange);border-radius:13px;padding:13px 22px;font-family:var(--font);font-weight:800;font-size:1rem;cursor:pointer;}
-.done .again:hover{background:#fff3e6;}
+.done{text-align:center;padding:10px 6px;}
+.done .big{font-size:3rem;line-height:1;margin-bottom:14px;}
+.done h2{font-size:1.5rem;font-weight:800;margin:0 0 8px;}
+.done p{color:var(--ink-soft);margin:0 auto 22px;max-width:420px;}
+.done .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn{font-family:var(--font);font-size:.95rem;font-weight:700;cursor:pointer;text-decoration:none;border-radius:999px;padding:12px 20px;border:1.6px solid var(--mist);background:#fff;color:var(--ink);display:inline-flex;align-items:center;gap:8px;}
+.btn:hover{border-color:var(--fest-orange);}
+.btn-primary{background:var(--fest-orange);border-color:var(--fest-orange);color:#fff;}
+.btn-primary:hover{filter:brightness(1.05);}
+.hidden{display:none !important;}
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden;}
 .confetti span{position:absolute;top:-20px;width:11px;height:15px;opacity:.95;animation:fall linear forwards;}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.9;}}
-.offline{display:none;background:#fff3f0;border:1.5px solid #f0c9c4;color:#b42318;border-radius:12px;padding:12px 14px;font-size:.9rem;font-weight:600;margin-bottom:16px;text-align:center;}
-.offline.show{display:block;}
 </style>
 </head>
 <body>
-<div class="bunting" id="bunting" aria-hidden="true"></div>
+<div class="bunting" aria-hidden="true">
+  <svg viewBox="0 0 120 26" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><g id="flags"></g></svg>
+</div>
 <div class="wrap">
-  <div class="head">
-    <span class="badge">✨ Elogio ao vivo · Arraiá Synvia</span>
-    <h1>Manda um elogio pro telão! 📺</h1>
-    <p>Escreva agora e, depois de aprovado, ele aparece brilhando no telão da festa.</p>
+  <div class="top">
+    <div class="brand">
+      <span class="mark">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.2 6.6.8-4.9 4.5 1.3 6.5L12 17.8 6.1 20.5l1.3-6.5L2.5 9l6.6-.8z"/></svg>
+      </span>
+      <span class="campaign">Arraiá Synvia 2026</span>
+    </div>
+    <a class="back" href="index.html">Ver o mural</a>
   </div>
-
-  <form class="card" id="form" autocomplete="off">
-    <div class="offline" id="offline">Sem conexão com o servidor da festa. Tente de novo em instantes.</div>
-    <div class="field">
-      <label for="para">Para quem <span class="req">*</span></label>
-      <input id="para" type="text" maxlength="80" placeholder="Nome do colega" required />
+  <!-- Formulário -->
+  <div id="formView">
+    <span class="kicker live">
+      <span class="livedot" aria-hidden="true"></span>
+      Ao vivo · Elogio Elegante
+    </span>
+    <h1>Manda um elogio pro <span class="warm">telão</span> agora!</h1>
+    <p class="lead">Escreva um recado de carinho e veja ele aparecer brilhando no telão da festa. Êta trem bão!</p>
+    <div class="card">
+      <div class="field">
+        <label for="dest">Para quem é o seu elogio?</label>
+        <p class="help">Escreva o nome completo da pessoa.</p>
+        <input id="dest" type="text" maxlength="160" autocomplete="off" placeholder="Nome completo" />
+      </div>
+      <div class="field">
+        <label for="setor">A pessoa é de qual setor?</label>
+        <p class="help">Escolha a área da pessoa elogiada.</p>
+        <select id="setor">
+          <option value="" selected disabled>Selecione a área...</option>
+          <optgroup label="Operação e Pesquisa">
+            <option>Operações Clínicas</option>
+            <option>Pesquisa Clínica</option>
+            <option>Bioequivalência</option>
+            <option>Enfermagem</option>
+            <option>Farmácia</option>
+            <option>Documentação Clínica</option>
+            <option>Captação de Participantes</option>
+            <option>Viabilidade de Projetos</option>
+          </optgroup>
+          <optgroup label="Laboratórios">
+            <option>Laboratório Bioanalítico</option>
+            <option>Laboratório Toxicológico</option>
+            <option>Laboratório Clínico</option>
+          </optgroup>
+          <optgroup label="Dados e Qualidade">
+            <option>Gerenciamento de Dados</option>
+            <option>Estatística</option>
+            <option>Garantia da Qualidade</option>
+            <option>Excelência Operacional</option>
+          </optgroup>
+          <optgroup label="Tecnologia">
+            <option>Produtos &amp; Software</option>
+            <option>Suporte e Infraestrutura de TI</option>
+          </optgroup>
+          <optgroup label="Comercial e Marketing">
+            <option>Marketing</option>
+            <option>Eventos</option>
+            <option>Comercial Diagnósticos</option>
+            <option>Administração Comercial</option>
+            <option>Atendimento / SAC</option>
+          </optgroup>
+          <optgroup label="Corporativo">
+            <option>Finanças e Controladoria</option>
+            <option>Gente e Gestão</option>
+            <option>Recrutamento</option>
+            <option>Jurídico</option>
+            <option>Suprimentos</option>
+            <option>Logística</option>
+            <option>Facilities</option>
+          </optgroup>
+          <option value="__outro">Outro (não listado)</option>
+        </select>
+        <input id="setorOutro" type="text" maxlength="120" autocomplete="off" placeholder="Digite a área" class="hidden" style="margin-top:10px;" />
+      </div>
+      <div class="field">
+        <label for="msg">Escreva seu elogio</label>
+        <p class="help">Dica: caprichado e curtinho brilha mais no telão. 😉</p>
+        <textarea id="msg" maxlength="240" placeholder="Seu recado de carinho..."></textarea>
+        <div class="counter"><span id="msgCount">0</span> / 240</div>
+      </div>
+      <div class="privacy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V5l-8-3Z"/></svg>
+        <span>Seu elogio aparece no telão sem o nome de quem escreveu. Capriche no carinho! 🌽</span>
+      </div>
+      <button class="send" id="sendBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Enviar pro telão
+      </button>
+      <p class="err" id="err"></p>
     </div>
-    <div class="field">
-      <label for="setor">Área / setor</label>
-      <input id="setor" type="text" list="setores" maxlength="60" placeholder="Ex.: Operações Clínicas" />
-      <datalist id="setores"></datalist>
-    </div>
-    <div class="field">
-      <label for="msg">Seu elogio <span class="req">*</span></label>
-      <textarea id="msg" maxlength="240" placeholder="Escreva algo sincero, leve e criativo…" required></textarea>
-      <div class="count"><span id="cc">0</span>/240</div>
-    </div>
-    <div class="field">
-      <label for="de">Seu nome (remetente)</label>
-      <input id="de" type="text" maxlength="80" placeholder="Deixe vazio para enviar anônimo" />
-    </div>
-    <div class="field">
-      <label class="check"><input type="checkbox" id="anon" /> Enviar como anônimo</label>
-    </div>
-    <button class="send" id="send" type="submit">✨ Enviar pro telão</button>
-    <p class="err" id="err"></p>
-  </form>
-
-  <div class="done" id="done">
-    <div class="big">🎉</div>
-    <h2>Enviado!</h2>
-    <p>Seu elogio foi pra moderação. Fica de olho no telão — ele vai aparecer dourado e brilhando! ✨</p>
-    <button class="again" id="again" type="button">Escrever outro</button>
   </div>
-
-  <p class="foot">ARRAIÁ SYNVIA 2026 · 💚</p>
+  <!-- Sucesso -->
+  <div id="doneView" class="hidden">
+    <div class="card">
+      <div class="done">
+        <div class="big" aria-hidden="true">📺</div>
+        <h2>Enviado pro telão!</h2>
+        <p>Já já ele aparece dourado e brilhando no telão da festa. Fica de olho! ✨</p>
+        <div class="row">
+          <button class="btn btn-primary" id="againBtn">Escrever outro</button>
+          <a class="btn" href="index.html">Ver o mural</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="confetti" id="confetti" aria-hidden="true"></div>
-
 <script>
-const FB={apiKey:"AIzaSyAJ-pmFFidThLK1KV6A7cUJrmF0RXXHr2c",authDomain:"contagem-de-likes.firebaseapp.com",databaseURL:"https://contagem-de-likes-default-rtdb.firebaseio.com",projectId:"contagem-de-likes"};
-const AOVIVO_NODE='telaoFesta/aovivo';
-const SETORES=['Operações Clínicas','Pesquisa Clínica','Enfermagem','Bioequivalência','Captação de Participantes','Laboratório Toxicológico','Laboratório Clínico','Laboratório Bioanalítico','Farmácia','Marketing','Comercial Farma','Comercial Diagnósticos','Administração Comercial','Excelência Operacional','Gente e Gestão','Gerenciamento de Dados','Produtos & Software','Suporte e Infraestrutura de TI','Suprimentos','Logística','Finanças e Controladoria','Jurídico','Documentação Clínica','Garantia da Qualidade','Estatística','Facilities','Infraestrutura Predial','Eventos','Médico','Diretoria','Synvia'];
-
+const FIREBASE = {
+  apiKey: "AIzaSyAJ-pmFFidThLK1KV6A7cUJrmF0RXXHr2c",
+  authDomain: "contagem-de-likes.firebaseapp.com",
+  databaseURL: "https://contagem-de-likes-default-rtdb.firebaseio.com",
+  projectId: "contagem-de-likes"
+};
+const AOVIVO_NODE = 'telaoFesta/aovivo'; // entra na fila -> telão (dourado)
+const CONF_COLS=['#f4b81b','#e8590c','#36a847','#3a86ff','#e8437e','#ffd257'];
+/* Bandeirinha */
+(function(){
+  const cols=['#f4b81b','#36a847','#e8590c','#f6f1df','#36a847','#f4b81b'];
+  const g=document.getElementById('flags'); if(!g) return;
+  const n=26,w=120/n;
+  for(let i=0;i<n;i++){
+    const x=i*w;
+    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('d',`M${x+0.4} 2 L${x+w-0.4} 2 L${x+w/2} ${15+(i%2?0:1.5)} Z`);
+    p.setAttribute('fill',cols[i%cols.length]);
+    g.appendChild(p);
+  }
+})();
 const $=id=>document.getElementById(id);
-const cols=['#f4b81b','#e8590c','#36a847','#3a86ff','#e8437e','#ffd257'];
-
-// bandeirinhas
-(function(){const b=$('bunting');for(let i=0;i<24;i++){const f=document.createElement('div');f.className='flag';f.style.background=cols[i%cols.length];b.appendChild(f);}})();
-// datalist de setores
-(function(){const dl=$('setores');SETORES.forEach(s=>{const o=document.createElement('option');o.value=s;dl.appendChild(o);});})();
-// contador
-$('msg').addEventListener('input',()=>{$('cc').textContent=$('msg').value.length;});
-// anônimo desabilita remetente
-$('anon').addEventListener('change',()=>{const on=$('anon').checked;$('de').disabled=on;$('de').style.opacity=on?.5:1;if(on)$('de').value='';});
-
 function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
-let db=null;
-(async function(){
+function confetti(){const box=$('confetti');box.innerHTML='';for(let i=0;i<70;i++){const s=document.createElement('span');s.style.left=Math.random()*100+'%';s.style.background=CONF_COLS[i%CONF_COLS.length];s.style.animationDuration=(2+Math.random()*2)+'s';s.style.animationDelay=(Math.random()*.5)+'s';if(Math.random()<.5)s.style.borderRadius='50%';box.appendChild(s);}setTimeout(()=>box.innerHTML='',4600);}
+/* Contador de caracteres da mensagem */
+$('msg').addEventListener('input',()=>{ $('msgCount').textContent=$('msg').value.length; });
+/* Setor: mostra o campo "Outro" quando escolhido */
+$('setor').addEventListener('change',()=>{
+  const outro = $('setor').value==='__outro';
+  $('setorOutro').classList.toggle('hidden', !outro);
+  if(outro) $('setorOutro').focus();
+});
+function lerSetor(){
+  const v=$('setor').value;
+  if(v==='__outro') return $('setorOutro').value.trim() || 'Outro';
+  return v || '';
+}
+/* Inicializa Firebase */
+let db=null, ready=false;
+(async function init(){
   try{
     await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
     await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js');
-    firebase.initializeApp(FB); db=firebase.database();
-  }catch(e){ console.warn('Firebase off',e); $('offline').classList.add('show'); }
-})();
-
-function confetti(){const box=$('confetti');box.innerHTML='';for(let i=0;i<70;i++){const s=document.createElement('span');s.style.left=Math.random()*100+'%';s.style.background=cols[i%cols.length];s.style.animationDuration=(2+Math.random()*2)+'s';s.style.animationDelay=(Math.random()*.5)+'s';if(Math.random()<.5)s.style.borderRadius='50%';box.appendChild(s);}setTimeout(()=>box.innerHTML='',4600);}
-
-$('form').addEventListener('submit',async e=>{
-  e.preventDefault();
-  $('err').textContent='';
-  const para=$('para').value.trim();
-  const setor=$('setor').value.trim()||'Synvia';
-  const msg=$('msg').value.trim();
-  const anon=$('anon').checked;
-  const sender=anon?'':$('de').value.trim();
-  if(!para || !msg){ $('err').textContent='Preencha ao menos "Para quem" e o elogio.'; return; }
-  if(!db){ $('offline').classList.add('show'); return; }
-  const btn=$('send'); btn.disabled=true; btn.textContent='Enviando…';
-  try{
-    await db.ref(AOVIVO_NODE).push({ dest:para, setor, msg, sender, anon, ts:Date.now() });
-    $('form').style.display='none';
-    $('done').classList.add('show');
-    confetti();
+    if(!firebase.apps.length) firebase.initializeApp(FIREBASE);
+    db=firebase.database();
+    ready=true;
   }catch(err){
     console.error(err);
-    $('err').textContent='Não deu pra enviar agora. Tente de novo.';
-    btn.disabled=false; btn.textContent='✨ Enviar pro telão';
+    $('err').textContent='Não deu pra conectar agora. Verifique sua internet e recarregue a página.';
   }
-});
-$('again').addEventListener('click',()=>{
-  $('para').value='';$('setor').value='';$('msg').value='';$('de').value='';$('cc').textContent='0';
-  $('anon').checked=false;$('de').disabled=false;$('de').style.opacity=1;
-  const btn=$('send');btn.disabled=false;btn.textContent='✨ Enviar pro telão';
-  $('done').classList.remove('show');$('form').style.display='';
-  $('para').focus();
+})();
+/* Envio */
+$('sendBtn').addEventListener('click', enviar);
+async function enviar(){
+  const dest=$('dest').value.trim();
+  const setor=lerSetor();
+  const msg=$('msg').value.trim();
+  $('err').textContent='';
+  if(!dest){ $('err').textContent='Diga pra quem é o elogio.'; $('dest').focus(); return; }
+  if(!setor){ $('err').textContent='Escolha a área da pessoa.'; $('setor').focus(); return; }
+  if(!msg){ $('err').textContent='Escreva a mensagem do elogio.'; $('msg').focus(); return; }
+  if(!ready || !db){ $('err').textContent='Ainda estamos conectando. Espere um instante e tente de novo.'; return; }
+  const btn=$('sendBtn');
+  btn.disabled=true;
+  const original=btn.innerHTML;
+  btn.textContent='Enviando...';
+  try{
+    await db.ref(AOVIVO_NODE).push({
+      dest: dest,
+      setor: setor,
+      msg: msg,
+      anon: 'Sim',
+      ts: Date.now()
+    });
+    $('formView').classList.add('hidden');
+    $('doneView').classList.remove('hidden');
+    confetti();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }catch(err){
+    console.error(err);
+    $('err').textContent='Não deu pra enviar agora. Tente de novo em alguns segundos.';
+    btn.disabled=false;
+    btn.innerHTML=original;
+  }
+}
+/* Escrever outro */
+$('againBtn').addEventListener('click',()=>{
+  $('dest').value=''; $('setor').value=''; $('setorOutro').value=''; $('setorOutro').classList.add('hidden'); $('msg').value=''; $('msgCount').textContent='0';
+  $('err').textContent='';
+  const btn=$('sendBtn'); btn.disabled=false;
+  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar pro telão';
+  $('doneView').classList.add('hidden');
+  $('formView').classList.remove('hidden');
+  $('dest').focus();
 });
 </script>
 </body>
