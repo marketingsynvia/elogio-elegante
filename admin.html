@@ -72,6 +72,19 @@ body{
 .telao-strip .btn{padding:7px 13px;font-size:.82rem;}
 .telao-strip .dot{width:9px;height:9px;border-radius:50%;background:var(--fest-green);box-shadow:0 0 0 0 rgba(54,168,71,.6);animation:tdot 1.6s ease-out infinite;flex:none;}
 @keyframes tdot{0%{box-shadow:0 0 0 0 rgba(54,168,71,.55)}100%{box-shadow:0 0 0 9px rgba(54,168,71,0)}}
+/* >>> Seção "Ao vivo" (novos elogios da festa) <<< */
+.live-wrap{background:linear-gradient(165deg,#fffaf0,#fff2d4);border:1.5px solid rgba(212,160,23,.5);border-radius:16px;padding:6px 16px 10px;margin:14px 0 4px;}
+.live-wrap .sec-h{color:#b5590c;margin:12px 2px 8px;}
+.live-wrap .sec-n{background:linear-gradient(100deg,#f4b81b,#ffd257);color:#5a3d00;}
+.live-card{background:#fff;border:1px solid rgba(212,160,23,.4);border-radius:12px;padding:12px 14px;margin-bottom:10px;box-shadow:0 1px 2px rgba(180,120,10,.08);}
+.live-card .live-tag{display:inline-block;font-size:.66rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#5a3d00;background:linear-gradient(100deg,#f4b81b,#ffd257);border-radius:999px;padding:4px 11px;margin-bottom:10px;}
+.live-card label{display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin:0 0 4px;}
+.live-card .field{margin-bottom:9px;}
+.live-card input,.live-card textarea{width:100%;font-family:var(--font);font-size:.95rem;color:var(--ink);border:1.5px solid var(--mist);border-radius:10px;padding:9px 11px;background:#fff;}
+.live-card input:focus,.live-card textarea:focus{outline:none;border-color:var(--fest-orange);}
+.live-card textarea{min-height:72px;resize:vertical;line-height:1.45;}
+.live-card .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+.live-card .actions .btn{flex:1;justify-content:center;}
 /* Login */
 .login{max-width:400px;margin:8vh auto 0;background:#fff;border-radius:22px;box-shadow:var(--shadow);padding:34px 30px;text-align:center;}
 .login .mark{width:52px;height:52px;border-radius:15px;margin:0 auto 16px;}
@@ -212,6 +225,11 @@ body{
     <span>Fila: <b id="telaoQ">0</b></span>
     <button class="btn btn-telao" id="telaoClear">Limpar fila</button>
   </div>
+  <!-- >>> Elogios AO VIVO (escritos na festa, aguardando sua aprovação) <<< -->
+  <div class="live-wrap" id="liveWrap" hidden>
+    <h3 class="sec-h">✨ Ao vivo — novos da festa <span class="sec-n" id="liveCount">0</span></h3>
+    <div id="liveList"></div>
+  </div>
   <div class="tabs" role="tablist">
     <button class="tab" id="tabAr" role="tab" aria-selected="true">No mural <span class="badge" id="countAr">0</span></button>
     <button class="tab" id="tabLix" role="tab" aria-selected="false">Na lixeira <span class="badge" id="countLix">0</span></button>
@@ -249,16 +267,17 @@ const TELAO_NP = 'telaoFesta/nowPlaying';
 const ANON_TELAO = ['de alguém que te admira','de um colega que torce por você','de alguém que aprende com você todo dia','de quem trabalha feliz do seu lado','de um admirador secreto do seu trabalho'];
 function noteIdTelao(dest,msg,sender,setor){const s=dest+'|'+msg+'|'+(sender||'')+'|'+setor;let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return 'b'+h.toString(36);}
 function anonPhraseTelao(seed){let h=0;for(let i=0;i<seed.length;i++)h=(h*31+seed.charCodeAt(i))>>>0;return ANON_TELAO[h%ANON_TELAO.length];}
-function enviarAoTelao(dest,setor,msg,sender,anon){
+function enviarAoTelao(dest,setor,msg,sender,anon,aoVivo){
   if(!db){ toast('Sem conexão com o telão.'); return; }
   dest=(dest||'').trim(); msg=(msg||'').trim(); setor=(setor||'').trim()||'Synvia'; sender=(sender||'').trim();
   if(!dest || !msg){ toast('Precisa de nome e mensagem pra enviar ao telão.'); return; }
   const id=noteIdTelao(dest,msg,anon?'':sender,setor);
   const de = anon ? anonPhraseTelao(id) : (sender || anonPhraseTelao(id));
-  db.ref(TELAO_Q).push({para:dest,setor,msg,de,id,ts:Date.now()})
-    .then(()=>toast('📺 Enviado ao telão!'))
+  db.ref(TELAO_Q).push({para:dest,setor,msg,de,id,aoVivo:!!aoVivo,ts:Date.now()})
+    .then(()=>toast(aoVivo?'✨ Elogio ao vivo no telão!':'📺 Enviado ao telão!'))
     .catch(err=>{ console.error(err); toast('Não deu pra enviar ao telão.'); });
 }
+const AOVIVO_NODE='telaoFesta/aovivo';
 
 /* ============ Bandeirinha topo ============ */
 (function(){
@@ -371,6 +390,46 @@ function wireTelaoStrip(){
   });
   $('telaoClear').addEventListener('click',()=>{
     if(confirm('Limpar toda a fila do telão?')) db.ref(TELAO_Q).remove();
+  });
+  // Elogios ao vivo escritos na festa (index-v2), aguardando aprovação
+  db.ref(AOVIVO_NODE).on('value',snap=>renderLive(snap.val()||{}));
+}
+/* >>> Aprovação dos elogios ao vivo (adicionado) <<< */
+function renderLive(data){
+  const keys=Object.keys(data||{}).sort((a,b)=>(Number(data[a].ts)||0)-(Number(data[b].ts)||0));
+  $('liveCount').textContent=keys.length;
+  $('liveWrap').hidden = keys.length===0;
+  const box=$('liveList'); if(!box) return;
+  box.innerHTML='';
+  keys.forEach(k=>{
+    const d=dadosBilhete(data[k]||{});
+    const card=document.createElement('div');
+    card.className='live-card';
+    card.innerHTML=`<span class="live-tag">✨ ao vivo · escrito na festa</span>
+      <div class="field"><label>Para</label><input class="lf-dest" value="${esc(d.dest)}" /></div>
+      <div class="field"><label>Área</label><input class="lf-setor" value="${esc(d.setor)}" placeholder="Synvia" /></div>
+      <div class="field"><label>Mensagem</label><textarea class="lf-msg">${esc(d.msg)}</textarea></div>
+      <div class="field"><label>De (remetente)</label><input class="lf-sender" value="${esc(d.sender)}" placeholder="vazio = anônimo" /></div>
+      <div class="opts"><label class="check"><input type="checkbox" class="lf-anon" ${d.anon?'checked':''}/> Anônimo</label></div>
+      <div class="actions">
+        <button class="btn btn-primary lf-send">✨ Enviar ao telão</button>
+        <button class="btn btn-danger lf-drop">Descartar</button>
+      </div>`;
+    box.appendChild(card);
+    card.querySelector('.lf-send').addEventListener('click',()=>{
+      const anon=card.querySelector('.lf-anon').checked;
+      enviarAoTelao(
+        card.querySelector('.lf-dest').value,
+        card.querySelector('.lf-setor').value,
+        card.querySelector('.lf-msg').value,
+        card.querySelector('.lf-sender').value,
+        anon, true
+      );
+      db.ref(AOVIVO_NODE+'/'+k).remove();
+    });
+    card.querySelector('.lf-drop').addEventListener('click',()=>{
+      if(confirm('Descartar este elogio ao vivo? Ele não vai pro telão.')) db.ref(AOVIVO_NODE+'/'+k).remove();
+    });
   });
 }
 function detachFeeds(){
