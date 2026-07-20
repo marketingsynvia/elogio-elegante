@@ -83,6 +83,16 @@ h1 .warm{background:linear-gradient(100deg,var(--fest-orange),var(--gold));-webk
 .done h2{font-size:1.5rem;font-weight:800;margin:0 0 8px;}
 .done p{color:var(--ink-soft);margin:0 auto 22px;max-width:420px;}
 .done .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.notif{display:flex;gap:13px;align-items:flex-start;text-align:left;background:#fff;border:1px solid rgba(34,32,31,.08);border-radius:18px;padding:15px 16px;box-shadow:0 16px 40px -14px rgba(34,32,31,.45);max-width:430px;margin:0 auto 22px;animation:notifIn .6s cubic-bezier(.2,1.2,.3,1) both;}
+@keyframes notifIn{0%{opacity:0;transform:translateY(-28px) scale(.93)}60%{opacity:1}100%{opacity:1;transform:translateY(0) scale(1)}}
+.notif-ico{position:relative;width:48px;height:48px;border-radius:13px;background:linear-gradient(150deg,var(--fest-forest),#1f4635);display:grid;place-items:center;font-size:27px;flex:none;box-shadow:0 4px 10px rgba(0,0,0,.22);}
+.notif-ico .live{position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:50%;background:#e11d2a;border:2.5px solid #fff;}
+.notif-ico .live::after{content:"";position:absolute;inset:0;border-radius:50%;background:#e11d2a;animation:lvpulse 1.3s ease-out infinite;}
+.notif-body{flex:1;min-width:0;}
+.notif-top{display:flex;justify-content:space-between;align-items:baseline;font-size:.72rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:3px;}
+.notif-time{font-weight:600;letter-spacing:0;text-transform:none;color:#9a8a72;}
+.notif-title{font-size:1.05rem;font-weight:800;line-height:1.25;margin-bottom:3px;}
+.notif-text{font-size:.92rem;color:var(--ink-soft);line-height:1.4;}
 .btn{font-family:var(--font);font-size:.95rem;font-weight:700;cursor:pointer;text-decoration:none;border-radius:999px;padding:12px 20px;border:1.6px solid var(--mist);background:#fff;color:var(--ink);display:inline-flex;align-items:center;gap:8px;}
 .btn:hover{border-color:var(--fest-orange);}
 .btn-primary{background:var(--fest-orange);border-color:var(--fest-orange);color:#fff;}
@@ -192,9 +202,16 @@ h1 .warm{background:linear-gradient(100deg,var(--fest-orange),var(--gold));-webk
   <div id="doneView" class="hidden">
     <div class="card">
       <div class="done">
-        <div class="big" aria-hidden="true">📺</div>
-        <h2>Enviado pro telão!</h2>
-        <p>Já já ele aparece dourado e brilhando no telão da festa. Fica de olho! ✨</p>
+        <div class="notif" role="status">
+          <div class="notif-ico">🤠<span class="live" aria-hidden="true"></span></div>
+          <div class="notif-body">
+            <div class="notif-top"><span>Arraiá da Synvia</span><span class="notif-time">agora mesmo</span></div>
+            <div class="notif-title">Uai sô! Seu elogio chegou no telão 👀</div>
+            <div class="notif-text">Dá uma olhadinha sô — já já ele aparece brilhando lá na festa! ✨</div>
+          </div>
+        </div>
+        <h2>Recado no capricho! 🌽</h2>
+        <p>Seu elogio entrou na fila do telão. Corre lá ver ele aparecer!</p>
         <div class="row">
           <button class="btn btn-primary" id="againBtn">Escrever outro</button>
           <a class="btn" href="index.html">Ver o mural</a>
