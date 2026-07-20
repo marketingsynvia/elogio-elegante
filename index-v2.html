@@ -2,38 +2,23 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Elogio ao Vivo · Arraiá Synvia</title>
 <link rel="icon" type="image/png" href="assets/favicon.png?v=2" />
-<meta name="description" content="Escreva um elogio agora e veja aparecer no telão da festa!" />
+<meta name="description" content="Escreva um elogio ou tire uma foto e mande pro telão da festa!" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 <style>
 :root{
-  --green-deep:#1a8f41;
-  --ink:#22201f;
-  --ink-soft:#4a4744;
-  --mist:#e6e8e7;
-  --fest-forest:#16352a;
-  --fest-green:#36a847;
-  --fest-yellow:#f4b81b;
-  --fest-orange:#e8590c;
-  --fest-cream:#f6f1df;
-  --gold:#e8a300;
-  --note:#fffdf7;
-  --danger:#c0392b;
+  --green-deep:#1a8f41;--ink:#22201f;--ink-soft:#4a4744;--mist:#e6e8e7;
+  --fest-forest:#16352a;--fest-green:#36a847;--fest-yellow:#f4b81b;--fest-orange:#e8590c;--fest-cream:#f6f1df;
+  --gold:#e8a300;--note:#fffdf7;--danger:#c0392b;
   --font:"Manrope",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
   --shadow:0 1px 2px rgba(34,32,31,.06), 0 12px 34px -16px rgba(34,32,31,.3);
 }
 *{box-sizing:border-box;}
-body{
-  margin:0;font-family:var(--font);color:var(--ink);
-  background:
-    radial-gradient(120% 70% at 50% -10%, rgba(244,184,27,.22) 0%, transparent 55%),
-    linear-gradient(180deg,#ffffff 0%, var(--fest-cream) 100%);
-  min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased;
-}
+body{margin:0;font-family:var(--font);color:var(--ink);background:radial-gradient(120% 70% at 50% -10%, rgba(244,184,27,.22) 0%, transparent 55%),linear-gradient(180deg,#ffffff 0%, var(--fest-cream) 100%);min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased;}
 :focus-visible{outline:3px solid var(--fest-green);outline-offset:2px;border-radius:8px;}
 .bunting{height:34px;width:100%;background:var(--fest-forest);}
 .bunting svg{display:block;width:100%;height:100%;}
@@ -43,11 +28,9 @@ body{
 .brand .mark{width:38px;height:38px;border-radius:11px;background:var(--fest-forest);display:grid;place-items:center;color:var(--fest-yellow);flex:none;}
 .brand .mark svg{width:20px;height:20px;}
 .brand .campaign{font-weight:800;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);}
-.back{font-size:.9rem;font-weight:700;color:var(--green-deep);text-decoration:none;}
+.back{font-size:.9rem;font-weight:700;color:var(--green-deep);text-decoration:none;background:none;border:none;cursor:pointer;font-family:var(--font);padding:0;display:inline-flex;align-items:center;gap:5px;}
 .back:hover{text-decoration:underline;}
 .kicker{display:inline-flex;align-items:center;gap:9px;font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#5a3d00;background:linear-gradient(100deg,var(--fest-yellow),#ffd257);border-radius:999px;padding:7px 15px;margin-bottom:16px;box-shadow:0 2px 0 rgba(180,120,10,.28);}
-.kicker svg{width:14px;height:14px;}
-/* Selo AO VIVO */
 .kicker.live{color:#fff;background:linear-gradient(100deg,#e11d2a,#f0392f);box-shadow:0 2px 0 rgba(120,10,15,.35);}
 .livedot{width:11px;height:11px;border-radius:50%;background:#fff;position:relative;flex:none;}
 .livedot::after{content:"";position:absolute;inset:0;border-radius:50%;background:#fff;animation:lvpulse 1.3s ease-out infinite;}
@@ -57,32 +40,49 @@ h1 .warm{background:linear-gradient(100deg,var(--fest-orange),var(--gold));-webk
 .lead{font-size:1.05rem;color:var(--ink-soft);margin:0 0 26px;text-wrap:pretty;}
 .card{background:var(--note);border:1px solid rgba(34,32,31,.07);border-radius:20px;box-shadow:var(--shadow);padding:26px 24px;position:relative;overflow:hidden;}
 .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(180deg,var(--gold),var(--fest-orange));}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media (max-width:520px){.choices{grid-template-columns:1fr;}}
+.choice{position:relative;overflow:hidden;text-align:left;cursor:pointer;font-family:var(--font);background:var(--note);border:1.6px solid var(--mist);border-radius:18px;padding:22px 20px;box-shadow:var(--shadow);transition:transform .12s,border-color .15s,box-shadow .15s;display:flex;flex-direction:column;gap:6px;}
+.choice:hover{border-color:var(--fest-orange);transform:translateY(-2px);}
+.choice .ico{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:28px;margin-bottom:6px;}
+.choice.recado .ico{background:linear-gradient(150deg,var(--fest-green),#2a8b3a);}
+.choice.foto .ico{background:linear-gradient(150deg,var(--fest-orange),#f4820c);}
+.choice .t{font-size:1.15rem;font-weight:800;}
+.choice .s{font-size:.9rem;color:var(--ink-soft);}
+.choice .go{margin-top:8px;font-size:.85rem;font-weight:800;color:var(--fest-orange);}
 .field{margin-bottom:18px;}
 .field label{display:block;font-size:.92rem;font-weight:800;margin-bottom:4px;}
 .field .help{font-size:.82rem;color:var(--ink-soft);margin:0 0 8px;}
-.field input,.field textarea{
-  width:100%;font-family:var(--font);font-size:1.02rem;color:var(--ink);
-  border:1.6px solid var(--mist);border-radius:12px;padding:13px 15px;background:#fff;transition:border-color .15s;
-}
+.field input,.field textarea{width:100%;font-family:var(--font);font-size:1.02rem;color:var(--ink);border:1.6px solid var(--mist);border-radius:12px;padding:13px 15px;background:#fff;transition:border-color .15s;}
 .field input:focus,.field textarea:focus{outline:none;border-color:var(--fest-green);}
 .field select{width:100%;font-family:var(--font);font-size:1.02rem;color:var(--ink);border:1.6px solid var(--mist);border-radius:12px;padding:13px 42px 13px 15px;background-color:#fff;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2316352a' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 15px center;}
 .field select:focus{outline:none;border-color:var(--fest-green);}
 .field textarea{min-height:120px;resize:vertical;line-height:1.55;}
 .counter{text-align:right;font-size:.76rem;color:var(--ink-soft);margin-top:5px;}
-.privacy{display:flex;gap:9px;align-items:flex-start;font-size:.86rem;color:var(--ink-soft);background:var(--fest-cream);border-radius:12px;padding:11px 14px;margin:2px 0 20px;}
-.privacy svg{width:17px;height:17px;flex:none;margin-top:2px;color:var(--fest-orange);}
 .send{width:100%;font-family:var(--font);font-size:1.05rem;font-weight:800;cursor:pointer;border:none;border-radius:999px;padding:15px;color:#fff;background:linear-gradient(100deg,var(--fest-orange),#f4820c);box-shadow:0 10px 24px -10px rgba(232,89,12,.7);transition:filter .15s,transform .1s;display:inline-flex;align-items:center;justify-content:center;gap:9px;}
 .send:hover{filter:brightness(1.05);}
 .send:active{transform:translateY(1px);}
 .send[disabled]{opacity:.6;cursor:not-allowed;}
 .send svg{width:19px;height:19px;}
 .err{color:var(--danger);font-size:.9rem;font-weight:600;margin:12px 0 0;text-align:center;min-height:1em;}
+/* Câmera + moldura */
+.frame{position:relative;height:min(64vh,600px);aspect-ratio:9/16;margin:0 auto;border-radius:16px;overflow:hidden;background:#0d0d0d;box-shadow:0 12px 30px -12px rgba(0,0,0,.5);}
+.frame video,.frame img.shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+.frame video.mirror{transform:scaleX(-1);}
+.frame img.moldura{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;}
+.cam-msg{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#fff;padding:24px;font-size:.95rem;line-height:1.5;background:#16352a;z-index:3;}
+.cam-tools{display:flex;gap:10px;margin-top:16px;}
+.cam-tools .send{flex:1;}
+.icobtn{font-family:var(--font);flex:none;width:54px;border:1.6px solid var(--mist);background:#fff;border-radius:999px;font-size:1.3rem;cursor:pointer;display:grid;place-items:center;}
+.icobtn:hover{border-color:var(--fest-orange);}
+.hint{font-size:.82rem;color:var(--ink-soft);text-align:center;margin:14px 0 0;}
 /* Sucesso */
 .done{text-align:center;padding:10px 6px;}
-.done .big{font-size:3rem;line-height:1;margin-bottom:14px;}
 .done h2{font-size:1.5rem;font-weight:800;margin:0 0 8px;}
-.done p{color:var(--ink-soft);margin:0 auto 22px;max-width:420px;}
+.done p{color:var(--ink-soft);margin:0 auto 22px;max-width:440px;}
 .done .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.done .shotwrap{width:180px;margin:0 auto 20px;}
+.done .shotwrap img{width:100%;border-radius:14px;box-shadow:var(--shadow);display:block;}
 .notif{display:flex;gap:13px;align-items:flex-start;text-align:left;background:#fff;border:1px solid rgba(34,32,31,.08);border-radius:18px;padding:15px 16px;box-shadow:0 16px 40px -14px rgba(34,32,31,.45);max-width:430px;margin:0 auto 22px;animation:notifIn .6s cubic-bezier(.2,1.2,.3,1) both;}
 @keyframes notifIn{0%{opacity:0;transform:translateY(-28px) scale(.93)}60%{opacity:1}100%{opacity:1;transform:translateY(0) scale(1)}}
 .notif-ico{position:relative;width:48px;height:48px;border-radius:13px;background:linear-gradient(150deg,var(--fest-forest),#1f4635);display:grid;place-items:center;font-size:27px;flex:none;box-shadow:0 4px 10px rgba(0,0,0,.22);}
@@ -104,27 +104,40 @@ h1 .warm{background:linear-gradient(100deg,var(--fest-orange),var(--gold));-webk
 </style>
 </head>
 <body>
-<div class="bunting" aria-hidden="true">
-  <svg viewBox="0 0 120 26" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><g id="flags"></g></svg>
-</div>
+<div class="bunting" aria-hidden="true"><svg viewBox="0 0 120 26" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><g id="flags"></g></svg></div>
 <div class="wrap">
   <div class="top">
     <div class="brand">
-      <span class="mark">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.2 6.6.8-4.9 4.5 1.3 6.5L12 17.8 6.1 20.5l1.3-6.5L2.5 9l6.6-.8z"/></svg>
-      </span>
+      <span class="mark"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.2 6.6.8-4.9 4.5 1.3 6.5L12 17.8 6.1 20.5l1.3-6.5L2.5 9l6.6-.8z"/></svg></span>
       <span class="campaign">Arraiá Synvia 2026</span>
     </div>
     <a class="back" href="index.html">Ver o mural</a>
   </div>
-  <!-- Formulário -->
-  <div id="formView">
-    <span class="kicker live">
-      <span class="livedot" aria-hidden="true"></span>
-      Ao vivo · Elogio Elegante
-    </span>
-    <h1>Manda um elogio pro <span class="warm">telão</span> agora!</h1>
-    <p class="lead">Escreva um recado de carinho e veja ele aparecer brilhando no telão da festa. Êta trem bão!</p>
+
+  <div id="chooseView">
+    <span class="kicker live"><span class="livedot" aria-hidden="true"></span> Ao vivo · Elogio Elegante</span>
+    <h1>Manda um carinho pro <span class="warm">telão</span> agora!</h1>
+    <p class="lead">Escolhe como quer aparecer na festa. Êta trem bão!</p>
+    <div class="choices">
+      <button class="choice recado" id="goRecado">
+        <span class="ico">💌</span>
+        <span class="t">Mandar um recado</span>
+        <span class="s">Escreve um elogio de carinho pra alguém.</span>
+        <span class="go">Escrever →</span>
+      </button>
+      <button class="choice foto" id="goFoto">
+        <span class="ico">📸</span>
+        <span class="t">Mandar uma foto</span>
+        <span class="s">Tira uma selfie com a moldura do Arraiá.</span>
+        <span class="go">Abrir a câmera →</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="formView" class="hidden">
+    <button class="back" data-home style="margin-bottom:14px">← Voltar</button>
+    <span class="kicker">💌 Recado pro telão</span>
+    <h1>Escreve um elogio de <span class="warm">carinho</span></h1>
     <div class="card">
       <div class="field">
         <label for="dest">Para quem é o seu elogio?</label>
@@ -136,47 +149,12 @@ h1 .warm{background:linear-gradient(100deg,var(--fest-orange),var(--gold));-webk
         <p class="help">Escolha a área da pessoa elogiada.</p>
         <select id="setor">
           <option value="" selected disabled>Selecione a área...</option>
-          <optgroup label="Operação e Pesquisa">
-            <option>Operações Clínicas</option>
-            <option>Pesquisa Clínica</option>
-            <option>Bioequivalência</option>
-            <option>Enfermagem</option>
-            <option>Farmácia</option>
-            <option>Documentação Clínica</option>
-            <option>Captação de Participantes</option>
-            <option>Viabilidade de Projetos</option>
-          </optgroup>
-          <optgroup label="Laboratórios">
-            <option>Laboratório Bioanalítico</option>
-            <option>Laboratório Toxicológico</option>
-            <option>Laboratório Clínico</option>
-          </optgroup>
-          <optgroup label="Dados e Qualidade">
-            <option>Gerenciamento de Dados</option>
-            <option>Estatística</option>
-            <option>Garantia da Qualidade</option>
-            <option>Excelência Operacional</option>
-          </optgroup>
-          <optgroup label="Tecnologia">
-            <option>Produtos &amp; Software</option>
-            <option>Suporte e Infraestrutura de TI</option>
-          </optgroup>
-          <optgroup label="Comercial e Marketing">
-            <option>Marketing</option>
-            <option>Eventos</option>
-            <option>Comercial Diagnósticos</option>
-            <option>Administração Comercial</option>
-            <option>Atendimento / SAC</option>
-          </optgroup>
-          <optgroup label="Corporativo">
-            <option>Finanças e Controladoria</option>
-            <option>Gente e Gestão</option>
-            <option>Recrutamento</option>
-            <option>Jurídico</option>
-            <option>Suprimentos</option>
-            <option>Logística</option>
-            <option>Facilities</option>
-          </optgroup>
+          <optgroup label="Operação e Pesquisa"><option>Operações Clínicas</option><option>Pesquisa Clínica</option><option>Bioequivalência</option><option>Enfermagem</option><option>Farmácia</option><option>Documentação Clínica</option><option>Captação de Participantes</option><option>Viabilidade de Projetos</option></optgroup>
+          <optgroup label="Laboratórios"><option>Laboratório Bioanalítico</option><option>Laboratório Toxicológico</option><option>Laboratório Clínico</option></optgroup>
+          <optgroup label="Dados e Qualidade"><option>Gerenciamento de Dados</option><option>Estatística</option><option>Garantia da Qualidade</option><option>Excelência Operacional</option></optgroup>
+          <optgroup label="Tecnologia"><option>Produtos &amp; Software</option><option>Suporte e Infraestrutura de TI</option></optgroup>
+          <optgroup label="Comercial e Marketing"><option>Marketing</option><option>Eventos</option><option>Comercial Diagnósticos</option><option>Administração Comercial</option><option>Atendimento / SAC</option></optgroup>
+          <optgroup label="Corporativo"><option>Finanças e Controladoria</option><option>Gente e Gestão</option><option>Recrutamento</option><option>Jurídico</option><option>Suprimentos</option><option>Logística</option><option>Facilities</option></optgroup>
           <option value="__outro">Outro (não listado)</option>
         </select>
         <input id="setorOutro" type="text" maxlength="120" autocomplete="off" placeholder="Digite a área" class="hidden" style="margin-top:10px;" />
@@ -187,9 +165,10 @@ h1 .warm{background:linear-gradient(100deg,var(--fest-orange),var(--gold));-webk
         <textarea id="msg" maxlength="240" placeholder="Seu recado de carinho..."></textarea>
         <div class="counter"><span id="msgCount">0</span> / 240</div>
       </div>
-      <div class="privacy">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V5l-8-3Z"/></svg>
-        <span>Seu elogio aparece no telão sem o nome de quem escreveu. Capriche no carinho! 🌽</span>
+      <div class="field">
+        <label for="de">Quer se identificar? <span style="font-weight:600;color:var(--ink-soft)">(opcional)</span></label>
+        <p class="help">Aparece como "de Fulano" no telão. Deixe em branco pra mandar anônimo.</p>
+        <input id="de" type="text" maxlength="80" autocomplete="off" placeholder="Seu nome" />
       </div>
       <button class="send" id="sendBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -198,22 +177,53 @@ h1 .warm{background:linear-gradient(100deg,var(--fest-orange),var(--gold));-webk
       <p class="err" id="err"></p>
     </div>
   </div>
-  <!-- Sucesso -->
+
+  <div id="photoView" class="hidden">
+    <button class="back" data-home style="margin-bottom:14px">← Voltar</button>
+    <span class="kicker">📸 Foto pro telão</span>
+    <h1>Solta o sorriso pra <span class="warm">câmera</span>!</h1>
+    <div class="card">
+      <div class="frame" id="frame">
+        <video id="video" playsinline muted class="mirror"></video>
+        <img id="shot" class="shot hidden" alt="" />
+        <img class="moldura" src="../assets/moldura-foto.png" alt="" />
+        <div class="cam-msg hidden" id="camMsg"></div>
+      </div>
+      <div class="field" id="nameField" style="margin-top:16px;margin-bottom:8px">
+        <label for="fotoNome">Quer se identificar? <span style="font-weight:600;color:var(--ink-soft)">(opcional)</span></label>
+        <p class="help">Só pra gente guardar de recordação — não aparece na foto.</p>
+        <input id="fotoNome" type="text" maxlength="60" autocomplete="off" placeholder="Seu nome" />
+      </div>
+      <div class="cam-tools" id="liveTools">
+        <button class="send" id="shotBtn">📸 Tirar foto</button>
+        <button class="icobtn" id="flipBtn" title="Virar câmera" aria-label="Virar câmera">🔄</button>
+      </div>
+      <div class="cam-tools hidden" id="reviewTools">
+        <button class="icobtn" id="retakeBtn" title="Tirar de novo" aria-label="Tirar de novo" style="width:auto;padding:0 18px">↺</button>
+        <button class="send" id="sendFotoBtn">Enviar pro telão</button>
+      </div>
+      <p class="hint">A foto só é tirada pela câmera, na hora. 🤠</p>
+      <p class="err" id="errFoto"></p>
+    </div>
+  </div>
+
   <div id="doneView" class="hidden">
     <div class="card">
       <div class="done">
+        <div class="shotwrap hidden" id="doneShot"><img id="doneShotImg" alt="Sua foto com a moldura do Arraiá" /></div>
         <div class="notif" role="status">
           <div class="notif-ico">🤠<span class="live" aria-hidden="true"></span></div>
           <div class="notif-body">
             <div class="notif-top"><span>Arraiá da Synvia</span><span class="notif-time">agora mesmo</span></div>
-            <div class="notif-title">Uai sô! Seu elogio chegou no telão 👀</div>
-            <div class="notif-text">Dá uma olhadinha sô — já já ele aparece brilhando lá na festa! ✨</div>
+            <div class="notif-title" id="notifTitle">Fique atento! 👀</div>
+            <div class="notif-text" id="notifText">Seu elogio pode aparecer em destaque no telão da festa. Fica de olho! ✨</div>
           </div>
         </div>
-        <h2>Recado no capricho! 🌽</h2>
-        <p>Seu elogio entrou na fila do telão. Corre lá ver ele aparecer!</p>
+        <h2 id="doneH2">Recado no capricho! 🌽</h2>
+        <p id="doneP">Recebemos seu carinho. Fica de olho no telão — pode ser que o seu apareça em destaque!</p>
         <div class="row">
-          <button class="btn btn-primary" id="againBtn">Escrever outro</button>
+          <a class="btn btn-primary hidden" id="saveBtn" download="arraia-synvia.jpg">⬇️ Salvar foto</a>
+          <button class="btn" id="againBtn">Mandar outro</button>
           <a class="btn" href="index.html">Ver o mural</a>
         </div>
       </div>
@@ -222,101 +232,121 @@ h1 .warm{background:linear-gradient(100deg,var(--fest-orange),var(--gold));-webk
 </div>
 <div class="confetti" id="confetti" aria-hidden="true"></div>
 <script>
-const FIREBASE = {
-  apiKey: "AIzaSyAJ-pmFFidThLK1KV6A7cUJrmF0RXXHr2c",
-  authDomain: "contagem-de-likes.firebaseapp.com",
-  databaseURL: "https://contagem-de-likes-default-rtdb.firebaseio.com",
-  projectId: "contagem-de-likes"
-};
-const AOVIVO_NODE = 'telaoFesta/aovivo'; // entra na fila -> telão (dourado)
+const FIREBASE={apiKey:"AIzaSyAJ-pmFFidThLK1KV6A7cUJrmF0RXXHr2c",authDomain:"contagem-de-likes.firebaseapp.com",databaseURL:"https://contagem-de-likes-default-rtdb.firebaseio.com",projectId:"contagem-de-likes",storageBucket:"contagem-de-likes.appspot.com"};
+const AOVIVO_NODE='telaoFesta/aovivo';
 const CONF_COLS=['#f4b81b','#e8590c','#36a847','#3a86ff','#e8437e','#ffd257'];
-/* Bandeirinha */
-(function(){
-  const cols=['#f4b81b','#36a847','#e8590c','#f6f1df','#36a847','#f4b81b'];
-  const g=document.getElementById('flags'); if(!g) return;
-  const n=26,w=120/n;
-  for(let i=0;i<n;i++){
-    const x=i*w;
-    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
-    p.setAttribute('d',`M${x+0.4} 2 L${x+w-0.4} 2 L${x+w/2} ${15+(i%2?0:1.5)} Z`);
-    p.setAttribute('fill',cols[i%cols.length]);
-    g.appendChild(p);
-  }
-})();
 const $=id=>document.getElementById(id);
+(function(){const cols=['#f4b81b','#36a847','#e8590c','#f6f1df','#36a847','#f4b81b'];const g=$('flags');if(!g)return;const n=26,w=120/n;for(let i=0;i<n;i++){const x=i*w;const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',`M${x+0.4} 2 L${x+w-0.4} 2 L${x+w/2} ${15+(i%2?0:1.5)} Z`);p.setAttribute('fill',cols[i%cols.length]);g.appendChild(p);}})();
 function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
 function confetti(){const box=$('confetti');box.innerHTML='';for(let i=0;i<70;i++){const s=document.createElement('span');s.style.left=Math.random()*100+'%';s.style.background=CONF_COLS[i%CONF_COLS.length];s.style.animationDuration=(2+Math.random()*2)+'s';s.style.animationDelay=(Math.random()*.5)+'s';if(Math.random()<.5)s.style.borderRadius='50%';box.appendChild(s);}setTimeout(()=>box.innerHTML='',4600);}
-/* Contador de caracteres da mensagem */
-$('msg').addEventListener('input',()=>{ $('msgCount').textContent=$('msg').value.length; });
-/* Setor: mostra o campo "Outro" quando escolhido */
-$('setor').addEventListener('change',()=>{
-  const outro = $('setor').value==='__outro';
-  $('setorOutro').classList.toggle('hidden', !outro);
-  if(outro) $('setorOutro').focus();
-});
-function lerSetor(){
-  const v=$('setor').value;
-  if(v==='__outro') return $('setorOutro').value.trim() || 'Outro';
-  return v || '';
-}
-/* Inicializa Firebase */
-let db=null, ready=false;
-(async function init(){
-  try{
-    await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
-    await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js');
-    if(!firebase.apps.length) firebase.initializeApp(FIREBASE);
-    db=firebase.database();
-    ready=true;
-  }catch(err){
-    console.error(err);
-    $('err').textContent='Não deu pra conectar agora. Verifique sua internet e recarregue a página.';
-  }
-})();
-/* Envio */
-$('sendBtn').addEventListener('click', enviar);
-async function enviar(){
-  const dest=$('dest').value.trim();
-  const setor=lerSetor();
-  const msg=$('msg').value.trim();
+function show(id){['chooseView','formView','photoView','doneView'].forEach(v=>$(v).classList.toggle('hidden',v!==id));window.scrollTo({top:0,behavior:'smooth'});}
+
+let db=null,storage=null,ready=false;
+(async function init(){try{
+  await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
+  await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js');
+  if(!firebase.apps.length)firebase.initializeApp(FIREBASE);
+  db=firebase.database();ready=true;
+  try{await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js');storage=firebase.storage();}catch(e){console.warn('Storage indisponível — foto vai em qualidade reduzida.',e);}
+}catch(err){console.error(err);$('err').textContent='Não deu pra conectar agora. Verifique sua internet e recarregue a página.';}})();
+
+$('goRecado').onclick=()=>{show('formView');$('dest').focus();};
+$('goFoto').onclick=()=>{show('photoView');startCamera();};
+document.querySelectorAll('[data-home]').forEach(b=>b.onclick=()=>{stopCamera();show('chooseView');});
+
+/* Recado */
+$('msg').addEventListener('input',()=>{$('msgCount').textContent=$('msg').value.length;});
+$('setor').addEventListener('change',()=>{const outro=$('setor').value==='__outro';$('setorOutro').classList.toggle('hidden',!outro);if(outro)$('setorOutro').focus();});
+function lerSetor(){const v=$('setor').value;if(v==='__outro')return $('setorOutro').value.trim()||'Outro';return v||'';}
+$('sendBtn').addEventListener('click',enviarRecado);
+async function enviarRecado(){
+  const dest=$('dest').value.trim(),setor=lerSetor(),msg=$('msg').value.trim(),de=$('de').value.trim();
   $('err').textContent='';
-  if(!dest){ $('err').textContent='Diga pra quem é o elogio.'; $('dest').focus(); return; }
-  if(!setor){ $('err').textContent='Escolha a área da pessoa.'; $('setor').focus(); return; }
-  if(!msg){ $('err').textContent='Escreva a mensagem do elogio.'; $('msg').focus(); return; }
-  if(!ready || !db){ $('err').textContent='Ainda estamos conectando. Espere um instante e tente de novo.'; return; }
-  const btn=$('sendBtn');
-  btn.disabled=true;
-  const original=btn.innerHTML;
-  btn.textContent='Enviando...';
+  if(!dest){$('err').textContent='Diga pra quem é o elogio.';$('dest').focus();return;}
+  if(!setor){$('err').textContent='Escolha a área da pessoa.';$('setor').focus();return;}
+  if(!msg){$('err').textContent='Escreva a mensagem do elogio.';$('msg').focus();return;}
+  if(!ready||!db){$('err').textContent='Ainda estamos conectando. Espere um instante e tente de novo.';return;}
+  const btn=$('sendBtn'),original=btn.innerHTML;btn.disabled=true;btn.textContent='Enviando...';
   try{
-    await db.ref(AOVIVO_NODE).push({
-      dest: dest,
-      setor: setor,
-      msg: msg,
-      anon: 'Sim',
-      ts: Date.now()
-    });
-    $('formView').classList.add('hidden');
-    $('doneView').classList.remove('hidden');
-    confetti();
-    window.scrollTo({top:0,behavior:'smooth'});
-  }catch(err){
-    console.error(err);
-    $('err').textContent='Não deu pra enviar agora. Tente de novo em alguns segundos.';
-    btn.disabled=false;
-    btn.innerHTML=original;
+    await db.ref(AOVIVO_NODE).push({tipo:'recado',dest,setor,msg,remetente:de||'',autor:de||'',anon:de?'Não':'Sim',status:'novo',ts:Date.now(),data:new Date().toLocaleString('pt-BR')});
+    sucesso('recado');
+  }catch(err){console.error(err);$('err').textContent='Não deu pra enviar agora. Tente de novo em alguns segundos.';btn.disabled=false;btn.innerHTML=original;}
+}
+
+/* Câmera + moldura */
+let stream=null,front=true,photoData=null;
+const video=$('video');
+async function startCamera(){
+  photoData=null;
+  $('camMsg').classList.add('hidden');$('shot').classList.add('hidden');video.classList.remove('hidden');
+  $('liveTools').classList.remove('hidden');$('reviewTools').classList.add('hidden');
+  video.classList.toggle('mirror',front);
+  try{
+    stopCamera();
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:front?'user':'environment',width:{ideal:1080},height:{ideal:1920}},audio:false});
+    video.srcObject=stream;await video.play();
+  }catch(e){
+    console.warn(e);
+    $('camMsg').textContent='Não consegui abrir a câmera. Autorize o acesso à câmera no navegador e toque em "Voltar" e "Mandar uma foto" de novo. 📷';
+    $('camMsg').classList.remove('hidden');
   }
 }
-/* Escrever outro */
-$('againBtn').addEventListener('click',()=>{
-  $('dest').value=''; $('setor').value=''; $('setorOutro').value=''; $('setorOutro').classList.add('hidden'); $('msg').value=''; $('msgCount').textContent='0';
-  $('err').textContent='';
-  const btn=$('sendBtn'); btn.disabled=false;
-  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar pro telão';
-  $('doneView').classList.add('hidden');
-  $('formView').classList.remove('hidden');
-  $('dest').focus();
-});
+function stopCamera(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}}
+$('flipBtn').onclick=()=>{front=!front;startCamera();};
+const molduraImg=new Image();molduraImg.src='../assets/moldura-foto.png';
+function compose(CW,CH,q){
+  const c=document.createElement('canvas');c.width=CW;c.height=CH;const ctx=c.getContext('2d');
+  const vw=video.videoWidth,vh=video.videoHeight,tR=CW/CH,sR=vw/vh;let sx,sy,sw,sh;
+  if(sR>tR){sh=vh;sw=vh*tR;sx=(vw-sw)/2;sy=0;}else{sw=vw;sh=vw/tR;sx=0;sy=(vh-sh)/2;}
+  ctx.save();if(front){ctx.translate(CW,0);ctx.scale(-1,1);}ctx.drawImage(video,sx,sy,sw,sh,0,0,CW,CH);ctx.restore();
+  if(molduraImg.complete&&molduraImg.naturalWidth)ctx.drawImage(molduraImg,0,0,CW,CH);
+  return c.toDataURL('image/jpeg',q);
+}
+$('shotBtn').onclick=()=>{
+  if(!stream){$('errFoto').textContent='A câmera não está ligada.';return;}
+  photoData=compose(1080,1920,0.92);            // alta qualidade (arquivo/telão)
+  $('shot').src=photoData;$('shot').classList.remove('hidden');video.classList.add('hidden');
+  $('liveTools').classList.add('hidden');$('reviewTools').classList.remove('hidden');
+  $('errFoto').textContent='';
+};
+$('retakeBtn').onclick=()=>startCamera();
+async function uploadFoto(dataUrl,ts){
+  if(!storage)return '';
+  try{const blob=await (await fetch(dataUrl)).blob();const ref=storage.ref('arraia/fotos/'+ts+'.jpg');await ref.put(blob,{contentType:'image/jpeg'});return await ref.getDownloadURL();}
+  catch(e){console.warn('Falha no upload pro Storage:',e);return '';}
+}
+$('sendFotoBtn').onclick=async()=>{
+  if(!photoData){$('errFoto').textContent='Tire a foto primeiro.';return;}
+  if(!ready||!db){$('errFoto').textContent='Ainda estamos conectando. Espere um instante e tente de novo.';return;}
+  const btn=$('sendFotoBtn'),original=btn.innerHTML;btn.disabled=true;btn.textContent='Enviando...';
+  try{
+    const ts=Date.now();
+    const thumb=compose(405,720,0.72);           // versão leve p/ exibir rápido
+    const fotoUrl=await uploadFoto(photoData,ts); // alta qualidade -> Storage
+    await db.ref(AOVIVO_NODE).push({tipo:'foto',remetente:$('fotoNome').value.trim()||'',autor:$('fotoNome').value.trim()||'',anon:$('fotoNome').value.trim()?'Não':'Sim',fotoUrl,foto:thumb,status:'novo',ts,data:new Date().toLocaleString('pt-BR')});
+    stopCamera();sucesso('foto',photoData);
+  }catch(err){console.error(err);$('errFoto').textContent='Não deu pra enviar a foto. Tente de novo.';btn.disabled=false;btn.innerHTML=original;}
+};
+
+/* Sucesso */
+function sucesso(tipo,foto){
+  const isFoto=tipo==='foto';
+  $('notifTitle').textContent='Fique atento! 👀';
+  $('notifText').textContent=(isFoto?'Sua foto':'Seu elogio')+' pode aparecer em destaque no telão da festa. Fica de olho! ✨';
+  $('doneH2').textContent=isFoto?'Foto no capricho! 📸':'Recado no capricho! 🌽';
+  $('doneP').textContent=isFoto?'Recebemos sua foto — pode salvar ela com a moldura aqui embaixo. Fica de olho no telão! 🤠':'Recebemos seu carinho. Fica de olho no telão — pode ser que o seu apareça em destaque!';
+  $('doneShot').classList.toggle('hidden',!isFoto);
+  $('saveBtn').classList.toggle('hidden',!isFoto);
+  if(isFoto){$('doneShotImg').src=foto;$('saveBtn').href=foto;}
+  show('doneView');confetti();
+}
+$('againBtn').onclick=()=>{
+  $('dest').value='';$('setor').value='';$('setorOutro').value='';$('setorOutro').classList.add('hidden');$('msg').value='';$('msgCount').textContent='0';$('de').value='';$('err').textContent='';
+  $('fotoNome').value='';$('errFoto').textContent='';photoData=null;
+  const b=$('sendBtn');b.disabled=false;b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar pro telão';
+  const bf=$('sendFotoBtn');bf.disabled=false;bf.textContent='Enviar pro telão';
+  show('chooseView');
+};
 </script>
 </body>
 </html>
