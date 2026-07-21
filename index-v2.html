@@ -154,22 +154,9 @@ h1{color:#fff;}
 
   <div id="chooseView">
     <span class="kicker live"><span class="livedot" aria-hidden="true"></span> Ao vivo · Elogio Elegante</span>
-    <h1>Manda um carinho pro <span class="warm">telão</span> agora!</h1>
-    <p class="lead">Escolhe como quer aparecer na festa. Êta trem bão!</p>
-    <div class="choices">
-      <button class="choice recado" id="goRecado">
-        <span class="ico">💌</span>
-        <span class="t">Mandar um recado</span>
-        <span class="s">Escreve um elogio de carinho pra alguém.</span>
-        <span class="go">Escrever →</span>
-      </button>
-      <button class="choice foto" id="goFoto">
-        <span class="ico">📸</span>
-        <span class="t">Mandar uma foto</span>
-        <span class="s">Tira uma selfie com a moldura do Arraiá.</span>
-        <span class="go">Abrir a câmera →</span>
-      </button>
-    </div>
+    <h1>Manda uma foto docês curtindo o <span class="warm">arraiá</span>, sô!</h1>
+    <p class="lead">Tira uma selfie com a moldura da festa — quem sabe cês não aparece no telão! 🤠📸</p>
+    <button class="send" id="goFoto" style="margin-top:4px;font-size:1.15rem;padding:17px">📸 Abrir a câmera</button>
   </div>
 
   <div id="formView" class="hidden">
@@ -295,7 +282,6 @@ function show(id){['chooseView','formView','photoView','doneView'].forEach(v=>$(
    conexão ao vivo e os 600 convidados não estouram o limite de 100 conexões do plano grátis.
    Só o telão e o admin usam conexão ao vivo. */
 
-$('goRecado').onclick=()=>{show('formView');$('dest').focus();};
 $('goFoto').onclick=()=>{show('photoView');startCamera();};
 document.querySelectorAll('[data-home]').forEach(b=>b.onclick=()=>{stopCamera();show('chooseView');});
 

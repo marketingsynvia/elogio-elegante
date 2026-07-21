@@ -184,6 +184,7 @@ body{margin:0;font-family:var(--font);color:var(--ink);background:radial-gradien
     <span>Fila: <b id="telaoQ">0</b></span>
     <button class="btn btn-telao" id="telaoOpen">Abrir telão</button>
     <button class="btn btn-telao" id="telaoClear">Limpar fila</button>
+    <label style="display:inline-flex;align-items:center;gap:7px;font-weight:800;color:var(--fest-yellow);cursor:pointer"><input type="checkbox" id="autoQ" style="width:18px;height:18px;accent-color:var(--fest-green)"> Fila automática</label>
   </div>
   <div class="tabs" role="tablist">
     <button class="tab" id="tabNovos" role="tab" aria-selected="true">🔴 Novos pro telão <span class="badge" id="liveCount">0</span></button>
@@ -295,6 +296,7 @@ function wireTelaoStrip(){
   db.ref(TELAO_NP).on('value',snap=>{const n=snap.val();const box=$('telaoNow');if(!n||n.idle){box.innerHTML='rotação automática';}else{box.innerHTML='no ar: <b>'+esc(n.para||(n.tipo==='foto'?'foto':''))+'</b>';}});
   $('telaoOpen').addEventListener('click',()=>window.open('mural-da-festa.html','_blank'));
   $('telaoClear').addEventListener('click',()=>{if(confirm('Limpar toda a fila do telão?'))db.ref(TELAO_Q).remove();});
+  $('autoQ').addEventListener('change',e=>{autoQueue=e.target.checked;toast(autoQueue?'⚡ Fila automática LIGADA':'Fila automática desligada');renderLive();});
   db.ref(AOVIVO_NODE).on('value',snap=>{liveData=snap.val()||{};renderLive();});
   db.ref(STANDBY_NODE).on('value',snap=>{sbData=snap.val()||{};renderStandby();});
 }
@@ -325,9 +327,18 @@ function readCard(card){
   const g=s=>{const el=card.querySelector(s);return el?el.value:'';};
   return{foto,dest:g('.lf-dest'),setor:g('.lf-setor'),msg:g('.lf-msg'),sender:g('.lf-sender'),anon:card.querySelector('.lf-anon')?card.querySelector('.lf-anon').checked:false};
 }
+let autoQueue=false;
+function autoDispatch(keys){
+  keys.forEach(k=>{const b=liveData[k]||{},d=dadosBilhete(b);let ok;
+    if(isFoto(b))ok=enviarFotoTelao({fotoUrl:b.fotoUrl,foto:b.foto,remetente:d.sender});
+    else ok=enviarRecadoTelao(d.dest,d.setor,d.msg,d.sender,d.anon,true);
+    if(ok)db.ref(AOVIVO_NODE+'/'+k).remove();
+  });
+}
 function renderLive(){
   const keys=Object.keys(liveData).sort((a,b)=>(Number(liveData[a].ts)||0)-(Number(liveData[b].ts)||0));
-  $('liveCount').textContent=keys.length;{const st=$('novosState');if(st)st.innerHTML=keys.length?'':'<p style="color:#6a675f;padding:8px 2px">Nenhum novo agora — quando a galera mandar, aparece aqui na hora.</p>';}
+  $('liveCount').textContent=keys.length;{const st=$('novosState');if(st)st.innerHTML=keys.length?(autoQueue?'<p style="color:#1a8f41;font-weight:800;padding:8px 2px">⚡ Fila automática ligada — indo direto pro telão.</p>':''):'<p style="color:#6a675f;padding:8px 2px">Nenhum novo agora — quando a galera mandar, aparece aqui na hora.</p>';}
+  if(autoQueue && keys.length){ autoDispatch(keys); return; }   // manda tudo direto pro telão
   const box=$('liveList');box.innerHTML=keys.map(k=>liveCardHTML(k,liveData[k]||{},false)).join('');
   box.querySelectorAll('.live-card').forEach(card=>{
     const k=card.dataset.key, b=liveData[k]||{};
