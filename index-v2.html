@@ -275,7 +275,15 @@ h1{color:#fff;}
 const FIREBASE={apiKey:"AIzaSyAJ-pmFFidThLK1KV6A7cUJrmF0RXXHr2c",authDomain:"contagem-de-likes.firebaseapp.com",databaseURL:"https://contagem-de-likes-default-rtdb.firebaseio.com",projectId:"contagem-de-likes",storageBucket:"contagem-de-likes.appspot.com"};
 const AOVIVO_NODE='telaoFesta/aovivo';
 const ARQUIVO_NODE='telaoFesta/arquivo'; // recordação permanente (não é apagado na moderação)
-function arquivar(rec){ try{ db.ref(ARQUIVO_NODE).push(rec); }catch(e){ console.warn('arquivo',e); } }
+// Grava via REST (tipo "SMS"): conecta só o instante do envio e desliga.
+// Não abre canal ao vivo, então nenhum convidado ocupa o limite de 100 conexões do plano grátis.
+// (sem header Content-Type de propósito, pra evitar preflight de CORS — o RTDB lê o corpo como JSON mesmo assim)
+async function rtdbPush(path,obj){
+  const r=await fetch(FIREBASE.databaseURL+'/'+path+'.json',{method:'POST',body:JSON.stringify(obj)});
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  return r.json();
+}
+function arquivar(rec){ rtdbPush(ARQUIVO_NODE,rec).catch(e=>console.warn('arquivo',e)); }
 const CONF_COLS=['#f4b81b','#e8590c','#36a847','#3a86ff','#e8437e','#ffd257'];
 const $=id=>document.getElementById(id);
 (function(){const cols=['#f4b81b','#36a847','#e8590c','#f6f1df','#36a847','#f4b81b'];const g=$('flags');if(!g)return;const n=26,w=120/n;for(let i=0;i<n;i++){const x=i*w;const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',`M${x+0.4} 2 L${x+w-0.4} 2 L${x+w/2} ${15+(i%2?0:1.5)} Z`);p.setAttribute('fill',cols[i%cols.length]);g.appendChild(p);}})();
@@ -283,14 +291,9 @@ function loadScript(src){return new Promise((res,rej)=>{const s=document.createE
 function confetti(){const box=$('confetti');box.innerHTML='';for(let i=0;i<70;i++){const s=document.createElement('span');s.style.left=Math.random()*100+'%';s.style.background=CONF_COLS[i%CONF_COLS.length];s.style.animationDuration=(2+Math.random()*2)+'s';s.style.animationDelay=(Math.random()*.5)+'s';if(Math.random()<.5)s.style.borderRadius='50%';box.appendChild(s);}setTimeout(()=>box.innerHTML='',4600);}
 function show(id){['chooseView','formView','photoView','doneView'].forEach(v=>$(v).classList.toggle('hidden',v!==id));window.scrollTo({top:0,behavior:'smooth'});}
 
-let db=null,storage=null,ready=false;
-(async function init(){try{
-  await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
-  await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js');
-  if(!firebase.apps.length)firebase.initializeApp(FIREBASE);
-  db=firebase.database();ready=true;
-  /* Storage desligado de propósito: a foto cheia vai pro arquivo (base64), sem depender de Blaze. */
-}catch(err){console.error(err);$('err').textContent='Não deu pra conectar agora. Verifique sua internet e recarregue a página.';}})();
+/* Sem SDK do Firebase aqui: todo envio é por REST (rtdbPush). Assim a página não abre
+   conexão ao vivo e os 600 convidados não estouram o limite de 100 conexões do plano grátis.
+   Só o telão e o admin usam conexão ao vivo. */
 
 $('goRecado').onclick=()=>{show('formView');$('dest').focus();};
 $('goFoto').onclick=()=>{show('photoView');startCamera();};
@@ -306,11 +309,10 @@ async function enviarRecado(){
   $('err').textContent='';
   if(!dest){$('err').textContent='Diz pra quem é o recado (pode ser a festa toda!).';$('dest').focus();return;}
   if(!msg){$('err').textContent='Escreve o recado.';$('msg').focus();return;}
-  if(!ready||!db){$('err').textContent='Ainda estamos conectando. Espere um instante e tente de novo.';return;}
   const btn=$('sendBtn'),original=btn.innerHTML;btn.disabled=true;btn.textContent='Enviando...';
   try{
     const rec={tipo:'recado',dest,setor,msg,remetente:de||'',autor:de||'',anon:de?'Não':'Sim',status:'novo',ts:Date.now(),data:new Date().toLocaleString('pt-BR')};
-    await db.ref(AOVIVO_NODE).push(rec);
+    await rtdbPush(AOVIVO_NODE,rec);
     arquivar(rec); // recordação permanente
     sucesso('recado');
   }catch(err){console.error(err);$('err').textContent='Não deu pra enviar agora. Tente de novo em alguns segundos.';btn.disabled=false;btn.innerHTML=original;}
@@ -379,21 +381,15 @@ $('shotBtn').onclick=()=>{
   $('errFoto').textContent='';
 };
 $('retakeBtn').onclick=()=>startCamera();
-async function uploadFoto(dataUrl,ts){
-  if(!storage)return '';
-  try{const blob=await (await fetch(dataUrl)).blob();const ref=storage.ref('arraia/fotos/'+ts+'.jpg');await ref.put(blob,{contentType:'image/jpeg'});return await ref.getDownloadURL();}
-  catch(e){console.warn('Falha no upload pro Storage:',e);return '';}
-}
 $('sendFotoBtn').onclick=async()=>{
   if(!photoData){$('errFoto').textContent='Tire a foto primeiro.';return;}
-  if(!ready||!db){$('errFoto').textContent='Ainda estamos conectando. Espere um instante e tente de novo.';return;}
   const btn=$('sendFotoBtn'),original=btn.innerHTML;btn.disabled=true;btn.textContent='Enviando...';
   try{
     const ts=Date.now();
     const thumb=compose(720,1280,0.82);          // resolução boa p/ telão (vai no admin/fila)
     const fotoUrl='';                            // sem Storage — a foto cheia vai pro arquivo
     const nome=$('fotoNome').value.trim();
-    await db.ref(AOVIVO_NODE).push({tipo:'foto',remetente:nome,autor:nome,anon:nome?'Não':'Sim',fotoUrl,foto:thumb,status:'novo',ts,data:new Date().toLocaleString('pt-BR')});
+    await rtdbPush(AOVIVO_NODE,{tipo:'foto',remetente:nome,autor:nome,anon:nome?'Não':'Sim',fotoUrl,foto:thumb,status:'novo',ts,data:new Date().toLocaleString('pt-BR')});
     arquivar({tipo:'foto',remetente:nome,autor:nome,anon:nome?'Não':'Sim',fotoUrl,fotoFull:photoData,status:'novo',ts,data:new Date().toLocaleString('pt-BR')}); // recordação: guarda a FOTO CHEIA (alta, com moldura) — não precisa de Storage
     stopCamera();sucesso('foto',photoData);
   }catch(err){console.error(err);$('errFoto').textContent='Não deu pra enviar a foto. Tente de novo.';btn.disabled=false;btn.innerHTML=original;}
