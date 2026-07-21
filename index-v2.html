@@ -66,8 +66,8 @@ h1 .warm{background:linear-gradient(100deg,var(--fest-orange),var(--gold));-webk
 .send svg{width:19px;height:19px;}
 .err{color:var(--danger);font-size:.9rem;font-weight:600;margin:12px 0 0;text-align:center;min-height:1em;}
 /* Câmera + moldura */
-.frame{position:relative;height:min(64vh,600px);aspect-ratio:9/16;margin:0 auto;border-radius:16px;overflow:hidden;background:#0d0d0d;box-shadow:0 12px 30px -12px rgba(0,0,0,.5);}
-.frame video,.frame img.shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+.frame{position:relative;height:min(64vh,600px);aspect-ratio:9/16;margin:0 auto;border-radius:16px;overflow:hidden;background:#16352a;box-shadow:0 12px 30px -12px rgba(0,0,0,.5);}
+.frame video,.frame img.shot{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;}
 .frame video.mirror{transform:scaleX(-1);}
 .frame img.moldura{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;}
 .cam-msg{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#fff;padding:24px;font-size:.95rem;line-height:1.5;background:#16352a;z-index:3;}
@@ -325,8 +325,8 @@ async function startCamera(){
   video.classList.toggle('mirror',front);
   try{
     stopCamera();
-    // pede retrato (aspectRatio) — reduz o corte/zoom no iPhone; Android também melhora
-    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:front?'user':'environment',width:{ideal:1080},height:{ideal:1920},aspectRatio:{ideal:0.5625}},audio:false});
+    // pega a câmera na resolução dela; o enquadramento é feito por "fit" (sem cortar/zoom)
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:front?'user':'environment',width:{ideal:1920},height:{ideal:1080}},audio:false});
     video.srcObject=stream;await video.play();
     curTrack=stream.getVideoTracks()[0];torchOn=false;
     try{
@@ -353,9 +353,13 @@ $('flashBtn').onclick=async()=>{
 const molduraImg=new Image();molduraImg.src='assets/moldura-foto.png';
 function compose(CW,CH,q){
   const c=document.createElement('canvas');c.width=CW;c.height=CH;const ctx=c.getContext('2d');
-  const vw=video.videoWidth,vh=video.videoHeight,tR=CW/CH,sR=vw/vh;let sx,sy,sw,sh;
-  if(sR>tR){sh=vh;sw=vh*tR;sx=(vw-sw)/2;sy=0;}else{sw=vw;sh=vw/tR;sx=0;sy=(vh-sh)/2;}
-  ctx.save();if(front){ctx.translate(CW,0);ctx.scale(-1,1);}ctx.drawImage(video,sx,sy,sw,sh,0,0,CW,CH);ctx.restore();
+  ctx.fillStyle='#16352a';ctx.fillRect(0,0,CW,CH);          // fundo festa nas bordas
+  const vw=video.videoWidth,vh=video.videoHeight;
+  if(vw&&vh){
+    const scale=Math.min(CW/vw,CH/vh);                      // FIT: mostra a câmera inteira, sem zoom
+    const dw=vw*scale,dh=vh*scale,dx=(CW-dw)/2,dy=(CH-dh)/2;
+    ctx.save();if(front){ctx.translate(CW,0);ctx.scale(-1,1);}ctx.drawImage(video,dx,dy,dw,dh);ctx.restore();
+  }
   if(molduraImg.complete&&molduraImg.naturalWidth)ctx.drawImage(molduraImg,0,0,CW,CH);
   return c.toDataURL('image/jpeg',q);
 }

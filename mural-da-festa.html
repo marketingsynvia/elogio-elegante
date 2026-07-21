@@ -152,7 +152,7 @@ body.live-on .app{transform:translate(-50%,-50%) scale(.93);filter:blur(5px) bri
     <div class="app-count" id="count">🤠 Synvia</div>
   </div>
   <div class="feed" id="feed"></div>
-  <div class="foot"><span class="typing"><i></i><i></i><i></i></span> chegando mais recados de carinho…</div>
+  <div class="foot"><span class="typing"><i></i><i></i><i></i></span> <span id="footTxt">chegando mais recados de carinho…</span></div>
 </div>
 
 <div class="live" id="live">
@@ -320,6 +320,12 @@ async function deliverLive(item,kind){
           await deliverLive(next,kind);
           pushBubble(next,{destaque:true});   // depois do grandão, assenta no chat destacado
           await db.ref(Q+'/'+next.key).remove();
+          if(isFotoItem(next)){               // MOMENTO FOTO: 60s sem subir mensagem nenhuma
+            const ft=el('footTxt');
+            if(ft)ft.textContent='📸 Momento foto! Tire a sua e mande pro telão…';
+            await wait(60000);
+            if(ft)ft.textContent='chegando mais recados de carinho…';
+          }
         } else {
           if(db&&mode!=='idle'){db.ref(NP).set({idle:true,ts:Date.now()});mode='idle';}
           pushBubble(nextIdle());
