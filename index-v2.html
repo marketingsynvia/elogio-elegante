@@ -136,6 +136,10 @@ h1{color:#fff;}
 @font-face{font-family:'FestaSynvia';src:url('assets/Alt_Frantic.ttf') format('truetype');font-display:swap;}
 .festa-msg{font-family:'FestaSynvia','Manrope',cursive;font-weight:400;line-height:.98;letter-spacing:.5px;color:var(--fest-yellow);text-shadow:0 3px 0 rgba(0,0,0,.25);}
 .icobtn.on{background:var(--fest-yellow) !important;color:#5a3d00 !important;border-color:var(--fest-yellow) !important;box-shadow:0 0 16px rgba(244,184,27,.6);}
+/* cartão de notificação é branco → texto escuro pra ler bem */
+.notif{color:#22201f;}
+.notif-title{color:#22201f;}
+.notif-text{color:#4a4744;}
 </style>
 </head>
 <body>
@@ -321,8 +325,8 @@ async function startCamera(){
   video.classList.toggle('mirror',front);
   try{
     stopCamera();
-    // resizeMode:'none' evita o corte/zoom digital que o navegador aplica no celular
-    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:front?'user':'environment',width:{ideal:1080},height:{ideal:1920},resizeMode:'none'},audio:false});
+    // pede retrato (aspectRatio) — reduz o corte/zoom no iPhone; Android também melhora
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:front?'user':'environment',width:{ideal:1080},height:{ideal:1920},aspectRatio:{ideal:0.5625}},audio:false});
     video.srcObject=stream;await video.play();
     curTrack=stream.getVideoTracks()[0];torchOn=false;
     try{
@@ -384,6 +388,21 @@ $('sendFotoBtn').onclick=async()=>{
 };
 
 /* Sucesso */
+let lastPhoto='';
+// Salvar foto: no iPhone o download vai pra Arquivos; o compartilhamento deixa "Salvar Imagem" (Fotos).
+async function salvarFoto(){
+  if(!lastPhoto) return;
+  try{
+    const blob=await (await fetch(lastPhoto)).blob();
+    const file=new File([blob],'arraia-synvia.jpg',{type:'image/jpeg'});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({files:[file],title:'Arraiá da Synvia'});
+      return;
+    }
+  }catch(e){ if(e&&e.name==='AbortError') return; console.warn('share',e); }
+  const a=document.createElement('a');a.href=lastPhoto;a.download='arraia-synvia.jpg';document.body.appendChild(a);a.click();a.remove();
+}
+document.getElementById('saveBtn').addEventListener('click',e=>{e.preventDefault();salvarFoto();});
 function sucesso(tipo,foto){
   const isFoto=tipo==='foto';
   $('notifTitle').textContent='Fique atento! 👀';
@@ -392,7 +411,7 @@ function sucesso(tipo,foto){
   $('doneP').textContent=isFoto?'Recebemos sua foto — pode salvar ela com a moldura aqui embaixo. Fica de olho no telão! 🤠':'Recebemos seu carinho. Fica de olho no telão — pode ser que o seu apareça em destaque!';
   $('doneShot').classList.toggle('hidden',!isFoto);
   $('saveBtn').classList.toggle('hidden',!isFoto);
-  if(isFoto){$('doneShotImg').src=foto;$('saveBtn').href=foto;}
+  if(isFoto){lastPhoto=foto;$('doneShotImg').src=foto;$('saveBtn').href=foto;}
   show('doneView');confetti();
 }
 $('againBtn').onclick=()=>{

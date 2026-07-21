@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex,nofollow" />
+<title>Recordação ao vivo · Arraiá Synvia</title>
+<link rel="icon" type="image/png" href="assets/favicon.png?v=2" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+:root{--fest-forest:#16352a;--fest-green:#36a847;--fest-yellow:#f4b81b;--fest-orange:#e8590c;--fest-cream:#f6f1df;--gold:#e8a300;--danger:#e5564b;--font:"Manrope",system-ui,sans-serif;}
+*{box-sizing:border-box;}
+body{margin:0;font-family:var(--font);color:#f6f1df;background:radial-gradient(80% 45% at 50% 118%,rgba(232,89,12,.25),transparent 60%),linear-gradient(180deg,#0f2a20,#16352a 60%,#102a1f);min-height:100vh;}
+.wrap{max-width:1000px;margin:0 auto;padding:30px 20px 90px;}
+h1{font-size:1.7rem;font-weight:800;margin:0 0 4px;}
+.sub{color:rgba(246,241,223,.7);margin:0 0 20px;font-size:.95rem;line-height:1.5;}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+.btn{font-family:var(--font);font-weight:800;font-size:.9rem;cursor:pointer;border:none;border-radius:999px;padding:12px 18px;color:#5a3d00;background:linear-gradient(100deg,var(--fest-yellow),#ffd257);display:inline-flex;gap:8px;align-items:center;}
+.btn.o{background:linear-gradient(100deg,var(--fest-orange),#f4820c);color:#fff;}
+.btn.ghost{background:transparent;color:#f6f1df;border:1.5px solid rgba(246,241,223,.3);}
+.btn.ghost.on{background:rgba(246,241,223,.14);border-color:var(--fest-yellow);color:var(--fest-yellow);}
+.btn[disabled]{opacity:.5;cursor:not-allowed;}
+.stat{color:rgba(246,241,223,.85);font-weight:700;font-size:.88rem;margin-left:auto;}
+.tabs{display:flex;gap:8px;margin:6px 0 18px;}
+.sec-h{font-size:.8rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--fest-yellow);margin:24px 0 12px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;}
+.ph{background:#0f2a20;border:1px solid rgba(246,241,223,.14);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;}
+.ph img{width:100%;aspect-ratio:9/16;object-fit:cover;background:#000;display:block;}
+.ph .meta{padding:8px 10px;font-size:.78rem;color:rgba(246,241,223,.75);}
+.ph .meta b{color:#fff;display:block;font-size:.82rem;}
+.ph .row{display:flex;border-top:1px solid rgba(246,241,223,.1);}
+.ph .row a,.ph .row button{flex:1;text-align:center;padding:9px 4px;background:none;border:none;cursor:pointer;font-family:var(--font);font-weight:800;font-size:.8rem;color:var(--fest-yellow);text-decoration:none;}
+.ph .row button.tr{color:var(--danger);border-left:1px solid rgba(246,241,223,.1);}
+.ph .row a:hover,.ph .row button:hover{background:rgba(255,255,255,.06);}
+.recado{background:#0f2a20;border:1px solid rgba(246,241,223,.12);border-radius:12px;padding:12px 14px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;}
+.recado .body{flex:1;min-width:0;}
+.recado .who{font-weight:800;color:#fff;}
+.recado .st{font-size:.72rem;color:var(--fest-yellow);font-weight:700;}
+.recado .tx{color:rgba(246,241,223,.85);font-size:.92rem;margin-top:4px;}
+.recado .by{color:rgba(246,241,223,.55);font-size:.8rem;font-style:italic;margin-top:4px;}
+.recado .tr{flex:none;background:none;border:1.5px solid rgba(229,86,75,.5);color:var(--danger);border-radius:999px;padding:7px 12px;font-weight:800;cursor:pointer;font-size:.8rem;}
+.recado .tr:hover{background:rgba(229,86,75,.12);}
+.empty{color:rgba(246,241,223,.6);padding:34px 0;text-align:center;}
+.note{font-size:.82rem;color:rgba(246,241,223,.55);margin-top:26px;border-top:1px solid rgba(246,241,223,.12);padding-top:14px;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🎁 Recordação — Ao Vivo</h1>
+  <p class="sub">Tudo que a galera manda pela página <b>Ao Vivo</b> (recados e fotos) cai aqui — mesmo o que você não põe no telão. Mande pra lixeira os que não quiser guardar e baixe todas as fotos de uma vez.</p>
+  <div class="bar">
+    <button class="btn o" id="zipBtn" disabled>⬇️ Baixar todas as fotos (.zip)</button>
+    <button class="btn" id="csvBtn" disabled>⬇️ Baixar recados (.csv)</button>
+    <span class="stat" id="stat">Carregando…</span>
+  </div>
+  <div class="tabs">
+    <button class="btn ghost on" id="tabAc">Acervo</button>
+    <button class="btn ghost" id="tabLix">🗑 Lixeira <span id="lixN"></span></button>
+  </div>
+  <div id="acervo"></div>
+  <div id="lixeira" style="display:none"></div>
+  <p class="note" id="foot"></p>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+const FB={apiKey:"AIzaSyAJ-pmFFidThLK1KV6A7cUJrmF0RXXHr2c",authDomain:"contagem-de-likes.firebaseapp.com",databaseURL:"https://contagem-de-likes-default-rtdb.firebaseio.com",projectId:"contagem-de-likes"};
+const ARQUIVO='telaoFesta/arquivo', LIXEIRA='telaoFesta/arquivo_lixeira';
+const $=id=>document.getElementById(id);
+let db=null, arq={}, lix={}, view='ac';
+function loadScript(s){return new Promise((r,j)=>{const e=document.createElement('script');e.src=s;e.onload=r;e.onerror=j;document.head.appendChild(e);});}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function safe(s){return (s||'').toString().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^A-Za-z0-9_-]+/g,'_').slice(0,40)||'anonimo';}
+function fmt(ts){try{return new Date(Number(ts)).toLocaleString('pt-BR');}catch(e){return '';}}
+function isFoto(b){return b&&(b.tipo==='foto'||b.fotoFull||b.fotoUrl);}
+function src(b){return b.fotoFull||b.fotoUrl||'';}
+function ent(o){return Object.entries(o||{}).sort((a,b)=>(a[1].ts||0)-(b[1].ts||0));}
+function baixar(nome,blob){const a=document.createElement('a');a.download=nome;a.href=URL.createObjectURL(blob);document.body.appendChild(a);a.click();a.remove();}
+
+(async function(){
+  try{
+    await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
+    await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js');
+    firebase.initializeApp(FB); db=firebase.database();
+    db.ref(ARQUIVO).on('value',s=>{arq=s.val()||{};render();});
+    db.ref(LIXEIRA).on('value',s=>{lix=s.val()||{};render();});
+  }catch(e){console.error(e);$('stat').textContent='Erro ao carregar.';}
+})();
+
+$('tabAc').onclick=()=>{view='ac';$('tabAc').classList.add('on');$('tabLix').classList.remove('on');$('acervo').style.display='';$('lixeira').style.display='none';};
+$('tabLix').onclick=()=>{view='lix';$('tabLix').classList.add('on');$('tabAc').classList.remove('on');$('acervo').style.display='none';$('lixeira').style.display='';};
+
+async function paraLixeira(k){ if(!arq[k])return; await db.ref(LIXEIRA+'/'+k).set(arq[k]); await db.ref(ARQUIVO+'/'+k).remove(); }
+async function restaurar(k){ if(!lix[k])return; await db.ref(ARQUIVO+'/'+k).set(lix[k]); await db.ref(LIXEIRA+'/'+k).remove(); }
+async function apagar(k){ if(confirm('Apagar de vez? Não dá pra recuperar.')) await db.ref(LIXEIRA+'/'+k).remove(); }
+
+function render(){
+  const A=ent(arq), L=ent(lix);
+  const fotos=A.filter(([k,b])=>isFoto(b)), recados=A.filter(([k,b])=>!isFoto(b));
+  $('stat').textContent=`📸 ${fotos.length} fotos · 💌 ${recados.length} recados`;
+  $('lixN').textContent=L.length?('('+L.length+')'):'';
+  $('zipBtn').disabled=!fotos.length; $('csvBtn').disabled=!recados.length;
+  // ----- Acervo -----
+  let h='';
+  if(fotos.length){
+    h+='<div class="sec-h">📸 Fotos</div><div class="grid">';
+    fotos.forEach(([k,f],i)=>{
+      const nome=f.autor||f.remetente||'anônimo';
+      h+=`<div class="ph"><img src="${esc(src(f))}" loading="lazy" alt=""><div class="meta"><b>${esc(nome)}</b>${esc(fmt(f.ts))}</div><div class="row"><a href="${esc(src(f))}" download="arraia_${i+1}_${safe(nome)}.jpg">baixar</a><button class="tr" data-tr="${esc(k)}">🗑 lixeira</button></div></div>`;
+    });
+    h+='</div>';
+  }
+  if(recados.length){
+    h+='<div class="sec-h">💌 Recados</div>';
+    recados.forEach(([k,r])=>{
+      const by=(r.anon==='Sim'||r.anon===true)?'anônimo':(r.autor||r.remetente||'—');
+      h+=`<div class="recado"><div class="body"><span class="who">${esc(r.dest||'—')}</span> <span class="st">${esc(r.setor||'')}</span><div class="tx">“${esc(r.msg||'')}”</div><div class="by">de ${esc(by)} · ${esc(fmt(r.ts))}</div></div><button class="tr" data-tr="${esc(k)}">🗑</button></div>`;
+    });
+  }
+  if(!A.length) h='<div class="empty">Ainda não chegou nada da página Ao Vivo. Quando a galera mandar, aparece aqui na hora.</div>';
+  $('acervo').innerHTML=h;
+  $('acervo').querySelectorAll('[data-tr]').forEach(b=>b.onclick=()=>paraLixeira(b.dataset.tr));
+  // ----- Lixeira -----
+  let hl='';
+  if(L.length){
+    hl+='<div class="sec-h">🗑 Na lixeira (não entram no download)</div>';
+    const lf=L.filter(([k,b])=>isFoto(b)), lr=L.filter(([k,b])=>!isFoto(b));
+    if(lf.length){hl+='<div class="grid">';lf.forEach(([k,f])=>{const nome=f.autor||f.remetente||'anônimo';hl+=`<div class="ph"><img src="${esc(src(f))}" loading="lazy" alt=""><div class="meta"><b>${esc(nome)}</b>${esc(fmt(f.ts))}</div><div class="row"><button data-rs="${esc(k)}">↩︎ restaurar</button><button class="tr" data-del="${esc(k)}">apagar</button></div></div>`;});hl+='</div>';}
+    lr.forEach(([k,r])=>{const by=(r.anon==='Sim'||r.anon===true)?'anônimo':(r.autor||r.remetente||'—');hl+=`<div class="recado"><div class="body"><span class="who">${esc(r.dest||'—')}</span><div class="tx">“${esc(r.msg||'')}”</div><div class="by">de ${esc(by)}</div></div><button class="tr" data-rs="${esc(k)}" style="border-color:rgba(244,184,27,.5);color:var(--fest-yellow)">↩︎</button><button class="tr" data-del="${esc(k)}">apagar</button></div>`;});
+  }else hl='<div class="empty">Lixeira vazia.</div>';
+  $('lixeira').innerHTML=hl;
+  $('lixeira').querySelectorAll('[data-rs]').forEach(b=>b.onclick=()=>restaurar(b.dataset.rs));
+  $('lixeira').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>apagar(b.dataset.del));
+  $('foot').textContent='As fotos ficam guardadas em alta (com a moldura). Depois de baixar tudo, você pode limpar o Firebase se quiser.';
+}
+
+$('csvBtn').onclick=()=>{
+  const recados=ent(arq).filter(([k,b])=>!isFoto(b)).map(([k,r])=>r);
+  const head=['data','destinatario','setor','mensagem','remetente','autor','anonimo'];
+  const rows=recados.map(r=>[fmt(r.ts),r.dest||'',r.setor||'',r.msg||'',r.remetente||'',r.autor||'',r.anon||''])
+    .map(row=>row.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(','));
+  const csv='﻿'+head.join(',')+'\n'+rows.join('\n');
+  baixar('recordacao-recados-aovivo.csv',new Blob([csv],{type:'text/csv;charset=utf-8'}));
+};
+
+$('zipBtn').onclick=async()=>{
+  const btn=$('zipBtn'),orig=btn.textContent;btn.disabled=true;btn.textContent='Zipando…';
+  try{
+    const zip=new JSZip(),folder=zip.folder('fotos-arraia-synvia');
+    let n=0;
+    ent(arq).filter(([k,b])=>isFoto(b)).forEach(([k,f],i)=>{
+      const s=f.fotoFull||'';
+      if(!s.startsWith('data:image'))return; // só as fotos cheias (base64) entram no zip
+      folder.file(`arraia_${String(i+1).padStart(3,'0')}_${safe(f.autor||f.remetente||'anonimo')}.jpg`, s.split(',')[1], {base64:true});
+      n++;
+    });
+    if(!n){alert('Nenhuma foto em alta pra baixar ainda.');btn.textContent=orig;btn.disabled=false;return;}
+    const blob=await zip.generateAsync({type:'blob'});
+    baixar('fotos-arraia-synvia.zip',blob);
+  }catch(e){console.error(e);alert('Não deu pra gerar o zip.');}
+  btn.textContent=orig;btn.disabled=false;
+};
+</script>
+</body>
+</html>
