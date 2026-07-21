@@ -132,8 +132,8 @@ body.live-on .app{transform:translate(-50%,-50%) scale(.93);filter:blur(5px) bri
 <div class="bokeh" id="bokeh"></div>
 <div class="bunting top" id="bTop"></div>
 <div class="bunting bot" id="bBot"></div>
-<img class="corner fire" alt="" src="../assets/fogueira.png">
-<img class="corner corn" alt="" src="../assets/milho.png">
+<img class="corner fire" alt="" src="assets/fogueira.png">
+<img class="corner corn" alt="" src="assets/milho.png">
 
 <div class="app" id="app">
   <div class="app-top"></div>
@@ -309,7 +309,7 @@ async function deliverLive(item,kind){
         } else {
           if(db&&mode!=='idle'){db.ref(NP).set({idle:true,ts:Date.now()});mode='idle';}
           pushBubble(nextIdle());
-          await wait(6800);
+          await wait(11000);
         }
       }catch(e){console.warn(e);}
       busy=false;}

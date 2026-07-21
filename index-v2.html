@@ -186,7 +186,7 @@ h1 .warm{background:linear-gradient(100deg,var(--fest-orange),var(--gold));-webk
       <div class="frame" id="frame">
         <video id="video" playsinline muted class="mirror"></video>
         <img id="shot" class="shot hidden" alt="" />
-        <img class="moldura" src="../assets/moldura-foto.png" alt="" />
+        <img class="moldura" src="assets/moldura-foto.png" alt="" />
         <div class="cam-msg hidden" id="camMsg"></div>
       </div>
       <div class="field" id="nameField" style="margin-top:16px;margin-bottom:8px">
@@ -234,6 +234,8 @@ h1 .warm{background:linear-gradient(100deg,var(--fest-orange),var(--gold));-webk
 <script>
 const FIREBASE={apiKey:"AIzaSyAJ-pmFFidThLK1KV6A7cUJrmF0RXXHr2c",authDomain:"contagem-de-likes.firebaseapp.com",databaseURL:"https://contagem-de-likes-default-rtdb.firebaseio.com",projectId:"contagem-de-likes",storageBucket:"contagem-de-likes.appspot.com"};
 const AOVIVO_NODE='telaoFesta/aovivo';
+const ARQUIVO_NODE='telaoFesta/arquivo'; // recordação permanente (não é apagado na moderação)
+function arquivar(rec){ try{ db.ref(ARQUIVO_NODE).push(rec); }catch(e){ console.warn('arquivo',e); } }
 const CONF_COLS=['#f4b81b','#e8590c','#36a847','#3a86ff','#e8437e','#ffd257'];
 const $=id=>document.getElementById(id);
 (function(){const cols=['#f4b81b','#36a847','#e8590c','#f6f1df','#36a847','#f4b81b'];const g=$('flags');if(!g)return;const n=26,w=120/n;for(let i=0;i<n;i++){const x=i*w;const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',`M${x+0.4} 2 L${x+w-0.4} 2 L${x+w/2} ${15+(i%2?0:1.5)} Z`);p.setAttribute('fill',cols[i%cols.length]);g.appendChild(p);}})();
@@ -268,7 +270,9 @@ async function enviarRecado(){
   if(!ready||!db){$('err').textContent='Ainda estamos conectando. Espere um instante e tente de novo.';return;}
   const btn=$('sendBtn'),original=btn.innerHTML;btn.disabled=true;btn.textContent='Enviando...';
   try{
-    await db.ref(AOVIVO_NODE).push({tipo:'recado',dest,setor,msg,remetente:de||'',autor:de||'',anon:de?'Não':'Sim',status:'novo',ts:Date.now(),data:new Date().toLocaleString('pt-BR')});
+    const rec={tipo:'recado',dest,setor,msg,remetente:de||'',autor:de||'',anon:de?'Não':'Sim',status:'novo',ts:Date.now(),data:new Date().toLocaleString('pt-BR')};
+    await db.ref(AOVIVO_NODE).push(rec);
+    arquivar(rec); // recordação permanente
     sucesso('recado');
   }catch(err){console.error(err);$('err').textContent='Não deu pra enviar agora. Tente de novo em alguns segundos.';btn.disabled=false;btn.innerHTML=original;}
 }
@@ -293,7 +297,7 @@ async function startCamera(){
 }
 function stopCamera(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}}
 $('flipBtn').onclick=()=>{front=!front;startCamera();};
-const molduraImg=new Image();molduraImg.src='../assets/moldura-foto.png';
+const molduraImg=new Image();molduraImg.src='assets/moldura-foto.png';
 function compose(CW,CH,q){
   const c=document.createElement('canvas');c.width=CW;c.height=CH;const ctx=c.getContext('2d');
   const vw=video.videoWidth,vh=video.videoHeight,tR=CW/CH,sR=vw/vh;let sx,sy,sw,sh;
@@ -323,7 +327,9 @@ $('sendFotoBtn').onclick=async()=>{
     const ts=Date.now();
     const thumb=compose(405,720,0.72);           // versão leve p/ exibir rápido
     const fotoUrl=await uploadFoto(photoData,ts); // alta qualidade -> Storage
-    await db.ref(AOVIVO_NODE).push({tipo:'foto',remetente:$('fotoNome').value.trim()||'',autor:$('fotoNome').value.trim()||'',anon:$('fotoNome').value.trim()?'Não':'Sim',fotoUrl,foto:thumb,status:'novo',ts,data:new Date().toLocaleString('pt-BR')});
+    const nome=$('fotoNome').value.trim();
+    await db.ref(AOVIVO_NODE).push({tipo:'foto',remetente:nome,autor:nome,anon:nome?'Não':'Sim',fotoUrl,foto:thumb,status:'novo',ts,data:new Date().toLocaleString('pt-BR')});
+    arquivar({tipo:'foto',remetente:nome,autor:nome,anon:nome?'Não':'Sim',fotoUrl,fotoFull:photoData,status:'novo',ts,data:new Date().toLocaleString('pt-BR')}); // recordação: guarda a FOTO CHEIA (alta, com moldura) — não precisa de Storage
     stopCamera();sucesso('foto',photoData);
   }catch(err){console.error(err);$('errFoto').textContent='Não deu pra enviar a foto. Tente de novo.';btn.disabled=false;btn.innerHTML=original;}
 };
