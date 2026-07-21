@@ -29,7 +29,7 @@ body.transparent{background:transparent;}
 .bokeh{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
 .bokeh i{position:absolute;border-radius:50%;background:radial-gradient(circle,#fff,rgba(255,255,255,0));opacity:.5;animation:tw 3.5s ease-in-out infinite;}
 @keyframes tw{0%,100%{opacity:.2;transform:scale(.8)}50%{opacity:.7;transform:scale(1.1)}}
-.transparent .bokeh,.transparent .bunting{display:none;}
+.transparent .bokeh{display:none;}
 .bunting{position:fixed;left:0;width:100%;height:46px;display:flex;justify-content:center;pointer-events:none;z-index:6;}
 .bunting.top{top:0;} .bunting.bot{bottom:0;transform:scaleY(-1);}
 .flag{width:58px;height:44px;clip-path:polygon(0 0,100% 0,50% 100%);margin:0 -1px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.35));animation:sway 3.6s ease-in-out infinite;}
@@ -72,12 +72,6 @@ body.live-on .app{transform:translate(-50%,-50%) scale(.93);filter:blur(5px) bri
 .b-chip{font-size:14px;font-weight:700;color:#fff;background:var(--fest-green);padding:3px 12px;border-radius:999px;}
 .b-msg{font-size:26px;line-height:1.3;color:#2e2721;font-weight:600;text-wrap:pretty;}
 .b-de{margin-top:8px;font-size:15px;font-style:italic;color:#a8967c;}
-/* bolha de foto + destaque (o que veio do ao vivo assenta no chat) */
-.b-photo{display:block;width:auto;max-width:100%;max-height:34vh;border-radius:12px;margin-top:4px;box-shadow:0 6px 16px rgba(0,0,0,.25);}
-.b-tag{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#5a3d00;background:linear-gradient(100deg,#f4b81b,#ffd257);border-radius:999px;padding:3px 11px;margin-bottom:8px;}
-.bubble.destaque .bub{background:linear-gradient(165deg,#fffaf0,#ffeec2);border:2px solid #e8a300;box-shadow:0 10px 26px rgba(180,120,10,.4);}
-.bubble.destaque .bub::before{background:#ffeec2;}
-.bubble.destaque .b-name{color:#5a3d00;}
 /* --- takeover: elogio ao vivo --- */
 .live{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s ease;}
 .live.on{opacity:1;}
@@ -138,8 +132,8 @@ body.live-on .app{transform:translate(-50%,-50%) scale(.93);filter:blur(5px) bri
 <div class="bokeh" id="bokeh"></div>
 <div class="bunting top" id="bTop"></div>
 <div class="bunting bot" id="bBot"></div>
-<img class="corner fire" alt="" src="assets/fogueira.png">
-<img class="corner corn" alt="" src="assets/milho.png">
+<img class="corner fire" alt="" src="../assets/fogueira.png">
+<img class="corner corn" alt="" src="../assets/milho.png">
 
 <div class="app" id="app">
   <div class="app-top"></div>
@@ -152,7 +146,7 @@ body.live-on .app{transform:translate(-50%,-50%) scale(.93);filter:blur(5px) bri
     <div class="app-count" id="count">🤠 Synvia</div>
   </div>
   <div class="feed" id="feed"></div>
-  <div class="foot"><span class="typing"><i></i><i></i><i></i></span> <span id="footTxt">chegando mais recados de carinho…</span></div>
+  <div class="foot"><span class="typing"><i></i><i></i><i></i></span> recebendo mais recados…</div>
 </div>
 
 <div class="live" id="live">
@@ -219,25 +213,18 @@ function fireShow(gold){const W=innerWidth,H=innerHeight;firework(W*0.2,H*0.28,g
 
 // ---- feed de recados (pop-up na caixa de mensagens) ----
 const MAX=4;
-function isFotoItem(it){return it&&(it.tipo==='foto'||!!it.fotoUrl||(typeof it.foto==='string'&&/^data:image/.test(it.foto)));}
-function pushBubble(item,opts){
-  opts=opts||{};
-  const foto=isFotoItem(item), destaque=!!opts.destaque;
-  const row=document.createElement('div');row.className='bubble'+(destaque?' destaque':'');
-  const av=document.createElement('div');av.className='b-ava';
-  if(foto){av.style.background='linear-gradient(150deg,#e8590c,#f4820c)';av.textContent='📸';}
-  else{av.style.background=corDe(item.para);av.textContent=emojiFor(item.para);}
-  const bub=document.createElement('div');bub.className='bub'+(foto?' foto':'');
-  if(destaque){const tag=document.createElement('div');tag.className='b-tag';tag.textContent='✨ ao vivo';bub.append(tag);}
+function pushBubble(item){
+  const row=document.createElement('div');row.className='bubble';
+  const av=document.createElement('div');av.className='b-ava';av.style.background=corDe(item.para);av.textContent=emojiFor(item.para);
+  const bub=document.createElement('div');bub.className='bub';
   const head=document.createElement('div');head.className='b-head';
-  const to=document.createElement('span');to.className='b-to';to.textContent=foto?'Foto':'Para';
-  const nm=document.createElement('span');nm.className='b-name';nm.textContent=item.para||(foto?'da festa':'Synvia');
-  head.append(to,nm);
-  if(!foto){const chip=document.createElement('span');chip.className='b-chip';chip.textContent=item.setor||'Synvia';head.append(chip);}
-  bub.append(head);
-  if(foto){const img=document.createElement('img');img.className='b-photo';img.src=item.fotoUrl||item.foto||'';bub.append(img);}
-  else{const msg=document.createElement('div');msg.className='b-msg';msg.textContent='“'+item.msg+'”';bub.append(msg);}
-  const de=document.createElement('div');de.className='b-de';de.textContent=item.de||'';bub.append(de);
+  const to=document.createElement('span');to.className='b-to';to.textContent='Para';
+  const nm=document.createElement('span');nm.className='b-name';nm.textContent=item.para;
+  const chip=document.createElement('span');chip.className='b-chip';chip.textContent=item.setor||'Synvia';
+  head.append(to,nm,chip);
+  const msg=document.createElement('div');msg.className='b-msg';msg.textContent='“'+item.msg+'”';
+  const de=document.createElement('div');de.className='b-de';de.textContent=item.de||'';
+  bub.append(head,msg,de);
   row.append(av,bub);
   feed.appendChild(row);
   requestAnimationFrame(()=>row.classList.add('pop'));
@@ -254,7 +241,7 @@ async function deliverLive(item,kind){
     livecard.style.display='none';livephoto.style.display='block';livephoto.classList.remove('in','out');
     lpImg.src=item.fotoUrl||item.foto||'';
     lpRibbon.textContent=gold?'✨ Foto ao vivo ✨':'📸 Foto em destaque';
-    lpDe.textContent=item.de?('📸 '+item.de):'';lpDe.style.display=item.de?'block':'none';
+    lpDe.textContent=item.de?('De: '+item.de):'';lpDe.style.display=item.de?'block':'none';
     lpTimer.style.transition='none';lpTimer.style.transform='scaleX(0)';
     await wait(40);livephoto.classList.add('in');
     confetti(gold);fireShow(gold);pop(gold);
@@ -318,18 +305,11 @@ async function deliverLive(item,kind){
           const kind=next.aoVivo?'live':'featured';mode='live';
           db.ref(NP).set({tipo:next.tipo||'recado',para:next.para||'',setor:next.setor||'',msg:next.msg||'',de:next.de||'',fotoUrl:next.fotoUrl||'',aoVivo:!!next.aoVivo,ts:Date.now(),live:true});
           await deliverLive(next,kind);
-          pushBubble(next,{destaque:true});   // depois do grandão, assenta no chat destacado
           await db.ref(Q+'/'+next.key).remove();
-          if(isFotoItem(next)){               // MOMENTO FOTO: 60s sem subir mensagem nenhuma
-            const ft=el('footTxt');
-            if(ft)ft.textContent='📸 Momento foto! Tire a sua e mande pro telão…';
-            await wait(60000);
-            if(ft)ft.textContent='chegando mais recados de carinho…';
-          }
         } else {
           if(db&&mode!=='idle'){db.ref(NP).set({idle:true,ts:Date.now()});mode='idle';}
           pushBubble(nextIdle());
-          await wait(11000);
+          await wait(6800);
         }
       }catch(e){console.warn(e);}
       busy=false;}
