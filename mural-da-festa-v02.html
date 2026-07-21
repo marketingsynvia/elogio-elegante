@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Telão · Mural da Festa · Arraiá Synvia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green-deep:#1a8f41;
+  --fest-forest:#16352a; --fest-forest2:#0f2a20; --fest-green:#36a847; --fest-yellow:#f4b81b;
+  --fest-orange:#e8590c; --fest-navy:#2b3a6b; --fest-cream:#f6f1df;
+  --gold:#e8a300; --gold-deep:#b5590c; --gold-lite:#ffd257;
+  --ink:#22201f; --font:"Manrope",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);}
+body{
+  background:
+    radial-gradient(90% 60% at 50% 120%, rgba(232,89,12,.4), rgba(0,0,0,0) 62%),
+    radial-gradient(130% 100% at 50% -10%, #33507f 0%, var(--fest-navy) 38%, var(--fest-forest) 100%);
+  color:#fff;
+}
+body.transparent{background:transparent;}
+/* --- decoração de festa --- */
+.bokeh{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+.bokeh i{position:absolute;border-radius:50%;background:radial-gradient(circle,#fff,rgba(255,255,255,0));opacity:.5;animation:tw 3.5s ease-in-out infinite;}
+@keyframes tw{0%,100%{opacity:.2;transform:scale(.8)}50%{opacity:.7;transform:scale(1.1)}}
+.transparent .bokeh,.transparent .bunting{display:none;}
+.bunting{position:fixed;left:0;width:100%;height:46px;display:flex;justify-content:center;pointer-events:none;z-index:6;}
+.bunting.top{top:0;} .bunting.bot{bottom:0;transform:scaleY(-1);}
+.flag{width:58px;height:44px;clip-path:polygon(0 0,100% 0,50% 100%);margin:0 -1px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.35));animation:sway 3.6s ease-in-out infinite;}
+@keyframes sway{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(5px) rotate(1.5deg)}}
+.corner{position:fixed;pointer-events:none;z-index:1;filter:drop-shadow(0 8px 18px rgba(0,0,0,.4));}
+.corner.fire{left:2.5vw;bottom:2.5vh;width:min(13vw,150px);animation:flick 1.6s ease-in-out infinite;transform-origin:bottom center;}
+.corner.corn{right:2.8vw;bottom:2vh;width:min(9vw,110px);transform:rotate(8deg);}
+.corner.hat{left:2.5vw;top:3vh;width:min(12vw,150px);transform:rotate(-7deg);}
+.corner.sun{right:2.5vw;top:3vh;width:min(11vw,140px);transform:rotate(8deg);}
+.corner.lan{left:2vw;top:40vh;width:min(7.5vw,90px);}
+.corner.cac{right:2.2vw;bottom:22vh;width:min(9vw,120px);}
+@keyframes flick{0%,100%{transform:scale(1) rotate(-1deg);filter:drop-shadow(0 0 22px rgba(244,184,27,.5))}50%{transform:scale(1.05) rotate(1deg);filter:drop-shadow(0 0 36px rgba(232,89,12,.75))}}
+/* cantos (PNGs da identidade) aparecem mesmo com fundo transparente */
+/* --- painel de mensagens (caixa de recados) --- */
+.app{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;width:min(72vw,1040px);height:min(84vh,880px);background:var(--fest-cream);border-radius:30px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.55),0 0 0 8px rgba(255,255,255,.9),0 0 0 16px rgba(54,168,71,.55);transition:transform .6s cubic-bezier(.2,.8,.2,1),filter .5s ease,opacity .5s ease;}
+body.live-on .app{transform:translate(-50%,-50%) scale(.93);filter:blur(5px) brightness(.7) saturate(.85);}
+.app-top{flex:none;height:12px;background:repeating-linear-gradient(45deg,#cf5a2b 0 14px,#f0c04a 14px 28px,#3a9440 28px 42px,#8bbf3c 42px 56px);}
+.app-bar{flex:none;display:flex;align-items:center;gap:16px;padding:18px 26px;background:linear-gradient(100deg,var(--fest-forest),#1f4635);color:#fff;border-bottom:3px solid rgba(0,0,0,.14);}
+.app-ava{width:56px;height:56px;border-radius:16px;background:var(--fest-yellow);display:grid;place-items:center;font-size:32px;flex:none;box-shadow:0 4px 10px rgba(0,0,0,.3);}
+.app-meta{display:flex;flex-direction:column;line-height:1.15;}
+.app-name{font-size:26px;font-weight:800;letter-spacing:.2px;}
+.app-sub{font-size:15px;color:#bfe6c8;display:flex;align-items:center;gap:8px;font-weight:600;}
+.dot{width:10px;height:10px;border-radius:50%;background:#4be07a;animation:on 1.6s ease-out infinite;}
+@keyframes on{0%{box-shadow:0 0 0 0 rgba(75,224,122,.6)}100%{box-shadow:0 0 0 10px rgba(75,224,122,0)}}
+.app-count{margin-left:auto;font-size:15px;font-weight:800;color:#3a2600;background:var(--fest-yellow);padding:7px 15px;border-radius:999px;white-space:nowrap;}
+.feed{flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:18px;padding:22px 28px 8px;overflow:hidden;background:radial-gradient(120% 80% at 50% 0%,#fffef8,var(--fest-cream));}
+.foot{flex:none;display:flex;align-items:center;gap:11px;padding:12px 28px 18px;color:#8a7a63;font-size:16px;font-style:italic;font-weight:600;}
+.typing{display:inline-flex;gap:5px;}
+.typing i{width:8px;height:8px;border-radius:50%;background:#c9b58f;animation:ty 1.2s ease-in-out infinite;}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes ty{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-5px);opacity:1}}
+/* --- balões de recado --- */
+.bubble{display:flex;align-items:flex-end;gap:14px;transform-origin:left bottom;}
+.bubble.pop{animation:pop .55s cubic-bezier(.2,1.35,.35,1) both;}
+@keyframes pop{0%{opacity:0;transform:translateY(28px) scale(.82)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.bubble.leave{animation:leave .48s ease forwards;}
+@keyframes leave{to{opacity:0;transform:translateY(-16px) scale(.96);margin-top:-14px}}
+.b-ava{position:relative;width:60px;height:60px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:30px;color:#fff;box-shadow:0 6px 14px rgba(0,0,0,.22),inset 0 0 0 4px rgba(255,255,255,.65);}
+.bub{position:relative;background:#fff;border-radius:20px 20px 20px 6px;padding:15px 24px 14px;max-width:calc(100% - 92px);box-shadow:0 8px 20px rgba(34,32,31,.1);}
+.bub::before{content:"";position:absolute;left:-9px;bottom:0;width:16px;height:18px;background:#fff;clip-path:polygon(100% 0,100% 100%,0 100%);}
+.b-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
+.b-to{font-size:15px;color:#8a7a63;font-weight:700;}
+.b-name{font-size:24px;font-weight:800;color:var(--fest-forest);}
+.b-chip{font-size:14px;font-weight:700;color:#fff;background:var(--fest-green);padding:3px 12px;border-radius:999px;}
+.b-msg{font-size:26px;line-height:1.3;color:#2e2721;font-weight:600;text-wrap:pretty;}
+.b-de{margin-top:8px;font-size:15px;font-style:italic;color:#a8967c;}
+.b-photo{display:block;width:auto;max-width:100%;max-height:34vh;border-radius:12px;margin-top:4px;box-shadow:0 6px 16px rgba(0,0,0,.25);}
+.b-tag{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#5a3d00;background:linear-gradient(100deg,#f4b81b,#ffd257);border-radius:999px;padding:3px 11px;margin-bottom:8px;}
+.bubble.destaque .bub{background:linear-gradient(165deg,#fffaf0,#ffeec2);border:2px solid #e8a300;box-shadow:0 10px 26px rgba(180,120,10,.4);}
+.bubble.destaque .bub::before{background:#ffeec2;}
+.bubble.destaque .b-name{color:#5a3d00;}
+/* --- takeover: elogio ao vivo --- */
+.live{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s ease;}
+.live.on{opacity:1;}
+.live-bg{position:absolute;inset:0;background:radial-gradient(60% 60% at 50% 45%,rgba(244,184,27,.22),rgba(11,20,16,.72) 70%);}
+.transparent .live-bg{background:radial-gradient(60% 60% at 50% 45%,rgba(244,184,27,.18),rgba(11,20,16,.45) 72%);}
+.livecard{position:relative;width:min(58vw,900px);max-height:94vh;background:linear-gradient(165deg,#fffaf0,#ffeec2);color:#4a3400;border-radius:32px;padding:38px 52px 36px;text-align:center;box-shadow:0 40px 100px rgba(0,0,0,.6),0 0 0 7px rgba(255,255,255,.95),0 0 0 16px var(--gold),0 0 90px rgba(244,184,27,.7);transform:scale(.4) translateY(40px) rotate(-4deg);opacity:0;}
+.livecard.in{animation:burst .8s cubic-bezier(.16,1.3,.3,1) forwards;}
+@keyframes burst{0%{opacity:0;transform:scale(.4) translateY(40px) rotate(-4deg)}60%{opacity:1;transform:scale(1.04) translateY(0) rotate(1.5deg)}100%{opacity:1;transform:scale(1) translateY(0) rotate(0)}}
+.livecard.out{animation:eject .55s ease forwards;}
+@keyframes eject{to{opacity:0;transform:scale(.86) translateY(-54px)}}
+.livecard.feat{background:linear-gradient(165deg,#f4fff2,#d9f6df);color:#12321f;box-shadow:0 40px 100px rgba(0,0,0,.55),0 0 0 7px rgba(255,255,255,.95),0 0 0 16px var(--fest-green),0 0 80px rgba(54,168,71,.6);}
+.livecard::before{content:"";position:absolute;top:-15px;left:30px;right:30px;height:16px;border-radius:8px;background:repeating-linear-gradient(45deg,var(--gold) 0 14px,var(--fest-yellow) 14px 28px,var(--gold-lite) 28px 42px,var(--fest-orange) 42px 56px);}
+.livecard.feat::before{background:repeating-linear-gradient(45deg,var(--fest-orange) 0 14px,var(--fest-yellow) 14px 28px,var(--fest-green) 28px 42px,var(--fest-navy) 42px 56px);}
+.shimmer{position:absolute;inset:0;border-radius:32px;overflow:hidden;pointer-events:none;}
+.shimmer::after{content:"";position:absolute;top:-60%;left:-70%;width:45%;height:220%;transform:rotate(18deg);background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.85),rgba(255,255,255,0));animation:sweep 2.3s linear infinite;}
+@keyframes sweep{0%{left:-70%}100%{left:150%}}
+.tremor{animation:tremor .6s ease;}
+@keyframes tremor{0%,100%{transform:translateX(0)}15%{transform:translateX(-9px)}30%{transform:translateX(9px)}45%{transform:translateX(-6px)}60%{transform:translateX(6px)}75%{transform:translateX(-3px)}90%{transform:translateX(3px)}}
+.lv-ribbon{position:relative;z-index:4;margin:0 auto 6px;width:max-content;padding:9px 28px;border-radius:30px;font-weight:800;font-size:22px;letter-spacing:.5px;background:linear-gradient(100deg,var(--gold),var(--gold-lite));color:#5a3d00;box-shadow:0 8px 20px rgba(244,184,27,.6);animation:pulse 1.05s ease-in-out infinite;}
+.lv-ribbon.feat{background:var(--fest-green);color:#fff;box-shadow:0 8px 18px rgba(54,168,71,.5);animation:none;}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.lv-ava{position:relative;z-index:4;width:116px;height:116px;margin:12px auto 4px;border-radius:50%;display:grid;place-items:center;font-size:58px;color:#fff;box-shadow:0 12px 26px rgba(0,0,0,.3),inset 0 0 0 6px rgba(255,255,255,.7);transform:scale(0);}
+.lv-ava.pop{animation:avapop .55s cubic-bezier(.2,1.5,.4,1) forwards;}
+@keyframes avapop{to{transform:scale(1)}}
+.lv-ava .hat{position:absolute;top:-36px;left:50%;transform:translateX(-50%) rotate(-13deg);font-size:54px;}
+.lv-to{font-size:20px;color:#8a7a63;letter-spacing:1px;margin-top:14px;}
+.livecard.feat .lv-to{color:#4c6b56;}
+.lv-name{font-size:46px;font-weight:800;line-height:1.04;margin-top:2px;text-wrap:balance;}
+.lv-chip{display:inline-block;margin-top:14px;padding:7px 24px;border-radius:24px;font-size:20px;font-weight:700;background:linear-gradient(100deg,var(--gold),#d99a06);color:#3a2600;}
+.livecard.feat .lv-chip{background:var(--fest-green);color:#fff;}
+.lv-msg{font-size:31px;line-height:1.3;margin-top:18px;font-weight:600;text-wrap:pretty;}
+.lv-msg.short{font-size:40px;}
+.lv-de{margin-top:16px;font-size:19px;font-style:italic;opacity:.68;}
+.lv-timer{position:absolute;left:30px;right:30px;bottom:14px;height:6px;border-radius:4px;background:rgba(0,0,0,.08);overflow:hidden;}
+.lv-timer i{display:block;height:100%;transform-origin:left;background:linear-gradient(90deg,var(--gold),var(--gold-lite));transform:scaleX(0);}
+.livecard.feat .lv-timer i{background:linear-gradient(90deg,var(--fest-green),var(--fest-yellow));}
+.livephoto{position:relative;height:min(88vh,900px);aspect-ratio:9/16;border-radius:26px;overflow:hidden;background:#0d0d0d;box-shadow:0 40px 100px rgba(0,0,0,.6),0 0 0 7px rgba(255,255,255,.95),0 0 0 15px var(--gold),0 0 90px rgba(244,184,27,.7);transform:scale(.4) translateY(40px) rotate(-4deg);opacity:0;}
+.livephoto.in{animation:burst .8s cubic-bezier(.16,1.3,.3,1) forwards;}
+.livephoto.out{animation:eject .55s ease forwards;}
+.livephoto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.lp-ribbon{position:absolute;top:16px;left:50%;transform:translateX(-50%);z-index:3;padding:8px 22px;border-radius:30px;font-weight:800;font-size:20px;white-space:nowrap;background:linear-gradient(100deg,var(--gold),var(--gold-lite));color:#5a3d00;box-shadow:0 8px 20px rgba(0,0,0,.4);animation:lppulse 1.05s ease-in-out infinite;}
+@keyframes lppulse{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.06)}}
+.lp-de{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:34px 20px 16px;text-align:center;color:#fff;font-size:22px;font-weight:700;background:linear-gradient(180deg,transparent,rgba(11,25,18,.72));}
+.lp-timer{position:absolute;left:0;bottom:0;z-index:4;height:7px;width:100%;background:rgba(0,0,0,.15);}
+.lp-timer i{display:block;height:100%;transform-origin:left;background:linear-gradient(90deg,var(--gold),var(--gold-lite));transform:scaleX(0);}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:45;overflow:hidden;}
+.confetti span{position:absolute;top:-20px;width:13px;height:17px;opacity:.95;animation:fall linear forwards;}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.9;}}
+.fw{position:fixed;pointer-events:none;z-index:44;}
+.fw i{position:absolute;left:0;top:0;width:7px;height:7px;border-radius:50%;}
+@keyframes spark{0%{opacity:1;transform:rotate(var(--a)) translateY(0) scale(1)}100%{opacity:0;transform:rotate(var(--a)) translateY(-150px) scale(.3)}}
+.brand{position:fixed;bottom:14px;left:0;width:100%;text-align:center;color:rgba(255,255,255,.85);font-weight:700;letter-spacing:2px;font-size:15px;z-index:6;}
+.transparent .brand{display:none;}
+@media (max-aspect-ratio:1/1){.app{width:92vw;height:86vh}.corner.fire{width:22vw}.corner.corn{width:15vw}.livecard{width:88vw;padding:38px 30px 36px}.lv-name{font-size:40px}.lv-msg{font-size:28px}.lv-msg.short{font-size:34px}}
+/* ===== MODO CLEAN — overlay p/ Resolume: sem janela central, cantos flutuantes, centro livre ===== */
+.clean .app,.clean .bunting,.clean .bokeh,.clean .corner,.clean .brand{display:none!important;}
+.clean .live-bg{background:none!important;}
+.float-msg{position:fixed;z-index:12;width:min(30vw,430px);display:flex;gap:14px;align-items:flex-start;
+  background:rgba(255,253,247,.92);color:var(--ink);border-radius:22px;padding:16px 20px;
+  box-shadow:0 18px 50px rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  opacity:0;transform:translateY(16px) scale(.95);transition:opacity .55s ease,transform .55s cubic-bezier(.2,.9,.25,1.25);}
+.float-msg.in{opacity:1;transform:none;}
+.float-msg.out{opacity:0;transform:translateY(-12px) scale(.97);}
+.fm-ava{flex:none;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:27px;color:#fff;box-shadow:0 6px 14px rgba(0,0,0,.25),inset 0 0 0 3px rgba(255,255,255,.6);}
+.fm-body{min-width:0;}
+.float-msg .fm-to{font-size:12px;color:#8a7a63;font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+.float-msg .fm-name{font-size:23px;font-weight:800;color:var(--fest-forest);line-height:1.1;}
+.float-msg .fm-msg{font-size:19px;line-height:1.32;color:#2e2721;font-weight:600;margin-top:4px;}
+.float-msg .fm-de{margin-top:6px;font-size:12px;font-style:italic;color:#a8967c;}
+.float-msg .fm-tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#5a3d00;background:linear-gradient(100deg,#f4b81b,#ffd257);border-radius:999px;padding:3px 10px;margin-bottom:7px;}
+.float-msg.destaque{background:linear-gradient(165deg,rgba(255,250,240,.95),rgba(255,238,194,.95));border:2px solid #e8a300;}
+.float-msg.z0{top:7vh;left:4vw;}
+.float-msg.z1{top:7vh;right:4vw;}
+.float-msg.z2{bottom:9vh;left:4vw;}
+.float-msg.z3{bottom:9vh;right:4vw;}
+</style>
+</head>
+<body>
+<div class="bokeh" id="bokeh"></div>
+<div class="bunting top" id="bTop"></div>
+<div class="bunting bot" id="bBot"></div>
+<img class="corner fire" alt="" src="assets/fogueira.png" onerror="this.remove()">
+<img class="corner corn" alt="" src="assets/milho.png" onerror="this.remove()">
+<img class="corner hat" alt="" src="assets/chapeu.png" onerror="this.remove()">
+<img class="corner sun" alt="" src="assets/girassol.png" onerror="this.remove()">
+<img class="corner cac" alt="" src="assets/cactos.png" onerror="this.remove()">
+<img class="corner lan" alt="" src="assets/lanterna.png" onerror="this.remove()">
+
+<div class="app" id="app">
+  <div class="app-top"></div>
+  <div class="app-bar">
+    <div class="app-ava">💌</div>
+    <div class="app-meta">
+      <div class="app-name">Recados do Arraiá</div>
+      <div class="app-sub"><span class="dot"></span> Correio Elegante · online</div>
+    </div>
+    <div class="app-count" id="count">🤠 Synvia</div>
+  </div>
+  <div class="feed" id="feed"></div>
+  <div class="foot"><span class="typing"><i></i><i></i><i></i></span> recebendo mais recados…</div>
+</div>
+
+<div class="live" id="live">
+  <div class="live-bg"></div>
+  <div class="livecard" id="livecard">
+    <div class="shimmer"></div>
+    <div class="lv-ribbon" id="lvRibbon">✨ Elogio ao vivo</div>
+    <div class="lv-ava" id="lvAva"><span class="hat">🤠</span><span id="lvEmoji">🌽</span></div>
+    <div class="lv-to">Para</div>
+    <div class="lv-name" id="lvName">—</div>
+    <div class="lv-chip" id="lvChip">—</div>
+    <div class="lv-msg" id="lvMsg">—</div>
+    <div class="lv-de" id="lvDe">—</div>
+    <div class="lv-timer"><i id="lvTimer"></i></div>
+  </div>
+  <div class="livephoto" id="livephoto">
+    <div class="lp-ribbon" id="lpRibbon">✨ Foto ao vivo ✨</div>
+    <img id="lpImg" alt="" />
+    <div class="lp-de" id="lpDe"></div>
+    <div class="lp-timer"><i id="lpTimer"></i></div>
+  </div>
+</div>
+<div class="brand">ARRAIÁ DA SYNVIA 2026 · 💚🌽🔥</div>
+<script>
+const FB={apiKey:"AIzaSyAJ-pmFFidThLK1KV6A7cUJrmF0RXXHr2c",authDomain:"contagem-de-likes.firebaseapp.com",databaseURL:"https://contagem-de-likes-default-rtdb.firebaseio.com",projectId:"contagem-de-likes"};
+const Q="telaoFesta/queue", NP="telaoFesta/nowPlaying", APROV="bilhetes_aprovados";
+const POOL=[{"id": "blpxnjx", "para": "Vanessa Pereira", "setor": "Enfermagem", "msg": "Juroproce que oce é linda de mais uai,com esses zoi verde", "de": "de um admirador secreto do seu trabalho", "len": 57}, {"id": "b173y8gy", "para": "Andrea Anesi", "setor": "Suprimentos", "msg": "Muito obrigada por nos incentivar, apoiar, dar suporte e nos auxiliar a desenvolver toda resiliência necessária! Continue sendo essa profissional excelente no que faz.", "de": "de um colega que torce por você", "len": 167}, {"id": "b49gyzo", "para": "Angélica Raiane", "setor": "Enfermagem", "msg": "Linda como uma rainha dos kpop", "de": "de um admirador secreto do seu trabalho", "len": 30}, {"id": "b1nil3yd", "para": "Equipe e Excelência Operacional", "setor": "Excelência Operacional", "msg": "Gostaria de destacar a atuação da equipe ao longo desse processo. A postura parceira, a consistência nas entregas e o cuidado com cada detalhe operacional demonstram a maturidade e o profissionalismo do grupo. Esse resultado é fruto do esforço coletivo de cada um de vocês. Muito obrigado!", "de": "de um admirador secreto do seu trabalho", "len": 289}, {"id": "bu2ede6", "para": "Gabriela Aparecida dos Santos", "setor": "Suprimentos", "msg": "Gabi, você chegou faz pouco tempo mas já é de casa! Muito obrigada por agregar na nossa equipe!", "de": "de alguém que te admira", "len": 95}, {"id": "b1gp2ldr", "para": "Vitoria Gonçalves de Souza", "setor": "Produtos & Software", "msg": "Quero que você saiba o quanto você é especial pra mim. Ter você do meu lado é um presente que eu não troco por nada. Te amo muito, prima!", "de": "de um colega que torce por você", "len": 137}, {"id": "b83u4oo", "para": "Michelle Stefanelli", "setor": "Excelência Operacional", "msg": "Mih, obrigado pela parceria de sempre. Trabalhar ao seu lado é uma experiência que me acrescenta muito, tanto profissional quanto pessoalmente. Fico feliz de poder contar com você.", "de": "de um colega que torce por você", "len": 180}, {"id": "b1oyq159", "para": "Jessica Caroline Nascimento de Carvalho Mendes", "setor": "Suprimentos", "msg": "Jéssica, obrigada por ser essa excelente pessoa e profissional que compõe nosso time. Além é claro, de incentivo fitness #zeroaçúcar kkkkkkkkk", "de": "de quem trabalha feliz do seu lado", "len": 142}, {"id": "b1ukzbjs", "para": "Kathleen Karina de Moura Silva", "setor": "Excelência Operacional", "msg": "Kath, quero te dizer o quanto o seu empenho tem feito diferença. Você é meu braço direito e isso não é pouca coisa — é confiança, é parceria, é entrega. Fico muito feliz de ter você comigo nessa caminhada. Obrigado por tudo!", "de": "de um admirador secreto do seu trabalho", "len": 224}, {"id": "b7wfpk5", "para": "Lucas Francisco Alberti", "setor": "Excelência Operacional", "msg": "Lucas, quero te agradecer pelo respeito, pela parceria e pelo bom trabalho que você tem desenvolvido. São qualidades que fazem toda a diferença no dia a dia e que não passam despercebidas. Fico feliz de ter você no time. Obrigado!", "de": "de um colega que torce por você", "len": 230}, {"id": "bz0xwbl", "para": "Nilsen Brito", "setor": "Recrutamento", "msg": "Leve e divertida Nilsen, quero te agradecer pela parceria e, claro, pelas boas fofocas que tornam o dia muito mais leve! É muito bom ter do lado alguém com quem a gente pode contar e também dar boas risadas. Obrigado por tudo!", "de": "de alguém que aprende com você todo dia", "len": 226}, {"id": "b1hpzujm", "para": "Kaique Cesar Silva Mendes", "setor": "Suprimentos", "msg": "Amigoooo, obrigada por compartilhar comigo os dramas diários kkkkk com certeza meus dias são muito menos divertidos sem você! Continue o querido maluco que você é!", "de": "de um admirador secreto do seu trabalho", "len": 163}, {"id": "bv91l85", "para": "Gabriela Ana de Jesus Cunha", "setor": "Operações Clínicas", "msg": "Gabi, você é daquelas pessoas que iluminam o ambiente só de chegar! Sua alegria, seu respeito e seu jeito incrível de ser tornam tudo mais leve. Fico muito feliz de ter você por perto. Obrigado por ser quem você é!", "de": "de quem trabalha feliz do seu lado", "len": 214}, {"id": "b1vo0eb3", "para": "Jocimara Aparecida das Neves Pereira", "setor": "Operações Clínicas", "msg": "Jocimara, mesmo sendo uma parceria ainda nova, você já demonstrou muito respeito e comprometimento. É muito bom construir essa caminhada com você. Bem-vinda ao time!", "de": "de um colega que torce por você", "len": 165}, {"id": "ba305hc", "para": "Marcela Estevam Baldy dos Reis", "setor": "Operações Clínicas Administrativas", "msg": "Marcela, quero te agradecer por ser essa amiga atenciosa e que cuida de verdade. Você faz diferença na vida de quem está ao seu redor, e isso não tem preço. Obrigado por tudo!", "de": "de alguém que te admira", "len": 175}, {"id": "b1h49i1o", "para": "Geovana Correa Viana Cosenza", "setor": "Operações Clínicas Administrativas", "msg": "Geh a distância não apaga o que a gente viveu. Você fez parte de um momento muito especial da minha vida e isso fica guardado com muito carinho. Onde quer que você esteja, saiba que te levo comigo.", "de": "de alguém que aprende com você todo dia", "len": 197}, {"id": "b1j3czmt", "para": "Adriana Constantino Brene", "setor": "Operações Clínicas Administrativas", "msg": "Tia Dri, você é daquelas pessoas que a gente chama de tia com todo o amor do mundo — porque é exatamente isso que você representa! Cuidadosa, sentimental e incrível do jeitinho que só você sabe ser. Fico muito feliz de ter você na minha vida. Te amo, tia!", "de": "de alguém que aprende com você todo dia", "len": 255}, {"id": "b1kqhgnw", "para": "Benedita Jacinto", "setor": "Documentação Clínica", "msg": "Bene, você pode até ter lá suas exigências… mas no fim do dia é uma das pessoas mais legais, parceiras e respeitosas que eu conheço. É muito bom ter você por perto. Obrigado!", "de": "de alguém que te admira", "len": 174}, {"id": "b4y8wnb", "para": "Paulo Sergio Oliveira", "setor": "Operações Clínicas", "msg": "Sergio Luiz, você é daqueles amigos que tornam o dia mais leve só de aparecer. Parceiro, companheiro de boas conversas e uma pessoa que eu fico feliz de ter por perto. Obrigado por tudo, meu amigo!", "de": "de um admirador secreto do seu trabalho", "len": 197}, {"id": "b62658n", "para": "Suzy Helena Ataliba", "setor": "Operações Clínicas", "msg": "Suzy, quero te dizer o quanto você é especial pra mim. Sua amizade é daquelas que a gente guarda com muito carinho. Obrigado por ser essa amiga incrível!", "de": "de alguém que te admira", "len": 153}, {"id": "b1aixq4x", "para": "Nilcilene Gonçalves da Costa", "setor": "Logística", "msg": "Mamys, você é minha parceira de vida — no trabalho, em casa e em tudo. Ter você do meu lado todos os dias é um privilégio que eu nunca vou deixar de valorizar. Te amo demais, mãe!", "de": "de um colega que torce por você", "len": 179}, {"id": "b3948k5", "para": "Yarah Gonçalves de Oliveira", "setor": "Laboratório Toxicológico", "msg": "Yarah, te ver crescendo e se desenvolvendo aqui é uma das coisas que mais me orgulha. Saber que você está construindo o seu caminho com dedicação e competência enche meu coração. Te amo, TATA!", "de": "de um admirador secreto do seu trabalho", "len": 192}, {"id": "b1u42z2b", "para": "Parabens Ao Time Vencedor _farmacia Seu Time Entregou !", "setor": "Farmácia", "msg": "O time da Farmacia totalmente engajado nesta tarefa!", "de": "de quem trabalha feliz do seu lado", "len": 52}, {"id": "b1pvy5s3", "para": "Fernanda Wildner", "setor": "Produtos & Software", "msg": "Sempre estilosa e de bom humor. Só deus sabe como consegue estar calma quando tudo pega fogo.", "de": "de um admirador secreto do seu trabalho", "len": 93}, {"id": "b1854hjv", "para": "Kleyton Silva", "setor": "Produtos & Software", "msg": "A pessoa que olha o caos e dá risada. Quero ser assim quando crescer.", "de": "de quem trabalha feliz do seu lado", "len": 69}, {"id": "bglshua", "para": "Renato Saturnino", "setor": "Produtos & Software", "msg": "Ser uma integrante da dupla de velhos amargos contigo é um prazer =P", "de": "de alguém que aprende com você todo dia", "len": 68}, {"id": "b1j93syj", "para": "Gabrielle Maria Silveira Polizelli", "setor": "Pesquisa Clínica", "msg": "Pra Poli Fernandes: Dizem que quem canta seus males espanta… no seu caso, espanta o silêncio da empresa inteira. Nunca pare de ser essa pessoa incrível, porque você virou uma amiga que quero levar pra vida", "de": "de alguém que te admira", "len": 205}, {"id": "be0rnax", "para": "Gabryella Mota", "setor": "Laboratório Bioanalítico", "msg": "Gaby, você é daquelas pessoas que tornam o trabalho mais leve, sempre pronta para ajudar! Se a Synvia fosse uma quadrilha, você seria quem mantém o ritmo da dança: faz tudo acontecer com alegria, parceria e muito cuidado !", "de": "de quem trabalha feliz do seu lado", "len": 222}, {"id": "bslana2", "para": "Flavya dos Santos", "setor": "Laboratório Bioanalítico", "msg": "Chefinha, você é a prova viva de que até na sala de freezer dá pra trabalhar com coração quentinho!", "de": "de um admirador secreto do seu trabalho", "len": 99}, {"id": "b8n9em0", "para": "Leticia Gouveia Sousa", "setor": "Pesquisa Clínica", "msg": "Gostaria de elogia-la por ser uma profissional excelente e além disso uma pessoa maravilhosa, que quero levar pra vida além do trabalho. Ela tem a capacidade de deixar as coisas mais leves e de ser uma boa amiga. Você inspira confiança, transmite alegria e mostra que pequenas atitudes podem causar um grande impacto. Continue sendo essa pessoa autêntica, dedicada e cheia de luz!", "de": "de um admirador secreto do seu trabalho", "len": 380}, {"id": "b1g5yjvm", "para": "Gabrielle Maria Silveira Polizelli", "setor": "Pesquisa Clínica", "msg": "Seu jeito de tratar as pessoas com respeito e gentileza faz diferença no dia de quem está ao seu redor. Profissional e pessoa incrível. E Além disso, tem um coração enorme. Continue sendo essa pessoa maravilhosa que você é!", "de": "de um admirador secreto do seu trabalho", "len": 223}, {"id": "b1k6qfio", "para": "Dayane Freitas Morais", "setor": "Pesquisa Clínica", "msg": "É verdade, você é super gente boa fofa kkk.", "de": "de um colega que torce por você", "len": 43}, {"id": "b8zq8qx", "para": "Viviane Barbosa Oliveira Costa", "setor": "Pesquisa Clínica", "msg": "Tem pessoas que iluminam o ambiente sem perceber. Você é uma delas querida!", "de": "de quem trabalha feliz do seu lado", "len": 75}, {"id": "b1ie6bju", "para": "Guilherme Jhonata Gonçalves Mattos", "setor": "Excelência Operacional", "msg": "Obrigada por ser esse parceiro, amigo, irmão!", "de": "de alguém que te admira", "len": 45}, {"id": "bvauihf", "para": "Cintia", "setor": "Pesquisa Clínica – Campinas", "msg": "Eu nasci no celeiro da arte, num berço mineiro Sou do campo, da serra onde impera o minério de ferro Eu carrego comigo no sangue um dom verdadeiro De cantar melodias de Minas no Brasil inteiro...", "de": "de alguém que te admira", "len": 195}, {"id": "b16xkgcv", "para": "Ana Clara Ferraz Catarino", "setor": "Administração Comercial", "msg": "\"Se o trabalho fosse quadrilha, você seria o par perfeito! Que venham mais desafios para mostramos nossa capacidade \"", "de": "de alguém que te admira", "len": 117}, {"id": "bh8igpj", "para": "Jaqueline", "setor": "Pesquisa Clínica – Campinas", "msg": "Oh, baby, baby Oh, baby, baby Oh, baby, baby How was I supposed to know That somethin' wasn't right here? Oh, baby, baby I shouldn't have let you go And now you're out of sight, yeah...", "de": "de um admirador secreto do seu trabalho", "len": 185}, {"id": "b1mo01i2", "para": "Leticia Aiko", "setor": "Pesquisa Clínica – Campinas", "msg": "Descalça numa ilha, é tão mágico Você dizendo que me ama A Lua refletindo o mar...", "de": "de um colega que torce por você", "len": 82}, {"id": "b1rub50v", "para": "Hilary", "setor": "Pesquisa Clínica – Campinas", "msg": "Dentro da Evoque prata Tocando... Na mira do flash, da fama, nós mete marcha Se pá, nós se tromba nas melhores revoadas...", "de": "de alguém que aprende com você todo dia", "len": 122}, {"id": "b1ilpv1e", "para": "Amanda", "setor": "Pesquisa Clínica – Campinas", "msg": "Complicada e perfeitinha Você me apareceu Era tudo o que eu queria Estrela da sorte...", "de": "de alguém que aprende com você todo dia", "len": 86}, {"id": "b1fxfisb", "para": "Leticia Gouveia", "setor": "Pesquisa Clínica – Campinas", "msg": "Tchubirau daum daum, tchubirau daum daum Tchubirau daum daum, tchubirau daum daum Oh, oh, oh, oh, oh, oh, oh Oh uoh, oh uoh Tchubirau daum daum, tchubirau daum daum Tchubirau daum daum, tchubirau daum daum Oh, oh, oh, oh, oh, oh, oh Peraí Mas se você não sabe, eu preciso te dizer... É difícil aguentar você. Brincadeira fofa, amo você", "de": "de um colega que torce por você", "len": 335}, {"id": "b1hj99jp", "para": "Leticia Gouveia", "setor": "Pesquisa Clínica – Campinas", "msg": "Como é bom saber que você está aqui comigo Juntinho de mim Saber que a gente tem uma amiga, um amigo Sempre, bem perto assim A gente sente o coração mais quentinho E fica alegre feito um passarinho Dá vontade de gritar pra todo mundo saber...", "de": "de um colega que torce por você", "len": 242}, {"id": "b1v16yd5", "para": "Toda Equipe Pesquisa Clinica", "setor": "Pesquisa Clínica – Campinas", "msg": "De zero a dez, dou mais de cem! Pra essa turma eu tiro o chapéu Amigo a gente ama, a gente cuida bem Essa é a turma do Pesq clin! De zero a dez, dou mais de cem! Pra essa turma eu tiro o chapéu Amigo a gente ama, a gente cuida bem Essa é a turma da Pesq clin!", "de": "de um admirador secreto do seu trabalho", "len": 259}, {"id": "bs160it", "para": "Day", "setor": "Pesquisa Clínica – Campinas", "msg": "Não sei se é pura sorte Ou se é o destino Eu só sei que sou feliz demais com meus amigos! Às vezes dá de brigar Às vezes dá de chorar Mas tudo isso faz parte, eu sei que vai passar! É bola pra frente Que a força da gente...", "de": "de um admirador secreto do seu trabalho", "len": 223}, {"id": "bq1ymug", "para": "Luan", "setor": "Pesquisa Clínica – Campinas", "msg": "Sou pássaro de fogo Que canta ao teu ouvido Vou ganhar esse jogo...", "de": "de um admirador secreto do seu trabalho", "len": 67}, {"id": "bivnv7p", "para": "Joana Santos", "setor": "Laboratório Toxicológico", "msg": "Minha sombra preferida. Que me arrasta pra todo canto. Nossos dias são mais leves e as risadas sinceras.", "de": "de um colega que torce por você", "len": 104}, {"id": "b1y6gmd3", "para": "Cristiane Heredia", "setor": "Garantia da Qualidade", "msg": "Você é a melhor chefe do mundo", "de": "de alguém que aprende com você todo dia", "len": 30}, {"id": "b106icf8", "para": "Rafael Frisske", "setor": "Operações Clínicas", "msg": "Rafa Dizem que toda festa junina tem um arraiá, mas a sorte mesmo é trabalhar com gente boa feito ocê! Que nunca faltem bons projetos, coca zero geladinha e parceria no dia a dia. Obrigada por toda confiança! Um grande abraço e um “viva” à nossa equipe!", "de": "de quem trabalha feliz do seu lado", "len": 253}, {"id": "b178gpef", "para": "Equipe de Pesquisa Clínica", "setor": "Pesquisa Clínica – Paulínia", "msg": "Obrigado por toda dedicação, parceria e carinho no dia a dia. Vocês fazem a diferença e tornam o trabalho muito melhor!!", "de": "de quem trabalha feliz do seu lado", "len": 120}, {"id": "b1wes438", "para": "Giuliana da Silva Zuccoli", "setor": "Operações Clínicas", "msg": "Giu Dizem que toda festa junina tem um arraiá, mas a sorte mesmo é trabalhar com gente boa feito ocê! Que nunca faltem bons projetos, coca zero geladinha e parceria no dia a dia. Obrigada por toda confiança! Um grande abraço e um “viva” à nossa equipe!", "de": "de quem trabalha feliz do seu lado", "len": 252}, {"id": "bvjtaap", "para": "Thelma Alves da Silva", "setor": "Operações Clínicas", "msg": "Thel, No nosso arraiá, dizem que parceria boa é aquela que encara qualquer desafio sem perder a essência. E, nesses últimos meses, desafio foi o que não faltou! Obrigada por dividir comigo as decisões, as preocupações, as correrias e, principalmente, por toda a paciência, parceria e confiança ao longo dessa jornada. É muito bom saber que posso contar com você nos dias mais tranquilos e, principalmente, nos mais difíceis. Que a nossa fogueira continue aquecendo mais as boas ideias do que os incêndios do dia a dia! Feliz Festa Junina!", "de": "de quem trabalha feliz do seu lado", "len": 538}, {"id": "bqh8res", "para": "Ricardo Barardelli", "setor": "Operações Clínicas", "msg": "Ric, No meio de tanta demanda, mudanças de rota, prazos apertados e desafios que esse projeto nos trouxe, uma coisa ficou muito clara: trabalhar em equipe faz toda a diferença. Quero agradecer pela parceria, pela paciência, pelas conversas e por dividir comigo essa caminhada, que nem sempre foi fácil, mas certamente ficou mais leve por termos uns aos outros. Seguimos apagando incêndios, comemorando conquistas e fazendo o nosso melhor todos os dias. Obrigado por estar junto nessa jornada! Um excelente São João, com muito descanso, alegria e boas energias!", "de": "de alguém que te admira", "len": 560}, {"id": "bfagluw", "para": "Regiane Xavier", "setor": "Operações Clínicas", "msg": "Oi Reeee! Passando com meu correio elegante para agradecer por fazer parte desse primeiro projeto comigo. Entre monitorias, follow-ups, queries, viagens e aqueles imprevistos que aparecem quando a gente menos espera, estamos construindo uma parceria que faz toda a diferença. Obrigada pelo comprometimento, pela disponibilidade e por encarar os desafios do dia a dia com tanta dedicação. Que sua Festa Junina seja cheia de alegria, comida boa e um descanso mais do que merecido! Feliz São João!", "de": "de um admirador secreto do seu trabalho", "len": 494}, {"id": "b3ty0je", "para": "Simone Merkel", "setor": "Operações Clínicas", "msg": "Oi Siiii! Passando com meu correio elegante para agradecer por fazer parte desse primeiro projeto comigo. Entre monitorias, follow-ups, queries, viagens e aqueles imprevistos que aparecem quando a gente menos espera, estamos construindo uma parceria que faz toda a diferença. Obrigada pelo comprometimento, pela disponibilidade e por encarar os desafios do dia a dia com tanta dedicação. Que sua Festa Junina seja cheia de alegria, comida boa e um descanso mais do que merecido! Feliz São João!", "de": "de um colega que torce por você", "len": 494}, {"id": "bmd4x9a", "para": "María Isabely Canejo", "setor": "Operações Clínicas", "msg": "Oi Isaaa! Passando com meu correio elegante para agradecer por fazer parte desse primeiro projeto comigo. Entre monitorias, follow-ups, queries, viagens e aqueles imprevistos que aparecem quando a gente menos espera, estamos construindo uma parceria que faz toda a diferença. Obrigada pelo comprometimento, pela disponibilidade e por encarar os desafios do dia a dia com tanta dedicação. Que sua Festa Junina seja cheia de alegria, comida boa e um descanso mais do que merecido! Feliz São João!", "de": "de quem trabalha feliz do seu lado", "len": 494}, {"id": "b8zgg2k", "para": "Augusto Galante", "setor": "Operações Clínicas", "msg": "Oi Guto!! Passando com meu correio elegante para agradecer por fazer parte desse primeiro projeto comigo. Entre monitorias, follow-ups, queries, viagens e aqueles imprevistos que aparecem quando a gente menos espera, estamos construindo uma parceria que faz toda a diferença. Obrigada pelo comprometimento, pela disponibilidade e por encarar os desafios do dia a dia com tanta dedicação. Que sua Festa Junina seja cheia de alegria, comida boa e um descanso mais do que merecido! Feliz São João!", "de": "de um admirador secreto do seu trabalho", "len": 494}, {"id": "b1q8is2b", "para": "Fernanda Roberto", "setor": "Operações Clínicas", "msg": "Oi Fer!!! Passando com meu correio elegante para agradecer por fazer parte desse primeiro projeto comigo. Entre monitorias, follow-ups, queries, viagens e aqueles imprevistos que aparecem quando a gente menos espera, estamos construindo uma parceria que faz toda a diferença. Obrigada pelo comprometimento, pela disponibilidade e por encarar os desafios do dia a dia com tanta dedicação. Que sua Festa Junina seja cheia de alegria, comida boa e um descanso mais do que merecido! Feliz São João!", "de": "de um colega que torce por você", "len": 494}, {"id": "b1n3wrmt", "para": "Fernanda Gomes", "setor": "Operações Clínicas", "msg": "Oi Ferrrr! Passando com meu correio elegante para agradecer por fazer parte desse primeiro projeto comigo. Entre monitorias, follow-ups, queries, viagens e aqueles imprevistos que aparecem quando a gente menos espera, estamos construindo uma parceria que faz toda a diferença. Obrigada pelo comprometimento, pela disponibilidade e por encarar os desafios do dia a dia com tanta dedicação. Que sua Festa Junina seja cheia de alegria, comida boa e um descanso mais do que merecido! Feliz São João!", "de": "de quem trabalha feliz do seu lado", "len": 495}, {"id": "b1w2fn79", "para": "Bárbara de Lemos Santana", "setor": "Operações Clínicas", "msg": "Oi Bá! Passando com meu correio elegante para agradecer por fazer parte desse primeiro projeto comigo. Entre monitorias, follow-ups, queries, viagens e aqueles imprevistos que aparecem quando a gente menos espera, estamos construindo uma parceria que faz toda a diferença. Obrigada pelo comprometimento, pela disponibilidade e por encarar os desafios do dia a dia com tanta dedicação. Que sua Festa Junina seja cheia de alegria, comida boa e um descanso mais do que merecido! Feliz São João!", "de": "de alguém que aprende com você todo dia", "len": 491}, {"id": "bs6azfc", "para": "Carolina da Silveira", "setor": "Operações Clínicas", "msg": "Oi Cá! Passando como meu correio elegante para agradecer por fazer parte desse primeiro projeto comigo. Entre monitorias, follow-ups, queries, viagens e aqueles imprevistos que aparecem quando a gente menos espera, estamos construindo uma parceria que faz toda a diferença. Obrigada pelo comprometimento, pela disponibilidade e por encarar os desafios do dia a dia com tanta dedicação. Que sua Festa Junina seja cheia de alegria, comida boa e um descanso mais do que merecido! Feliz São João!", "de": "de um colega que torce por você", "len": 492}, {"id": "bxwlycb", "para": "Nathalia Rufino de Souza", "setor": "Operações Clínicas", "msg": "Oi Nathy! Passando como meu correio elegante para agradecer por fazer parte desse primeiro projeto comigo. Entre monitorias, follow-ups, queries, viagens e aqueles imprevistos que aparecem quando a gente menos espera, estamos construindo uma parceria que faz toda a diferença. Obrigada pelo comprometimento, pela disponibilidade e por encarar os desafios do dia a dia com tanta dedicação. Que sua Festa Junina seja cheia de alegria, comida boa e um descanso mais do que merecido! Feliz São João!", "de": "de alguém que aprende com você todo dia", "len": 495}, {"id": "b18m4c7w", "para": "Gabriela Cristina Floriano Rodrigues", "setor": "Operações Clínicas", "msg": "Oi Gabi! Passando como meu correio elegante para agradecer por fazer parte desse primeiro projeto comigo. Entre monitorias, follow-ups, queries, viagens e aqueles imprevistos que aparecem quando a gente menos espera, estamos construindo uma parceria que faz toda a diferença. Obrigada pelo comprometimento, pela disponibilidade e por encarar os desafios do dia a dia com tanta dedicação. Que sua Festa Junina seja cheia de alegria, comida boa e um descanso mais do que merecido! Feliz São João!", "de": "de um admirador secreto do seu trabalho", "len": 494}, {"id": "bnj4qvv", "para": "Thaieny Pollyana", "setor": "Operações Clínicas", "msg": "Quero registrar meu reconhecimento pelo seu trabalho. Você é uma pessoa extremamente competente, dedicada e sempre disposta a colaborar com a equipe. Sua postura profissional, responsabilidade e respeito com todos fazem a diferença no ambiente de trabalho. É um privilégio trabalhar ao seu lado. Parabéns pelo excelente profissional que você é!", "de": "de um admirador secreto do seu trabalho", "len": 344}, {"id": "boord7", "para": "Equipe A e B (Diurno e Noturno)", "setor": "Operações Clínicas", "msg": "Hoje a nossa missão é reconhecer quem faz a diferença todos os dias: uma equipe que transforma desafios em conquistas, planejamento em resultados e trabalho em equipe em grandes entregas! A equipe de operações clínicas merece todos os aplausos pela dedicação, parceria e pelo comprometimento que demonstram em cada etapa. Vocês são a prova de que quando existe união, responsabidade e paixão pelo que fazem, os resultados aparecem e brilham! Com muita organização, competência e aquele \"jogo de cintura\" que só quem vive a rotina clínica conhece, vocês mostram que são verdadeiros protagonistas dessa jornada. Que essa energia continue contagiando a todos! Parabéns, operações clínicas, vocês jogam no time da excelência! Continuem brilhando!!!", "de": "de um admirador secreto do seu trabalho", "len": 744}, {"id": "b1js5zd4", "para": "Lucas Felipe Fernandes Bittencourt", "setor": "Pesquisa Clínica", "msg": "Ihaaaaaá", "de": "de alguém que aprende com você todo dia", "len": 8}, {"id": "b8fhdfo", "para": "Vanessa Marcílio de Sousa", "setor": "Viabilidade de Projetos", "msg": "A Van é incrível! Além de ser uma profissional exemplar, competente e inteligente, ela é uma pessoa carinhosa, amiga, conselheira e com um coração enorme! Ter tido você na equipe foi demais e hoje com você em outro setor poder ainda sim compartilhar risadas, histórias e ver seu crescimento é melhor ainda! Obrigada minha amiga!", "de": "de quem trabalha feliz do seu lado", "len": 328}, {"id": "b14aglk5", "para": "Equipe da Farmácia", "setor": "Farmácia", "msg": "Sou grata por trabalhar com uma equipe tão comprometida.. o trabalho de vocês faz a diferença! Cada um contribui de forma única, e é justamente essa união que faz nossa equipe alcançar excelentes resultados. Muito obrigada pelo empenho, pela parceria e pelo profissionalismo de sempre. Tenho muito orgulho de fazer parte desse time e espero que a gente cresça, aprenda e continue crescendo cada vez mais!", "de": "de um admirador secreto do seu trabalho", "len": 404}, {"id": "b1lj0ivm", "para": "Para Todos de Todas As Equipe do Qual Interagi", "setor": "Toda a Synvia", "msg": "Aproveitando a oportunidade para agradecer a todos que compartilharam seus conhecimentos comigo Deus os abençoe sempre iluminando seus caminhos bjks", "de": "de quem trabalha feliz do seu lado", "len": 148}, {"id": "b6wkjah", "para": "Ana Claudia", "setor": "Gente e Gestão", "msg": "Prazer imenso de trabalhar com vc! Bjos Ariane", "de": "de alguém que te admira", "len": 46}, {"id": "b1vlb3dz", "para": "Time G&G", "setor": "Gente e Gestão", "msg": "Time, muito feliz pela recepção de todos! Muito obrigada! Abs Ariane", "de": "de um colega que torce por você", "len": 68}, {"id": "b1t0dgj7", "para": "Julia Alves Ancilotto", "setor": "Bioequivalência", "msg": "Você não é a Virgínia, mas eu dedicaria todos os meus gols pra você!!", "de": "de alguém que aprende com você todo dia", "len": 69}, {"id": "bv00h49", "para": "Ana Carolina de Freitas", "setor": "Bioequivalência", "msg": "Você não é o flash benefícios, mas espero ansiosamente a sua chegada.", "de": "de um admirador secreto do seu trabalho", "len": 69}, {"id": "bdte6pr", "para": "Natalia Milaneze Cardoso", "setor": "Bioequivalência", "msg": "Você não é o mercadinho, mas me ajuda todos os dias!!", "de": "de alguém que te admira", "len": 53}, {"id": "b8zhiew", "para": "Gabrielle Barreto", "setor": "Pesquisa Clínica", "msg": "Rainha das Planilhas", "de": "de alguém que te admira", "len": 20}, {"id": "bjg848p", "para": "Natalia Milaneze Cardoso", "setor": "Bioequivalência", "msg": "Você não é o Halland mas me dá medo de tanta confiança.", "de": "de quem trabalha feliz do seu lado", "len": 55}, {"id": "b1a5z59k", "para": "Isabella da Cunha Silva", "setor": "Bioequivalência", "msg": "Verdade seja dita, você tem muito bom gosto para amigos. Ou seja, eu.", "de": "de quem trabalha feliz do seu lado", "len": 69}, {"id": "bl279px", "para": "Angel Ricci Moreira", "setor": "Bioequivalência", "msg": "Você não é parafuso, mas se falaram mal de você, eu sou uma chave defenda.", "de": "de alguém que te admira", "len": 74}, {"id": "bosoutv", "para": "Beatriz Giora", "setor": "Operações Clínicas", "msg": "Você é uma excelente dupla! obrigada pela parceria.", "de": "de alguém que te admira", "len": 51}, {"id": "bl0o4lg", "para": "Plantão B Diurno", "setor": "Operações Clínicas", "msg": "Não troco essa equipe por nada! Obrigada pela parceria.", "de": "de quem trabalha feliz do seu lado", "len": 55}, {"id": "b1ydgh", "para": "Angel Ricci Moreira", "setor": "Bioequivalência – Campinas", "msg": "Você é igual o Vini Jr, astro do time.", "de": "de alguém que te admira", "len": 38}, {"id": "b1gog1ql", "para": "Carlos Machado", "setor": "Marketing", "msg": "Se parceria desse brinde no Arraiá, o seu já estava garantido. Obrigada por ser esse braço direito que apoia as ideias mais criativas, segura o caos ainda ajuda a fazer parecer que estava tudo sob controle.", "de": "de um colega que torce por você", "len": 206}, {"id": "b1fe8m9r", "para": "Juliana Ferreira", "setor": "Marketing", "msg": "Especialista em fazer festa boa, você está fazendo esse Arraiá sair do papel com tanto cuidado que já merece prêmio antes mesmo da quadrilha começar. Definição atualizada de amor à profissão.", "de": "de quem trabalha feliz do seu lado", "len": 191}, {"id": "b1nbc3pp", "para": "Felipe Piquione", "setor": "Marketing", "msg": "Você é a prova de que “só uma artezinha” nunca é só uma artezinha. Tem conceito, alinhamento, respiro, bom gosto e uma dose de realeza que só o rei Phillip poderia entregar.", "de": "de um colega que torce por você", "len": 173}, {"id": "b1mnu149", "para": "Bianca Bernandes", "setor": "Marketing", "msg": "Se existisse um call-to-action pra te conhecer melhor, eu já tinha clicado.", "de": "de quem trabalha feliz do seu lado", "len": 75}, {"id": "bpzt3tr", "para": "Juliana Ferreira", "setor": "Marketing", "msg": "Você não é o cronograma do evento, mas já bagunçou uma agenda aqui: a dos meus pensamentos.", "de": "de quem trabalha feliz do seu lado", "len": 91}, {"id": "b1otnbwa", "para": "Carlos Machado", "setor": "Marketing", "msg": "Você não é uma paleta de cores, mas já pintou meu dia inteiro.", "de": "de alguém que te admira", "len": 62}, {"id": "b1hn4oku", "para": "Bianca Bernandes", "setor": "Marketing", "msg": "Se palavra bonita fosse quitute de festa junina, seu texto era o mais disputado da barraca. Escrever bem é um dom, escrever com a sua sensibilidade é outro nível. Sorte da Synvia, sorte nossa.", "de": "de alguém que te admira", "len": 192}, {"id": "b1glqmj5", "para": "Felipe Piquione", "setor": "Marketing", "msg": "Trabalhar em dupla contigo é aquele raro caso de layout que nasce alinhado. Talento, bom gosto e parceria no mesmo pacote.", "de": "de um colega que torce por você", "len": 122}, {"id": "b13r437w", "para": "Juliana Ferreira", "setor": "Eventos", "msg": "Tem gente que organiza evento, e tem gente que faz mágica com planilha e cronograma. Você é do segundo time. <3", "de": "de um colega que torce por você", "len": 111}, {"id": "bidxbx5", "para": "Eduardo Camargo", "setor": "Coordenação", "msg": "Coordenar um time criativo é tipo conduzir quadrilha: cada um pra um lado e você mantendo todo mundo no passo, com paciência e bom humor. Obrigado por liderar desse jeito que dá vontade de fazer bonito.", "de": "de um admirador secreto do seu trabalho", "len": 202}, {"id": "b1qs9r7p", "para": "Laís Kanegae", "setor": "Marketing", "msg": "Liderar com firmeza é comum. Liderar com firmeza, escuta e leveza é raro, e é o que você faz todo dia. Esse time dança no ritmo certo porque tem você dando o tom da quadrilha.", "de": "de alguém que te admira", "len": 175}];
+const P=new URLSearchParams(location.search);
+const TRANSPARENT=P.get('bg')!=='off';
+const CLEAN=true;  // v02 nasce no modo clean (overlay p/ Resolume)
+const SOUND=P.get('sound')==='1';
+const PAL=["#e4572e","#159a5b","#3a86ff","#e8437e","#c9720b","#7b5cff","#0d9488","#f4b81b"];
+const ANON=['de alguém que te admira','de um colega que torce por você','de alguém que aprende com você todo dia','de quem trabalha feliz do seu lado','de um admirador secreto do seu trabalho'];
+
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function loadScript(s){return new Promise((res,rej)=>{const t=document.createElement('script');t.src=s;t.onload=res;t.onerror=rej;document.head.appendChild(t);});}
+function iniciais(n){const p=(n||'').replace(/[^A-Za-zÀ-ÿ ]/g,'').trim().split(/\s+/);if(!p[0])return'♥';return((p[0][0]||'')+(p.length>1?p[p.length-1][0]:'')).toUpperCase();}
+function corDe(n){let h=0;for(const c of (n||''))h=(h*31+c.charCodeAt(0))>>>0;return PAL[h%PAL.length];}
+function norm(s){return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');}
+function noteId(dest,msg,sender,setor){const s=dest+'|'+msg+'|'+(sender||'')+'|'+setor;let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return 'b'+h.toString(36);}
+function anonPhrase(seed){let h=0;for(let i=0;i<seed.length;i++)h=(h*31+seed.charCodeAt(i))>>>0;return ANON[h%ANON.length];}
+function isYes(v){return v===true||/^(sim|s|yes|true|1|verdadeiro)$/i.test(String(v||'').trim());}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function parseCSV(t){t=t.replace(/^﻿/,'');const head=t.slice(0,2000);const D=(head.match(/;/g)||[]).length>(head.match(/,/g)||[]).length?';':',';const rows=[];let row=[],f='',i=0,q=false;while(i<t.length){const c=t[i];if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i+=2;continue;}q=false;i++;continue;}f+=c;i++;continue;}if(c==='"'){q=true;i++;continue;}if(c===D){row.push(f);f='';i++;continue;}if(c==='\r'){i++;continue;}if(c==='\n'){row.push(f);rows.push(row);row=[];f='';i++;continue;}f+=c;i++;}if(f.length||row.length){row.push(f);rows.push(row);}return rows.filter(r=>r.length&&r.some(x=>x.trim()!==''));}
+function buildFromCSV(text){const rows=parseCSV(text);if(!rows.length)return[];const H=rows[0].map(norm);const find=re=>H.findIndex(h=>re.test(h));const iD=find(/destinat|para|recebe/),iSe=find(/setor|area|departa|equipe|time/),iM=find(/mensagem|recado|texto|bilhete|conteudo/),iR=find(/remetent|enviou|autor|assina/),iA=find(/anonim/),iSt=find(/status|aprova/);const out=[];for(let k=1;k<rows.length;k++){const r=rows[k];const g=x=>x>=0?(r[x]||'').trim():'';const dest=g(iD),msg=g(iM);if(!dest&&!msg)continue;if(iSt>=0&&!/aprovad/.test(norm(g(iSt))))continue;const setor=g(iSe)||'Synvia';const anon=isYes(g(iA));const sender=anon?'':g(iR);const id=noteId(dest,msg,sender,setor);out.push({id,para:dest,setor,msg,de:sender||anonPhrase(id)});}return out;}
+async function loadCSV(){try{const res=await fetch('bilhetes.csv',{cache:'no-store'});if(res.ok){const r=buildFromCSV(await res.text());if(r.length)return r;}}catch(e){}return POOL.slice();}
+function recFromFB(b){const dest=(b.dest||b.destinatario||b.para||'').toString().trim();const msg=(b.msg||b.mensagem||b.texto||'').toString().trim();const setor=(b.setor||b.area||'Synvia').toString().trim()||'Synvia';const anon=isYes(b.anon!=null?b.anon:b.anonimo);const sender=anon?'':(b.sender||b.remetente||b.de||'').toString().trim();const id=noteId(dest,msg,sender,setor);return{id,para:dest,setor,msg,de:sender||anonPhrase(id)};}
+
+if(TRANSPARENT||CLEAN)document.body.classList.add('transparent');
+if(CLEAN)document.body.classList.add('clean');
+(function(){const cols=['#f4b81b','#e8590c','#36a847','#3a86ff','#e8437e'];['bTop','bBot'].forEach(idn=>{const b=document.getElementById(idn);for(let i=0;i<30;i++){const f=document.createElement('div');f.className='flag';f.style.background=cols[i%cols.length];f.style.animationDelay=(i*0.12)+'s';b.appendChild(f);}});const bk=document.getElementById('bokeh');for(let i=0;i<44;i++){const s=document.createElement('i');const d=6+Math.random()*16;s.style.width=d+'px';s.style.height=d+'px';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=(Math.random()*3.5)+'s';bk.appendChild(s);}})();
+
+// Emojis juninos no lugar das iniciais
+const EMOJI=['🤠','🌽','🔥','🪗','🎪','🎉','🌾','⭐','🎈','🥁','🎊','🌻','🎡','🍿'];
+function emojiFor(n){let h=0;for(const c of (n||''))h=(h*31+c.charCodeAt(0))>>>0;return EMOJI[h%EMOJI.length];}
+
+const el=id=>document.getElementById(id);
+const feed=el('feed'),liveWrap=el('live'),livecard=el('livecard'),lvRibbon=el('lvRibbon'),lvAva=el('lvAva'),lvEmoji=el('lvEmoji'),lvName=el('lvName'),lvChip=el('lvChip'),lvMsg=el('lvMsg'),lvDe=el('lvDe'),lvTimer=el('lvTimer'),countEl=el('count');
+
+let actx=null;
+const livephoto=el('livephoto'),lpImg=el('lpImg'),lpRibbon=el('lpRibbon'),lpDe=el('lpDe'),lpTimer=el('lpTimer');livephoto.style.display='none';
+function pop(hi){if(!SOUND)return;try{actx=actx||new(window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.type='sine';o.frequency.setValueAtTime(hi?988:880,actx.currentTime);o.frequency.exponentialRampToValueAtTime(hi?1568:1320,actx.currentTime+.12);g.gain.setValueAtTime(.001,actx.currentTime);g.gain.exponentialRampToValueAtTime(.25,actx.currentTime+.03);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+.3);o.connect(g);g.connect(actx.destination);o.start();o.stop(actx.currentTime+.32);}catch(e){}}
+function confetti(gold){const box=document.createElement('div');box.className='confetti';document.body.appendChild(box);const cols=gold?['#e8a300','#f4b81b','#ffd257','#fff3c4','#e8590c']:['#f4b81b','#e8590c','#36a847','#3a86ff','#e8437e'];const N=gold?80:50;for(let i=0;i<N;i++){const s=document.createElement('span');s.style.left=Math.random()*100+'%';s.style.background=cols[i%cols.length];if(Math.random()<.5)s.style.borderRadius='50%';s.style.animationDuration=(2.2+Math.random()*1.8)+'s';s.style.animationDelay=(Math.random()*.4)+'s';box.appendChild(s);}setTimeout(()=>box.remove(),4600);}
+function firework(x,y,gold){const box=document.createElement('div');box.className='fw';box.style.left=x+'px';box.style.top=y+'px';document.body.appendChild(box);const cols=gold?['#ffd257','#f4b81b','#fff3c4','#e8a300']:['#f4b81b','#e8590c','#36a847','#3a86ff','#e8437e'];const N=22;for(let i=0;i<N;i++){const s=document.createElement('i');s.style.background=cols[i%cols.length];s.style.setProperty('--a',(i*(360/N))+'deg');s.style.animation='spark '+(.7+Math.random()*.45)+'s ease-out forwards';box.appendChild(s);}setTimeout(()=>box.remove(),1300);}
+function fireShow(gold){const W=innerWidth,H=innerHeight;firework(W*0.2,H*0.28,gold);setTimeout(()=>firework(W*0.8,H*0.24,gold),260);setTimeout(()=>firework(W*0.5,H*0.16,gold),520);}
+
+// ---- feed de recados (pop-up na caixa de mensagens) ----
+const MAX=4;
+function isFotoItem(it){return it&&(it.tipo==='foto'||!!it.fotoUrl||(typeof it.foto==='string'&&/^data:image/.test(it.foto)));}
+function pushBubble(item,opts){
+  opts=opts||{};
+  const foto=isFotoItem(item), destaque=!!opts.destaque;
+  const row=document.createElement('div');row.className='bubble'+(destaque?' destaque':'');
+  const av=document.createElement('div');av.className='b-ava';
+  if(foto){av.style.background='linear-gradient(150deg,#e8590c,#f4820c)';av.textContent='📸';}
+  else{av.style.background=corDe(item.para);av.textContent=emojiFor(item.para);}
+  const nome=(item.para||'').trim();
+  const anonFoto=foto && !nome;
+  const bub=document.createElement('div');bub.className='bub'+(foto?' foto':'');
+  if(destaque && !anonFoto){const tag=document.createElement('div');tag.className='b-tag';tag.textContent=item.vencedor?'🏆 vencedor':'✨ ao vivo';bub.append(tag);}
+  if(foto){
+    if(nome){                                     // identificado: nome em cima
+      const head=document.createElement('div');head.className='b-head';
+      const to=document.createElement('span');to.className='b-to';to.textContent='Foto de';
+      const nm=document.createElement('span');nm.className='b-name';nm.textContent=nome;
+      head.append(to,nm);bub.append(head);
+    }
+    const img=document.createElement('img');img.className='b-photo';img.src=item.fotoUrl||item.foto||'';bub.append(img);
+    // anônimo: só a foto, sem nada escrito
+  } else {
+    const head=document.createElement('div');head.className='b-head';
+    const to=document.createElement('span');to.className='b-to';to.textContent='Para';
+    const nm=document.createElement('span');nm.className='b-name';nm.textContent=item.para||'Synvia';
+    const chip=document.createElement('span');chip.className='b-chip';chip.textContent=item.setor||'Synvia';
+    head.append(to,nm,chip);bub.append(head);
+    const msg=document.createElement('div');msg.className='b-msg';msg.textContent='“'+item.msg+'”';bub.append(msg);
+    const de=document.createElement('div');de.className='b-de';de.textContent=item.de||'';bub.append(de);
+  }
+  row.append(av,bub);
+  feed.appendChild(row);
+  requestAnimationFrame(()=>row.classList.add('pop'));
+  pop(false);
+  if(feed.children.length>MAX){const old=feed.firstChild;old.classList.add('leave');setTimeout(()=>old.remove(),480);}
+}
+
+// ---- modo clean: mensagem flutuando num canto (centro fica livre) ----
+let fmZone=0;
+function floatMsg(item,destaque){
+  if(isFotoItem(item)) return;                 // fotos vão pro centro (deliverLive), não flutuam
+  const el=document.createElement('div');
+  el.className='float-msg z'+(fmZone%4)+(destaque?' destaque':'');fmZone++;
+  const ava=document.createElement('div');ava.className='fm-ava';ava.style.background=corDe(item.para);ava.textContent=emojiFor(item.para);el.appendChild(ava);
+  const body=document.createElement('div');body.className='fm-body';
+  if(destaque){const t=document.createElement('div');t.className='fm-tag';t.textContent=item.vencedor?'🏆 vencedor':'✨ ao vivo';body.appendChild(t);}
+  const to=document.createElement('div');to.className='fm-to';to.textContent='Para';body.appendChild(to);
+  const nm=document.createElement('div');nm.className='fm-name';nm.textContent=item.para||'Synvia';body.appendChild(nm);
+  const mg=document.createElement('div');mg.className='fm-msg';mg.textContent='“'+(item.msg||'')+'”';body.appendChild(mg);
+  if(item.de){const de=document.createElement('div');de.className='fm-de';de.textContent=item.de;body.appendChild(de);}
+  el.appendChild(body);
+  document.body.appendChild(el);
+  requestAnimationFrame(()=>el.classList.add('in'));
+  const hold=Math.min(11000,Math.max(6000,(item.msg||'').length*70+3500));
+  setTimeout(()=>{el.classList.add('out');el.classList.remove('in');setTimeout(()=>el.remove(),650);},hold);
+}
+// ---- takeover: elogio ao vivo / em destaque ----
+async function deliverLive(item,kind){
+  const gold=kind==='live';
+  const isFoto=item.tipo==='foto'||!!item.fotoUrl||(typeof item.foto==='string'&&/^data:image/.test(item.foto));
+  document.body.classList.add('live-on');liveWrap.classList.add('on');
+  if(isFoto){
+    livecard.style.display='none';livephoto.style.display='block';livephoto.classList.remove('in','out');
+    lpImg.src=item.fotoUrl||item.foto||'';
+    {const nf=(item.para||item.de||'').trim();
+     if(nf){lpRibbon.textContent='📸 Foto de '+nf;lpRibbon.style.display='';}
+     else{lpRibbon.textContent='';lpRibbon.style.display='none';}}  // anônimo: só a foto
+    lpDe.textContent='';lpDe.style.display='none';   // nome vai em cima; anônimo sem texto
+    lpTimer.style.transition='none';lpTimer.style.transform='scaleX(0)';
+    await wait(40);livephoto.classList.add('in');
+    confetti(gold);fireShow(gold);pop(gold);
+    if(gold)setTimeout(()=>fireShow(true),820);
+    const ms=CLEAN?18000:(gold?10000:8500);   // clean: foto no centro por ~18s e some
+    lpTimer.style.transition='transform '+ms+'ms linear';requestAnimationFrame(()=>{lpTimer.style.transform='scaleX(1)';});
+    await wait(ms);
+    livephoto.classList.add('out');liveWrap.classList.remove('on');
+    await wait(560);document.body.classList.remove('live-on');livephoto.classList.remove('in');livephoto.style.display='none';
+    await wait(220);return;
+  }
+  livephoto.style.display='none';livecard.style.display='block';
+  livecard.classList.remove('in','out','tremor','feat');lvRibbon.classList.remove('feat');lvAva.classList.remove('pop');
+  lvTimer.style.transition='none';lvTimer.style.transform='scaleX(0)';
+  if(gold){lvRibbon.textContent='✨ Elogio ao vivo ✨';}
+  else{livecard.classList.add('feat');lvRibbon.classList.add('feat');lvRibbon.textContent='💌 Recado em destaque';}
+  if(item.vencedor){livecard.classList.remove('feat');lvRibbon.classList.remove('feat');lvRibbon.textContent='🏆 VENCEDOR 🏆';}
+  lvEmoji.textContent=emojiFor(item.para);lvAva.style.background=corDe(item.para);
+  lvName.textContent=item.para;lvChip.textContent=item.setor||'Synvia';
+  lvMsg.textContent='“'+item.msg+'”';lvMsg.classList.toggle('short',item.msg.length<=70);lvDe.textContent=item.de||'';
+  liveWrap.classList.add('on');
+  await wait(40);livecard.classList.add('in');
+  confetti(gold);fireShow(gold);pop(gold);
+  if(gold){livecard.classList.add('tremor');setTimeout(()=>livecard.classList.remove('tremor'),650);}
+  await wait(600);lvAva.classList.add('pop');pop(gold);
+  if(gold)setTimeout(()=>fireShow(true),750);
+  let ms=Math.min(11000,Math.max(5200,item.msg.length*72+3200));if(!gold)ms-=600;
+  lvTimer.style.transition='transform '+ms+'ms linear';requestAnimationFrame(()=>{lvTimer.style.transform='scaleX(1)';});
+  await wait(ms);
+  livecard.classList.add('out');liveWrap.classList.remove('on');
+  await wait(560);document.body.classList.remove('live-on');livecard.classList.remove('in');
+  await wait(220);
+}
+
+(async function(){
+  let csvRecords=await loadCSV();
+  let idlePool=shuffle(csvRecords.filter(r=>r.msg.length<=170));if(!idlePool.length)idlePool=shuffle(csvRecords.slice());
+  let idleIdx=0;const nextIdle=()=>idlePool.length?idlePool[(idleIdx++)%idlePool.length]:{para:'Arraiá da Synvia',setor:'Synvia',msg:'Viva o Arraiá! 🌽🔥',de:''};
+  let total=csvRecords.length;
+  const updCount=()=>{countEl.textContent='🤠 '+total+' recados';};
+  updCount();
+  function rebuildIdle(fbRecs){const m=new Map();csvRecords.forEach(r=>{if(r.para&&r.msg)m.set(r.id,r);});fbRecs.forEach(r=>{if(r.para&&r.msg)m.set(r.id,r);});const all=[...m.values()];total=all.length;updCount();let pool=all.filter(r=>r.msg.length<=170);if(!pool.length)pool=all;idlePool=shuffle(pool);idleIdx=0;}
+
+  let db=null,queueArr=[];
+  try{
+    await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
+    await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js');
+    firebase.initializeApp(FB);db=firebase.database();
+    db.ref(Q).on('value',s=>{const v=s.val()||{};queueArr=Object.keys(v).map(k=>Object.assign({key:k},v[k])).sort((a,b)=>(a.ts||0)-(b.ts||0));});
+    db.ref(APROV).on('value',s=>{const v=s.val()||{};rebuildIdle(Object.keys(v).map(k=>recFromFB(v[k])));});
+  }catch(e){console.warn('Firebase off — telão em rotação local.',e);}
+
+  // preenche a caixa de mensagens
+  if(!CLEAN){for(let i=0;i<3;i++){pushBubble(nextIdle());await wait(700);}}
+
+  let busy=false,mode='';
+  async function loop(){
+    if(!busy){busy=true;
+      try{
+        if(db&&queueArr.length){
+          const next=queueArr[0];
+          const bigDestaque = isFotoItem(next) || next.vencedor;   // takeover grande SÓ pra foto e vencedor
+          mode='live';
+          if(bigDestaque){
+            const kind=next.aoVivo?'live':'featured';
+            db.ref(NP).set({tipo:next.tipo||'recado',para:next.para||'',setor:next.setor||'',msg:next.msg||'',de:next.de||'',fotoUrl:next.fotoUrl||'',aoVivo:!!next.aoVivo,ts:Date.now(),live:true});
+            await deliverLive(next,kind);
+            if(CLEAN)floatMsg(next,true);else pushBubble(next,{destaque:true});   // assenta (chat) / flutua (clean)
+            await db.ref(Q+'/'+next.key).remove();
+            if(isFotoItem(next)){                     // depois da foto
+              if(CLEAN){await wait(1500);}            // clean: libera o centro rapidinho
+              else{ await wait(30000); pushBubble(nextIdle()); await wait(4000); }
+            }
+          } else {
+            // recado comum despachado: entra no chat / flutua, sem tomar a tela
+            if(CLEAN)floatMsg(next,true);else pushBubble(next,{destaque:true});
+            await db.ref(Q+'/'+next.key).remove();
+            await wait(2500);
+          }
+        } else {
+          if(db&&mode!=='idle'){db.ref(NP).set({idle:true,ts:Date.now()});mode='idle';}
+          if(CLEAN){floatMsg(nextIdle());await wait(5000);}
+          else{pushBubble(nextIdle());await wait(6800);}
+        }
+      }catch(e){console.warn(e);}
+      busy=false;}
+    setTimeout(loop,80);
+  }
+  loop();
+})();
+</script>
+</body>
+</html>
