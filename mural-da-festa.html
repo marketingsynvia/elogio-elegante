@@ -237,7 +237,7 @@ function pushBubble(item,opts){
   const nome=(item.para||'').trim();
   const anonFoto=foto && !nome;
   const bub=document.createElement('div');bub.className='bub'+(foto?' foto':'');
-  if(destaque && !anonFoto){const tag=document.createElement('div');tag.className='b-tag';tag.textContent='✨ ao vivo';bub.append(tag);}
+  if(destaque && !anonFoto){const tag=document.createElement('div');tag.className='b-tag';tag.textContent=item.vencedor?'🏆 vencedor':'✨ ao vivo';bub.append(tag);}
   if(foto){
     if(nome){                                     // identificado: nome em cima
       const head=document.createElement('div');head.className='b-head';
@@ -291,6 +291,7 @@ async function deliverLive(item,kind){
   lvTimer.style.transition='none';lvTimer.style.transform='scaleX(0)';
   if(gold){lvRibbon.textContent='✨ Elogio ao vivo ✨';}
   else{livecard.classList.add('feat');lvRibbon.classList.add('feat');lvRibbon.textContent='💌 Recado em destaque';}
+  if(item.vencedor){livecard.classList.remove('feat');lvRibbon.classList.remove('feat');lvRibbon.textContent='🏆 VENCEDOR 🏆';}
   lvEmoji.textContent=emojiFor(item.para);lvAva.style.background=corDe(item.para);
   lvName.textContent=item.para;lvChip.textContent=item.setor||'Synvia';
   lvMsg.textContent='“'+item.msg+'”';lvMsg.classList.toggle('short',item.msg.length<=70);lvDe.textContent=item.de||'';
