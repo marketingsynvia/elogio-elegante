@@ -101,6 +101,41 @@ h1 .warm{background:linear-gradient(100deg,var(--fest-orange),var(--gold));-webk
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden;}
 .confetti span{position:absolute;top:-20px;width:11px;height:15px;opacity:.95;animation:fall linear forwards;}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.9;}}
+/* ====== PELE DARK JUNINA (Elogio ao Vivo) ====== */
+body{background:
+  radial-gradient(80% 45% at 50% 118%, rgba(232,89,12,.28), transparent 60%),
+  radial-gradient(70% 40% at 50% -8%, rgba(244,184,27,.12), transparent 55%),
+  linear-gradient(180deg,#0f2a20 0%, #16352a 55%, #102a1f 100%) !important;
+  color:#f6f1df;}
+.bunting{background:#0c2118;}
+.brand .mark{background:#0c2118;box-shadow:0 0 0 1px rgba(244,184,27,.25);}
+.brand .campaign{color:rgba(246,241,223,.7);}
+h1{color:#fff;}
+.lead{color:rgba(246,241,223,.82);}
+.back{color:var(--fest-yellow);}
+/* cartões e escolhas escuros */
+.card{background:linear-gradient(165deg,#1c3d2f,#16352a) !important;border-color:rgba(244,184,27,.22) !important;box-shadow:0 18px 44px -18px rgba(0,0,0,.7) !important;}
+.choice{background:linear-gradient(165deg,#1c3d2f,#173628) !important;border-color:rgba(246,241,223,.14) !important;color:#f6f1df;}
+.choice .s{color:rgba(246,241,223,.7);}
+.choice:hover{border-color:var(--fest-yellow) !important;}
+/* campos escuros */
+.field label{color:#fff;}
+.field .help{color:rgba(246,241,223,.6);}
+.field input,.field textarea,.field select{background:#0f2a20 !important;color:#f6f1df !important;border-color:rgba(246,241,223,.2) !important;}
+.field input::placeholder,.field textarea::placeholder{color:rgba(246,241,223,.4);}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f4b81b' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") !important;background-repeat:no-repeat !important;background-position:right 15px center !important;}
+.counter{color:rgba(246,241,223,.55);}
+.hint{color:rgba(246,241,223,.6);}
+.icobtn{background:#0f2a20;color:#f6f1df;border-color:rgba(246,241,223,.2);}
+/* sucesso no escuro */
+.done h2{color:#fff;}
+.done p{color:rgba(246,241,223,.8);}
+.btn{background:#0f2a20;color:#f6f1df;border-color:rgba(246,241,223,.2);}
+.btn:hover{border-color:var(--fest-yellow);}
+/* Fonte da festa (Alt Frantic) — some pro Manrope se o arquivo faltar */
+@font-face{font-family:'FestaSynvia';src:url('assets/Alt_Frantic.ttf') format('truetype');font-display:swap;}
+.festa-msg{font-family:'FestaSynvia','Manrope',cursive;font-weight:400;line-height:.98;letter-spacing:.5px;color:var(--fest-yellow);text-shadow:0 3px 0 rgba(0,0,0,.25);}
+.icobtn.on{background:var(--fest-yellow) !important;color:#5a3d00 !important;border-color:var(--fest-yellow) !important;box-shadow:0 0 16px rgba(244,184,27,.6);}
 </style>
 </head>
 <body>
@@ -111,7 +146,6 @@ h1 .warm{background:linear-gradient(100deg,var(--fest-orange),var(--gold));-webk
       <span class="mark"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.2 6.6.8-4.9 4.5 1.3 6.5L12 17.8 6.1 20.5l1.3-6.5L2.5 9l6.6-.8z"/></svg></span>
       <span class="campaign">Arraiá Synvia 2026</span>
     </div>
-    <a class="back" href="index.html">Ver o mural</a>
   </div>
 
   <div id="chooseView">
@@ -181,7 +215,7 @@ h1 .warm{background:linear-gradient(100deg,var(--fest-orange),var(--gold));-webk
   <div id="photoView" class="hidden">
     <button class="back" data-home style="margin-bottom:14px">← Voltar</button>
     <span class="kicker">📸 Foto pro telão</span>
-    <h1>Solta o sorriso pra <span class="warm">câmera</span>!</h1>
+    <h1 class="festa-msg" style="font-size:clamp(2.6rem,10vw,3.6rem);margin-bottom:14px">Solta o sorriso, sô! 🤠</h1>
     <div class="card">
       <div class="frame" id="frame">
         <video id="video" playsinline muted class="mirror"></video>
@@ -196,6 +230,7 @@ h1 .warm{background:linear-gradient(100deg,var(--fest-orange),var(--gold));-webk
       </div>
       <div class="cam-tools" id="liveTools">
         <button class="send" id="shotBtn">📸 Tirar foto</button>
+        <button class="icobtn" id="flashBtn" title="Flash" aria-label="Ligar/desligar flash" style="display:none">⚡</button>
         <button class="icobtn" id="flipBtn" title="Virar câmera" aria-label="Virar câmera">🔄</button>
       </div>
       <div class="cam-tools hidden" id="reviewTools">
@@ -224,7 +259,6 @@ h1 .warm{background:linear-gradient(100deg,var(--fest-orange),var(--gold));-webk
         <div class="row">
           <a class="btn btn-primary hidden" id="saveBtn" download="arraia-synvia.jpg">⬇️ Salvar foto</a>
           <button class="btn" id="againBtn">Mandar outro</button>
-          <a class="btn" href="index.html">Ver o mural</a>
         </div>
       </div>
     </div>
@@ -249,7 +283,7 @@ let db=null,storage=null,ready=false;
   await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js');
   if(!firebase.apps.length)firebase.initializeApp(FIREBASE);
   db=firebase.database();ready=true;
-  try{await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js');storage=firebase.storage();}catch(e){console.warn('Storage indisponível — foto vai em qualidade reduzida.',e);}
+  /* Storage desligado de propósito: a foto cheia vai pro arquivo (base64), sem depender de Blaze. */
 }catch(err){console.error(err);$('err').textContent='Não deu pra conectar agora. Verifique sua internet e recarregue a página.';}})();
 
 $('goRecado').onclick=()=>{show('formView');$('dest').focus();};
@@ -278,7 +312,7 @@ async function enviarRecado(){
 }
 
 /* Câmera + moldura */
-let stream=null,front=true,photoData=null;
+let stream=null,front=true,photoData=null,curTrack=null,torchOn=false;
 const video=$('video');
 async function startCamera(){
   photoData=null;
@@ -287,16 +321,31 @@ async function startCamera(){
   video.classList.toggle('mirror',front);
   try{
     stopCamera();
-    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:front?'user':'environment',width:{ideal:1080},height:{ideal:1920}},audio:false});
+    // resizeMode:'none' evita o corte/zoom digital que o navegador aplica no celular
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:front?'user':'environment',width:{ideal:1080},height:{ideal:1920},resizeMode:'none'},audio:false});
     video.srcObject=stream;await video.play();
+    curTrack=stream.getVideoTracks()[0];torchOn=false;
+    try{
+      const caps=(curTrack.getCapabilities?curTrack.getCapabilities():{})||{};
+      // deixa a câmera o mais "aberta" possível (tira o zoom)
+      if(caps.zoom&&typeof caps.zoom.min==='number'){await curTrack.applyConstraints({advanced:[{zoom:caps.zoom.min}]});}
+      // flash só quando o aparelho suporta (câmera traseira, Android/Chrome)
+      const fb=$('flashBtn');if(fb){fb.style.display=(caps.torch&&!front)?'grid':'none';fb.classList.remove('on');}
+    }catch(e){console.warn('caps',e);const fb=$('flashBtn');if(fb)fb.style.display='none';}
   }catch(e){
     console.warn(e);
     $('camMsg').textContent='Não consegui abrir a câmera. Autorize o acesso à câmera no navegador e toque em "Voltar" e "Mandar uma foto" de novo. 📷';
     $('camMsg').classList.remove('hidden');
   }
 }
-function stopCamera(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}}
+function stopCamera(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}curTrack=null;}
 $('flipBtn').onclick=()=>{front=!front;startCamera();};
+$('flashBtn').onclick=async()=>{
+  if(!curTrack)return;
+  torchOn=!torchOn;
+  try{await curTrack.applyConstraints({advanced:[{torch:torchOn}]});$('flashBtn').classList.toggle('on',torchOn);}
+  catch(e){console.warn('torch',e);torchOn=false;$('flashBtn').classList.remove('on');}
+};
 const molduraImg=new Image();molduraImg.src='assets/moldura-foto.png';
 function compose(CW,CH,q){
   const c=document.createElement('canvas');c.width=CW;c.height=CH;const ctx=c.getContext('2d');
@@ -325,8 +374,8 @@ $('sendFotoBtn').onclick=async()=>{
   const btn=$('sendFotoBtn'),original=btn.innerHTML;btn.disabled=true;btn.textContent='Enviando...';
   try{
     const ts=Date.now();
-    const thumb=compose(405,720,0.72);           // versão leve p/ exibir rápido
-    const fotoUrl=await uploadFoto(photoData,ts); // alta qualidade -> Storage
+    const thumb=compose(720,1280,0.82);          // resolução boa p/ telão (vai no admin/fila)
+    const fotoUrl='';                            // sem Storage — a foto cheia vai pro arquivo
     const nome=$('fotoNome').value.trim();
     await db.ref(AOVIVO_NODE).push({tipo:'foto',remetente:nome,autor:nome,anon:nome?'Não':'Sim',fotoUrl,foto:thumb,status:'novo',ts,data:new Date().toLocaleString('pt-BR')});
     arquivar({tipo:'foto',remetente:nome,autor:nome,anon:nome?'Não':'Sim',fotoUrl,fotoFull:photoData,status:'novo',ts,data:new Date().toLocaleString('pt-BR')}); // recordação: guarda a FOTO CHEIA (alta, com moldura) — não precisa de Storage
