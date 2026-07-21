@@ -175,18 +175,19 @@ h1{color:#fff;}
   <div id="formView" class="hidden">
     <button class="back" data-home style="margin-bottom:14px">← Voltar</button>
     <span class="kicker">💌 Recado pro telão</span>
-    <h1>Escreve um elogio de <span class="warm">carinho</span></h1>
+    <h1>Manda um recado pro <span class="warm">telão</span>!</h1>
+    <p class="lead">Um elogio, o que cê tá achando do arraiá, aquele recado que ficou pra trás, um salve pra sua área… o arraiá é momento, e todo mundo vê! 🌽</p>
     <div class="card">
       <div class="field">
-        <label for="dest">Para quem é o seu elogio?</label>
-        <p class="help">Escreva o nome completo da pessoa.</p>
-        <input id="dest" type="text" maxlength="160" autocomplete="off" placeholder="Nome completo" />
+        <label for="dest">Pra quem é o recado?</label>
+        <p class="help">Uma pessoa, uma área da Synvia, ou a festa toda. 🎉</p>
+        <input id="dest" type="text" maxlength="160" autocomplete="off" placeholder="Ex.: Maria da Enfermagem, o Marketing, ou a galera toda" />
       </div>
       <div class="field">
-        <label for="setor">A pessoa é de qual setor?</label>
-        <p class="help">Escolha a área da pessoa elogiada.</p>
+        <label for="setor">De qual área? <span style="font-weight:600;color:var(--ink-soft)">(opcional)</span></label>
+        <p class="help">Se o recado é pra uma pessoa ou área, escolhe aqui. Se for geral, pode deixar em branco.</p>
         <select id="setor">
-          <option value="" selected disabled>Selecione a área...</option>
+          <option value="" selected>Área (opcional)</option>
           <optgroup label="Operação e Pesquisa"><option>Operações Clínicas</option><option>Pesquisa Clínica</option><option>Bioequivalência</option><option>Enfermagem</option><option>Farmácia</option><option>Documentação Clínica</option><option>Captação de Participantes</option><option>Viabilidade de Projetos</option></optgroup>
           <optgroup label="Laboratórios"><option>Laboratório Bioanalítico</option><option>Laboratório Toxicológico</option><option>Laboratório Clínico</option></optgroup>
           <optgroup label="Dados e Qualidade"><option>Gerenciamento de Dados</option><option>Estatística</option><option>Garantia da Qualidade</option><option>Excelência Operacional</option></optgroup>
@@ -198,9 +199,9 @@ h1{color:#fff;}
         <input id="setorOutro" type="text" maxlength="120" autocomplete="off" placeholder="Digite a área" class="hidden" style="margin-top:10px;" />
       </div>
       <div class="field">
-        <label for="msg">Escreva seu elogio</label>
-        <p class="help">Dica: caprichado e curtinho brilha mais no telão. 😉</p>
-        <textarea id="msg" maxlength="240" placeholder="Seu recado de carinho..."></textarea>
+        <label for="msg">Seu recado</label>
+        <p class="help">Curtinho brilha mais no telão. 😉</p>
+        <textarea id="msg" maxlength="240" placeholder="Escreve aqui seu recado…"></textarea>
         <div class="counter"><span id="msgCount">0</span> / 240</div>
       </div>
       <div class="field">
@@ -219,7 +220,8 @@ h1{color:#fff;}
   <div id="photoView" class="hidden">
     <button class="back" data-home style="margin-bottom:14px">← Voltar</button>
     <span class="kicker">📸 Foto pro telão</span>
-    <h1 class="festa-msg" style="font-size:clamp(2.6rem,10vw,3.6rem);margin-bottom:14px">Solta o sorriso, sô! 🤠</h1>
+    <h1>Manda uma foto docês curtindo o <span class="warm">arraiá</span>, sô!</h1>
+    <p class="lead">Quem sabe cês não aparece no telão! 🤠📸</p>
     <div class="card">
       <div class="frame" id="frame">
         <video id="video" playsinline muted class="mirror"></video>
@@ -302,9 +304,8 @@ $('sendBtn').addEventListener('click',enviarRecado);
 async function enviarRecado(){
   const dest=$('dest').value.trim(),setor=lerSetor(),msg=$('msg').value.trim(),de=$('de').value.trim();
   $('err').textContent='';
-  if(!dest){$('err').textContent='Diga pra quem é o elogio.';$('dest').focus();return;}
-  if(!setor){$('err').textContent='Escolha a área da pessoa.';$('setor').focus();return;}
-  if(!msg){$('err').textContent='Escreva a mensagem do elogio.';$('msg').focus();return;}
+  if(!dest){$('err').textContent='Diz pra quem é o recado (pode ser a festa toda!).';$('dest').focus();return;}
+  if(!msg){$('err').textContent='Escreve o recado.';$('msg').focus();return;}
   if(!ready||!db){$('err').textContent='Ainda estamos conectando. Espere um instante e tente de novo.';return;}
   const btn=$('sendBtn'),original=btn.innerHTML;btn.disabled=true;btn.textContent='Enviando...';
   try{
@@ -333,9 +334,10 @@ async function startCamera(){
       const caps=(curTrack.getCapabilities?curTrack.getCapabilities():{})||{};
       // deixa a câmera o mais "aberta" possível (tira o zoom)
       if(caps.zoom&&typeof caps.zoom.min==='number'){await curTrack.applyConstraints({advanced:[{zoom:caps.zoom.min}]});}
-      // flash só quando o aparelho suporta (câmera traseira, Android/Chrome)
-      const fb=$('flashBtn');if(fb){fb.style.display=(caps.torch&&!front)?'grid':'none';fb.classList.remove('on');}
-    }catch(e){console.warn('caps',e);const fb=$('flashBtn');if(fb)fb.style.display='none';}
+      // flash: a detecção (caps.torch) falha em muitos Androids, então mostramos o botão
+      // sempre na câmera traseira e tentamos ligar na hora do clique.
+      const fb=$('flashBtn');if(fb){fb.style.display=(!front)?'grid':'none';fb.classList.remove('on');}
+    }catch(e){console.warn('caps',e);const fb=$('flashBtn');if(fb)fb.style.display=(!front)?'grid':'none';}
   }catch(e){
     console.warn(e);
     $('camMsg').textContent='Não consegui abrir a câmera. Autorize o acesso à câmera no navegador e toque em "Voltar" e "Mandar uma foto" de novo. 📷';
@@ -345,10 +347,16 @@ async function startCamera(){
 function stopCamera(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}curTrack=null;}
 $('flipBtn').onclick=()=>{front=!front;startCamera();};
 $('flashBtn').onclick=async()=>{
-  if(!curTrack)return;
-  torchOn=!torchOn;
-  try{await curTrack.applyConstraints({advanced:[{torch:torchOn}]});$('flashBtn').classList.toggle('on',torchOn);}
-  catch(e){console.warn('torch',e);torchOn=false;$('flashBtn').classList.remove('on');}
+  if(!curTrack||front)return;
+  const want=!torchOn;
+  try{
+    await curTrack.applyConstraints({advanced:[{torch:want}]});
+    torchOn=want;$('flashBtn').classList.toggle('on',torchOn);$('errFoto').textContent='';
+  }catch(e){
+    console.warn('torch',e);
+    torchOn=false;$('flashBtn').classList.remove('on');
+    $('errFoto').textContent='Esse aparelho/navegador não deixa ligar o flash pela câmera. 😕';
+  }
 };
 const molduraImg=new Image();molduraImg.src='assets/moldura-foto.png';
 function compose(CW,CH,q){
