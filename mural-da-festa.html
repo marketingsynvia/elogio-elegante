@@ -234,17 +234,28 @@ function pushBubble(item,opts){
   const av=document.createElement('div');av.className='b-ava';
   if(foto){av.style.background='linear-gradient(150deg,#e8590c,#f4820c)';av.textContent='📸';}
   else{av.style.background=corDe(item.para);av.textContent=emojiFor(item.para);}
+  const nome=(item.para||'').trim();
+  const anonFoto=foto && !nome;
   const bub=document.createElement('div');bub.className='bub'+(foto?' foto':'');
-  if(destaque){const tag=document.createElement('div');tag.className='b-tag';tag.textContent='✨ ao vivo';bub.append(tag);}
-  const head=document.createElement('div');head.className='b-head';
-  const to=document.createElement('span');to.className='b-to';to.textContent=foto?'Foto':'Para';
-  const nm=document.createElement('span');nm.className='b-name';nm.textContent=item.para||(foto?'da festa':'Synvia');
-  head.append(to,nm);
-  if(!foto){const chip=document.createElement('span');chip.className='b-chip';chip.textContent=item.setor||'Synvia';head.append(chip);}
-  bub.append(head);
-  if(foto){const img=document.createElement('img');img.className='b-photo';img.src=item.fotoUrl||item.foto||'';bub.append(img);}
-  else{const msg=document.createElement('div');msg.className='b-msg';msg.textContent='“'+item.msg+'”';bub.append(msg);}
-  const de=document.createElement('div');de.className='b-de';de.textContent=item.de||'';bub.append(de);
+  if(destaque && !anonFoto){const tag=document.createElement('div');tag.className='b-tag';tag.textContent='✨ ao vivo';bub.append(tag);}
+  if(foto){
+    if(nome){                                     // identificado: nome em cima
+      const head=document.createElement('div');head.className='b-head';
+      const to=document.createElement('span');to.className='b-to';to.textContent='Foto de';
+      const nm=document.createElement('span');nm.className='b-name';nm.textContent=nome;
+      head.append(to,nm);bub.append(head);
+    }
+    const img=document.createElement('img');img.className='b-photo';img.src=item.fotoUrl||item.foto||'';bub.append(img);
+    // anônimo: só a foto, sem nada escrito
+  } else {
+    const head=document.createElement('div');head.className='b-head';
+    const to=document.createElement('span');to.className='b-to';to.textContent='Para';
+    const nm=document.createElement('span');nm.className='b-name';nm.textContent=item.para||'Synvia';
+    const chip=document.createElement('span');chip.className='b-chip';chip.textContent=item.setor||'Synvia';
+    head.append(to,nm,chip);bub.append(head);
+    const msg=document.createElement('div');msg.className='b-msg';msg.textContent='“'+item.msg+'”';bub.append(msg);
+    const de=document.createElement('div');de.className='b-de';de.textContent=item.de||'';bub.append(de);
+  }
   row.append(av,bub);
   feed.appendChild(row);
   requestAnimationFrame(()=>row.classList.add('pop'));
@@ -260,8 +271,10 @@ async function deliverLive(item,kind){
   if(isFoto){
     livecard.style.display='none';livephoto.style.display='block';livephoto.classList.remove('in','out');
     lpImg.src=item.fotoUrl||item.foto||'';
-    lpRibbon.textContent=gold?'✨ Foto ao vivo ✨':'📸 Foto em destaque';
-    lpDe.textContent=item.de?('De: '+item.de):'';lpDe.style.display=item.de?'block':'none';
+    {const nf=(item.para||item.de||'').trim();
+     if(nf){lpRibbon.textContent='📸 Foto de '+nf;lpRibbon.style.display='';}
+     else{lpRibbon.textContent='';lpRibbon.style.display='none';}}  // anônimo: só a foto
+    lpDe.textContent='';lpDe.style.display='none';   // nome vai em cima; anônimo sem texto
     lpTimer.style.transition='none';lpTimer.style.transform='scaleX(0)';
     await wait(40);livephoto.classList.add('in');
     confetti(gold);fireShow(gold);pop(gold);

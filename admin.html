@@ -41,6 +41,14 @@ body{margin:0;font-family:var(--font);color:var(--ink);background:radial-gradien
 .btn-danger:hover{background:#fdf2f0;border-color:var(--danger);}
 .btn-standby{border-color:#f0d79a;color:#8a6400;background:#fff7e6;}
 .btn-standby:hover{background:#fdeecd;border-color:var(--gold);}
+/* linhas minimizadas (stand by / festa) — sem poluição visual */
+.sb-list{display:flex;flex-direction:column;gap:8px;margin-top:14px;}
+.sb-row{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--mist);border-radius:12px;padding:8px 12px;}
+.sb-ico{width:36px;height:36px;flex:none;display:grid;place-items:center;border-radius:10px;background:#fff7e6;font-size:19px;}
+.sb-name{flex:none;max-width:45%;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-sum{flex:1;min-width:0;color:#6a675f;font-size:.86rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-acts{display:flex;gap:6px;flex:none;margin-left:auto;}
+.sb-acts .btn{padding:7px 11px;font-size:.8rem;}
 .btn[disabled]{opacity:.5;cursor:not-allowed;}
 .btn-telao{border-color:#f3c98f;color:#b5590c;background:#fff7ec;}
 .btn-telao:hover{background:#fdeccf;border-color:var(--fest-orange);}
@@ -171,22 +179,32 @@ body{margin:0;font-family:var(--font);color:var(--ink);background:radial-gradien
     <button class="btn btn-telao" id="telaoOpen">Abrir telão</button>
     <button class="btn btn-telao" id="telaoClear">Limpar fila</button>
   </div>
-  <div class="live-wrap" id="liveWrap" hidden>
-    <h3 class="sec-h">✨ Ao vivo — novos da festa <span class="sec-n" id="liveCount">0</span></h3>
-    <div class="live-grid" id="liveList"></div>
-  </div>
-  <div class="live-wrap sb" id="sbWrap" hidden>
-    <h3 class="sec-h">⏸ Em stand by — segurados pra depois <span class="sec-n" id="sbCount">0</span></h3>
-    <div class="live-grid" id="sbList"></div>
-  </div>
   <div class="tabs" role="tablist">
-    <button class="tab" id="tabAr" role="tab" aria-selected="true">No mural <span class="badge" id="countAr">0</span></button>
-    <button class="tab" id="tabLix" role="tab" aria-selected="false">Na lixeira <span class="badge" id="countLix">0</span></button>
+    <button class="tab" id="tabNovos" role="tab" aria-selected="true">🔴 Novos pro telão <span class="badge" id="liveCount">0</span></button>
+    <button class="tab" id="tabSb" role="tab" aria-selected="false">⏸ Stand by <span class="badge" id="sbCount">0</span></button>
+    <button class="tab" id="tabAr" role="tab" aria-selected="false">Mural Elogio Elegante <span class="badge" id="countAr">0</span></button>
+    <button class="tab" id="tabFesta" role="tab" aria-selected="false">Mural Festa <span class="badge" id="festaCount">0</span></button>
+    <button class="tab" id="tabLix" role="tab" aria-selected="false">🗑 Lixeira <span class="badge" id="countLix">0</span></button>
   </div>
-  <div id="viewAr">
-    <p class="hint">Tudo que está publicado no mural agora. Edite, ajuste o setor ou tire do ar. Toque em <b>📺 Telão</b> pra despachar o bilhete pro telão da festa ao vivo.</p>
+  <div id="viewNovos">
+    <p class="hint">Elogios e fotos que a galera manda pela página <b>Ao Vivo</b>. Envie pro telão, segure em stand by, ou descarte.</p>
+    <div class="live-grid" id="liveList"></div>
+    <div class="state" id="novosState"></div>
+  </div>
+  <div id="viewSb" class="hidden">
+    <p class="hint">Segurados pra decidir depois — ficam minimizados aqui pra não poluir. Toque em <b>✨ Telão</b> pra mandar quando quiser.</p>
+    <div class="sb-list" id="sbList"></div>
+    <div class="state" id="sbState"></div>
+  </div>
+  <div id="viewAr" class="hidden">
+    <p class="hint">Tudo publicado no mural Elogio Elegante. Edite, ajuste o setor ou tire do ar. Toque em <b>📺 Telão</b> pra despachar.</p>
     <div id="arGrid"></div>
     <div class="state" id="arState"></div>
+  </div>
+  <div id="viewFesta" class="hidden">
+    <p class="hint">Tudo que chegou pela festa ao vivo (recados e fotos), guardado de recordação. Pra baixar as fotos, use a página <b>recordacao.html</b>.</p>
+    <div class="sb-list" id="festaList"></div>
+    <div class="state" id="festaState"></div>
   </div>
   <div id="viewLix" class="hidden">
     <p class="hint">Os bilhetes que você tirou do mural ficam guardados aqui. Dá pra devolver um pro mural ou apagar de vez.</p>
@@ -298,7 +316,7 @@ function readCard(card){
 }
 function renderLive(){
   const keys=Object.keys(liveData).sort((a,b)=>(Number(liveData[a].ts)||0)-(Number(liveData[b].ts)||0));
-  $('liveCount').textContent=keys.length;$('liveWrap').hidden=keys.length===0;
+  $('liveCount').textContent=keys.length;{const st=$('novosState');if(st)st.innerHTML=keys.length?'':'<p style="color:#6a675f;padding:8px 2px">Nenhum novo agora — quando a galera mandar, aparece aqui na hora.</p>';}
   const box=$('liveList');box.innerHTML=keys.map(k=>liveCardHTML(k,liveData[k]||{},false)).join('');
   box.querySelectorAll('.live-card').forEach(card=>{
     const k=card.dataset.key, b=liveData[k]||{};
@@ -315,23 +333,36 @@ function renderLive(){
     card.querySelector('.lf-drop').addEventListener('click',()=>{if(confirm('Descartar? Não vai pro telão.'))db.ref(AOVIVO_NODE+'/'+k).remove();});
   });
 }
+function sbRowHTML(k,b){
+  const foto=isFoto(b), d=dadosBilhete(b);
+  const nome = foto ? (d.sender||'Anônimo') : (d.dest||'—');
+  const sum = foto ? 'foto' : ('“'+(d.msg||'').slice(0,60)+((d.msg||'').length>60?'…':'')+'”');
+  return `<div class="sb-row" data-key="${esc(k)}">
+    <span class="sb-ico">${foto?'🖼️':'💌'}</span>
+    <span class="sb-name">${esc(nome)}</span>
+    <span class="sb-sum">${esc(sum)}</span>
+    <div class="sb-acts">
+      <button class="btn btn-primary lf-send">✨ Telão</button>
+      <button class="btn btn-standby lf-back">↩︎ Novos</button>
+      <button class="btn btn-danger lf-drop">🗑</button>
+    </div>
+  </div>`;
+}
 function renderStandby(){
   const keys=Object.keys(sbData).sort((a,b)=>(Number(sbData[a].ts)||0)-(Number(sbData[b].ts)||0));
-  $('sbCount').textContent=keys.length;$('sbWrap').hidden=keys.length===0;
-  const box=$('sbList');box.innerHTML=keys.map(k=>liveCardHTML(k,sbData[k]||{},true)).join('');
-  box.querySelectorAll('.live-card').forEach(card=>{
-    const k=card.dataset.key, b=sbData[k]||{};
-    card.querySelector('.lf-send').addEventListener('click',()=>{
-      const v=readCard(card);let ok;
-      if(v.foto){ok=enviarFotoTelao({fotoUrl:b.fotoUrl,foto:b.foto,remetente:v.sender});}
-      else{ok=enviarRecadoTelao(v.dest,v.setor,v.msg,v.sender,v.anon,true);}
+  $('sbCount').textContent=keys.length;
+  const box=$('sbList');box.innerHTML=keys.map(k=>sbRowHTML(k,sbData[k]||{})).join('');
+  const st=$('sbState');if(st)st.innerHTML=keys.length?'':'<p style="color:#6a675f;padding:8px 2px">Nada em stand by.</p>';
+  box.querySelectorAll('.sb-row').forEach(row=>{
+    const k=row.dataset.key, b=sbData[k]||{}, d=dadosBilhete(b);
+    row.querySelector('.lf-send').addEventListener('click',()=>{
+      let ok;
+      if(isFoto(b)){ok=enviarFotoTelao({fotoUrl:b.fotoUrl,foto:b.foto,remetente:d.sender});}
+      else{ok=enviarRecadoTelao(d.dest,d.setor,d.msg,d.sender,d.anon,true);}
       if(ok)db.ref(STANDBY_NODE+'/'+k).remove();
     });
-    card.querySelector('.lf-back').addEventListener('click',()=>{
-      const rec=Object.assign({},b,readbackMeta(card));
-      db.ref(AOVIVO_NODE+'/'+k).set(rec).then(()=>db.ref(STANDBY_NODE+'/'+k).remove()).then(()=>toast('↩︎ Voltou pra fila ao vivo.'));
-    });
-    card.querySelector('.lf-drop').addEventListener('click',()=>{if(confirm('Descartar de vez?'))db.ref(STANDBY_NODE+'/'+k).remove();});
+    row.querySelector('.lf-back').addEventListener('click',()=>{db.ref(AOVIVO_NODE+'/'+k).set(b).then(()=>db.ref(STANDBY_NODE+'/'+k).remove()).then(()=>toast('↩︎ Voltou pros novos.'));});
+    row.querySelector('.lf-drop').addEventListener('click',()=>{if(confirm('Descartar de vez?'))db.ref(STANDBY_NODE+'/'+k).remove();});
   });
 }
 /* captura edições feitas no cartão pra preservar ao mover entre fila/standby */
@@ -349,9 +380,30 @@ function attachFeeds(){
   refLix=db.ref('bilhetes_rejeitados');
   refLix.on('value',snap=>renderLixeira(snap.val()||{}),err=>console.warn(err));
 }
-$('tabAr').addEventListener('click',()=>switchTab('ar'));
-$('tabLix').addEventListener('click',()=>switchTab('lix'));
-function switchTab(which){const ar=which==='ar';$('tabAr').setAttribute('aria-selected',ar);$('tabLix').setAttribute('aria-selected',!ar);$('viewAr').classList.toggle('hidden',!ar);$('viewLix').classList.toggle('hidden',ar);}
+const TABS={novos:['tabNovos','viewNovos'],sb:['tabSb','viewSb'],ar:['tabAr','viewAr'],festa:['tabFesta','viewFesta'],lix:['tabLix','viewLix']};
+function switchTab(which){
+  Object.keys(TABS).forEach(t=>{const p=TABS[t],on=t===which;$(p[0]).setAttribute('aria-selected',on);$(p[1]).classList.toggle('hidden',!on);});
+  if(which==='festa')loadFesta();
+}
+Object.keys(TABS).forEach(t=>$(TABS[t][0]).addEventListener('click',()=>switchTab(t)));
+/* Mural Festa: acervo do ao vivo (telaoFesta/arquivo) — carrega sob demanda (as fotos são pesadas) */
+let festaLoaded=false;
+function renderFesta(data){
+  const keys=Object.keys(data||{}).sort((a,b)=>(Number(data[a].ts)||0)-(Number(data[b].ts)||0));
+  $('festaCount').textContent=keys.length;
+  const box=$('festaList');
+  box.innerHTML=keys.map(k=>{const b=data[k]||{},foto=isFoto(b),d=dadosBilhete(b);
+    const nome=foto?(d.sender||'Anônimo'):(d.dest||'—');
+    const sum=foto?'📸 foto':('“'+(d.msg||'').slice(0,60)+((d.msg||'').length>60?'…':'')+'”');
+    return `<div class="sb-row"><span class="sb-ico">${foto?'🖼️':'💌'}</span><span class="sb-name">${esc(nome)}</span><span class="sb-sum">${esc(sum)}</span></div>`;
+  }).join('');
+  const st=$('festaState');if(st)st.innerHTML=keys.length?'':'<p style="color:#6a675f;padding:8px 2px">Nada da festa ainda.</p>';
+}
+function loadFesta(){
+  if(festaLoaded||!db)return;festaLoaded=true;
+  const st=$('festaState');if(st)st.innerHTML='<p style="color:#6a675f;padding:8px 2px">Carregando…</p>';
+  db.ref('telaoFesta/arquivo').get().then(s=>renderFesta(s.val()||{})).catch(e=>{console.warn(e);festaLoaded=false;if(st)st.innerHTML='<p style="color:#b84310;padding:8px 2px">Não deu pra carregar.</p>';});
+}
 
 function renderAr(data){
   const keys=Object.keys(data);keys.sort((a,b)=>(Number(data[b].ts)||0)-(Number(data[a].ts)||0));
