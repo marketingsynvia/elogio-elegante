@@ -319,10 +319,10 @@ async function enviarRecado(){
 }
 
 /* Câmera + moldura */
-let stream=null,front=true,photoData=null,curTrack=null,torchOn=false;
+let stream=null,front=true,photoData=null,photoThumb=null,curTrack=null,torchOn=false;
 const video=$('video');
 async function startCamera(){
-  photoData=null;
+  photoData=null;photoThumb=null;
   $('camMsg').classList.add('hidden');$('shot').classList.add('hidden');video.classList.remove('hidden');
   $('liveTools').classList.remove('hidden');$('reviewTools').classList.add('hidden');
   video.classList.toggle('mirror',front);
@@ -375,7 +375,8 @@ function compose(CW,CH,q){
 }
 $('shotBtn').onclick=()=>{
   if(!stream){$('errFoto').textContent='A câmera não está ligada.';return;}
-  photoData=compose(1080,1920,0.92);            // alta qualidade (arquivo/telão)
+  photoData=compose(1080,1920,0.92);            // alta qualidade (arquivo/recordação)
+  photoThumb=compose(720,1280,0.82);            // MESMO instante — versão que vai pro telão/admin
   $('shot').src=photoData;$('shot').classList.remove('hidden');video.classList.add('hidden');
   $('liveTools').classList.add('hidden');$('reviewTools').classList.remove('hidden');
   $('errFoto').textContent='';
@@ -386,7 +387,7 @@ $('sendFotoBtn').onclick=async()=>{
   const btn=$('sendFotoBtn'),original=btn.innerHTML;btn.disabled=true;btn.textContent='Enviando...';
   try{
     const ts=Date.now();
-    const thumb=compose(720,1280,0.82);          // resolução boa p/ telão (vai no admin/fila)
+    const thumb=photoThumb||photoData;           // usa a foto REVISADA (não recompoe da câmera ao vivo)
     const fotoUrl='';                            // sem Storage — a foto cheia vai pro arquivo
     const nome=$('fotoNome').value.trim();
     await rtdbPush(AOVIVO_NODE,{tipo:'foto',remetente:nome,autor:nome,anon:nome?'Não':'Sim',fotoUrl,foto:thumb,status:'novo',ts,data:new Date().toLocaleString('pt-BR')});
