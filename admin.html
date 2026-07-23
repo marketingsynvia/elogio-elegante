@@ -184,6 +184,12 @@ body{margin:0;font-family:var(--font);color:var(--ink);background:radial-gradien
     <span>Fila: <b id="telaoQ">0</b></span>
     <button class="btn btn-telao" id="telaoOpen">Abrir telão</button>
     <button class="btn btn-telao" id="telaoClear">Limpar fila</button>
+    <button class="btn btn-telao" id="fotoTeste">📸 Foto teste</button>
+    <span style="display:inline-flex;align-items:center;gap:6px;font-weight:800;color:var(--fest-yellow)">Texto v02:
+      <button class="btn btn-telao" id="escMinus" style="min-width:34px;padding:4px 0">A−</button>
+      <b id="escVal" style="min-width:52px;text-align:center;display:inline-block">100%</b>
+      <button class="btn btn-telao" id="escPlus" style="min-width:34px;padding:4px 0">A+</button>
+    </span>
     <label style="display:inline-flex;align-items:center;gap:7px;font-weight:800;color:var(--fest-yellow);cursor:pointer"><input type="checkbox" id="autoQ" style="width:18px;height:18px;accent-color:var(--fest-green)"> Fila automática</label>
   </div>
   <div class="tabs" role="tablist">
@@ -242,6 +248,24 @@ function enviarRecadoTelao(dest,setor,msg,sender,anon,aoVivo){
     .catch(err=>{console.error(err);toast('Não deu pra enviar ao telão.');});
   return true;
 }
+const CONFIG_NODE='telaoFesta/config';
+let escala=1;
+function setEscala(v){
+  escala=Math.max(0.6,Math.min(1.8,Math.round(v*100)/100));
+  const lbl=$('escVal'); if(lbl)lbl.textContent=Math.round(escala*100)+'%';
+  if(db)db.ref(CONFIG_NODE).update({escala:escala});
+}
+function fotoTeste(){
+  const c=document.createElement('canvas');c.width=720;c.height=1280;const x=c.getContext('2d');
+  const g=x.createLinearGradient(0,0,0,1280);g.addColorStop(0,'#1c3d2f');g.addColorStop(.55,'#2f8f5b');g.addColorStop(1,'#e8590c');
+  x.fillStyle=g;x.fillRect(0,0,720,1280);
+  x.fillStyle='rgba(255,255,255,.12)';for(let i=0;i<8;i++){x.beginPath();x.arc(120+((i*180)%600),200+((i*310)%900),70,0,7);x.fill();}
+  x.fillStyle='#fff';x.textAlign='center';
+  x.font='800 96px Manrope,Arial,sans-serif';x.fillText('FOTO TESTE',360,600);
+  x.font='60px Manrope,Arial,sans-serif';x.fillText('📸 '+new Date().toLocaleTimeString('pt-BR'),360,700);
+  const data=c.toDataURL('image/jpeg',0.85);
+  enviarFotoTelao({fotoUrl:'',foto:data,remetente:'Teste'});
+}
 function enviarFotoTelao(item){
   if(!db){toast('Sem conexão com o telão.');return false;}
   db.ref(TELAO_Q).push({tipo:'foto',fotoUrl:item.fotoUrl||'',foto:item.foto||'',para:item.remetente||'',de:item.remetente||'',aoVivo:true,ts:Date.now()})
@@ -296,6 +320,10 @@ function wireTelaoStrip(){
   db.ref(TELAO_NP).on('value',snap=>{const n=snap.val();const box=$('telaoNow');if(!n||n.idle){box.innerHTML='rotação automática';}else{box.innerHTML='no ar: <b>'+esc(n.para||(n.tipo==='foto'?'foto':''))+'</b>';}});
   $('telaoOpen').addEventListener('click',()=>window.open('mural-da-festa.html','_blank'));
   $('telaoClear').addEventListener('click',()=>{if(confirm('Limpar toda a fila do telão?'))db.ref(TELAO_Q).remove();});
+  $('fotoTeste').addEventListener('click',fotoTeste);
+  $('escMinus').addEventListener('click',()=>setEscala(escala-0.1));
+  $('escPlus').addEventListener('click',()=>setEscala(escala+0.1));
+  db.ref(CONFIG_NODE).on('value',snap=>{const c=snap.val()||{};if(typeof c.escala==='number'){escala=c.escala;const lbl=$('escVal');if(lbl)lbl.textContent=Math.round(escala*100)+'%';}});
   $('autoQ').addEventListener('change',e=>{autoQueue=e.target.checked;toast(autoQueue?'⚡ Fila automática LIGADA':'Fila automática desligada');renderLive();});
   db.ref(AOVIVO_NODE).on('value',snap=>{liveData=snap.val()||{};renderLive();});
   db.ref(STANDBY_NODE).on('value',snap=>{sbData=snap.val()||{};renderStandby();});
