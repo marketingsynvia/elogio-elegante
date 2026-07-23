@@ -181,7 +181,7 @@ body.live-on .app{transform:translate(-50%,-50%) scale(.93);filter:blur(5px) bri
 .notif .n-tag{display:inline-block;font-size:1.5vh;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#5a3d00;background:linear-gradient(100deg,#f4b81b,#ffd257);border-radius:999px;padding:.3vh 1.2vh;margin-bottom:.5vh;}
 .notif .n-to{font-size:1.5vh;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:#7a6a52;}
 .notif .n-name{font-size:3vh;font-weight:800;color:var(--fest-forest);line-height:1.03;}
-.notif .n-msg{font-size:2.3vh;font-weight:700;color:#1c2126;line-height:1.22;margin-top:.4vh;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.notif .n-msg{font-size:2.3vh;font-weight:700;color:#1c2126;line-height:1.24;margin-top:.4vh;}
 </style>
 </head>
 <body>
@@ -348,9 +348,9 @@ function notifyMsg(item,destaque){
   const mg=document.createElement('div');mg.className='n-msg';mg.textContent='“'+(item.msg||'')+'”';b.appendChild(mg);
   c.appendChild(b);stack.appendChild(c);
   requestAnimationFrame(()=>c.classList.add('in'));
-  const hold=Math.min(10000,Math.max(6000,(item.msg||'').length*70+3500));
+  const hold=15000;                                            // cada recado fica ~15s
   setTimeout(()=>{c.classList.add('out');setTimeout(()=>c.remove(),500);},hold);
-  while(stack.children.length>3){stack.firstChild.remove();}   // no máximo 3 empilhadas
+  while(stack.children.length>2){stack.firstChild.remove();}   // no máximo 2 (breve sobreposição na troca)
 }
 // ---- tarja inferior: uma mensagem por vez (nunca sobrepõe) ----
 let tarjaBusy=false;
@@ -389,16 +389,34 @@ async function deliverLive(item,kind){
      else{lpRibbon.textContent='';lpRibbon.style.display='none';}}  // anônimo: só a foto
     lpDe.textContent='';lpDe.style.display='none';   // nome vai em cima; anônimo sem texto
     lpTimer.style.transition='none';lpTimer.style.transform='scaleX(0)';
-    await wait(40);livephoto.classList.add('in');
+    // movimento controlado por inline pra "assentar" no canto sem cortes
+    livephoto.classList.remove('in','out');
+    livephoto.style.transition='none';
+    livephoto.style.transform='translate(0,0) scale(.62) rotate(-3deg)';
+    livephoto.style.opacity='0';
+    await wait(60);
+    livephoto.style.transition='transform 1s cubic-bezier(.18,1.12,.3,1),opacity .55s ease';   // entrada (pop no centro)
+    livephoto.style.transform='translate(0,0) scale(1) rotate(0deg)';
+    livephoto.style.opacity='1';
     confetti(gold);fireShow(gold);pop(gold);
     if(gold)setTimeout(()=>fireShow(true),820);
-    const ms=CLEAN?5500:(gold?10000:8500);   // clean: momento no centro é curtinho, depois assenta no canto
-    lpTimer.style.transition='transform '+ms+'ms linear';requestAnimationFrame(()=>{lpTimer.style.transform='scaleX(1)';});
-    await wait(ms);
-    if(CLEAN) cornerPhoto(item.fotoUrl||item.foto||'');   // assenta num quadro no canto (centro fica livre)
-    livephoto.classList.add('out');liveWrap.classList.remove('on');
-    await wait(560);document.body.classList.remove('live-on');livephoto.classList.remove('in');livephoto.style.display='none';
-    await wait(220);return;
+    if(CLEAN){
+      await wait(5200);                                                   // permanece no centro
+      livephoto.style.transition='transform 1.4s cubic-bezier(.32,.86,.24,1)';
+      livephoto.style.transform='translate(34vw,30vh) scale(.34) rotate(3deg)';  // desliza e assenta no canto inf. direito
+      await wait(12000);                                                  // fica no cantinho
+      livephoto.style.transition='transform .8s ease,opacity .8s ease';
+      livephoto.style.opacity='0';livephoto.style.transform='translate(34vw,27vh) scale(.30) rotate(3deg)';
+      await wait(800);
+    } else {
+      await wait(gold?9000:7500);
+      livephoto.style.transition='transform .6s ease,opacity .55s ease';
+      livephoto.style.opacity='0';livephoto.style.transform='translate(0,-4vh) scale(.9)';
+      await wait(600);
+    }
+    liveWrap.classList.remove('on');
+    await wait(200);document.body.classList.remove('live-on');livephoto.style.display='none';
+    return;
   }
   livephoto.style.display='none';livecard.style.display='block';
   livecard.classList.remove('in','out','tremor','feat');lvRibbon.classList.remove('feat');lvAva.classList.remove('pop');
@@ -470,7 +488,7 @@ async function deliverLive(item,kind){
           }
         } else {
           if(db&&mode!=='idle'){db.ref(NP).set({idle:true,ts:Date.now()});mode='idle';}
-          if(CLEAN){notifyMsg(nextIdle());await wait(5000);}
+          if(CLEAN){notifyMsg(nextIdle());await wait(14000);}   // 1 recado a cada ~14s (próximo sobe no fim do atual)
           else{pushBubble(nextIdle());await wait(6800);}
         }
       }catch(e){console.warn(e);}
