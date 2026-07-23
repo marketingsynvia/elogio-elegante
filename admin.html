@@ -190,6 +190,11 @@ body{margin:0;font-family:var(--font);color:var(--ink);background:radial-gradien
       <b id="escVal" style="min-width:52px;text-align:center;display:inline-block">100%</b>
       <button class="btn btn-telao" id="escPlus" style="min-width:34px;padding:4px 0">A+</button>
     </span>
+    <span style="display:inline-flex;align-items:center;gap:6px;font-weight:800;color:var(--fest-yellow)">Foto v02:
+      <button class="btn btn-telao" id="fotoMinus" style="min-width:34px;padding:4px 0">−</button>
+      <b id="fotoVal" style="min-width:52px;text-align:center;display:inline-block">100%</b>
+      <button class="btn btn-telao" id="fotoPlus" style="min-width:34px;padding:4px 0">+</button>
+    </span>
     <label style="display:inline-flex;align-items:center;gap:7px;font-weight:800;color:var(--fest-yellow);cursor:pointer"><input type="checkbox" id="autoQ" style="width:18px;height:18px;accent-color:var(--fest-green)"> Fila automática</label>
   </div>
   <div class="tabs" role="tablist">
@@ -249,11 +254,16 @@ function enviarRecadoTelao(dest,setor,msg,sender,anon,aoVivo){
   return true;
 }
 const CONFIG_NODE='telaoFesta/config';
-let escala=1;
+let escala=1, fotoEscala=1;
 function setEscala(v){
   escala=Math.max(0.6,Math.min(1.8,Math.round(v*100)/100));
   const lbl=$('escVal'); if(lbl)lbl.textContent=Math.round(escala*100)+'%';
   if(db)db.ref(CONFIG_NODE).update({escala:escala});
+}
+function setFotoEscala(v){
+  fotoEscala=Math.max(0.5,Math.min(2.4,Math.round(v*100)/100));
+  const lbl=$('fotoVal'); if(lbl)lbl.textContent=Math.round(fotoEscala*100)+'%';
+  if(db)db.ref(CONFIG_NODE).update({fotoEscala:fotoEscala});
 }
 function fotoTeste(){
   const c=document.createElement('canvas');c.width=720;c.height=1280;const x=c.getContext('2d');
@@ -323,7 +333,11 @@ function wireTelaoStrip(){
   $('fotoTeste').addEventListener('click',fotoTeste);
   $('escMinus').addEventListener('click',()=>setEscala(escala-0.1));
   $('escPlus').addEventListener('click',()=>setEscala(escala+0.1));
-  db.ref(CONFIG_NODE).on('value',snap=>{const c=snap.val()||{};if(typeof c.escala==='number'){escala=c.escala;const lbl=$('escVal');if(lbl)lbl.textContent=Math.round(escala*100)+'%';}});
+  $('fotoMinus').addEventListener('click',()=>setFotoEscala(fotoEscala-0.1));
+  $('fotoPlus').addEventListener('click',()=>setFotoEscala(fotoEscala+0.1));
+  db.ref(CONFIG_NODE).on('value',snap=>{const c=snap.val()||{};
+    if(typeof c.escala==='number'){escala=c.escala;const l=$('escVal');if(l)l.textContent=Math.round(escala*100)+'%';}
+    if(typeof c.fotoEscala==='number'){fotoEscala=c.fotoEscala;const l=$('fotoVal');if(l)l.textContent=Math.round(fotoEscala*100)+'%';}});
   $('autoQ').addEventListener('change',e=>{autoQueue=e.target.checked;toast(autoQueue?'⚡ Fila automática LIGADA':'Fila automática desligada');renderLive();});
   db.ref(AOVIVO_NODE).on('value',snap=>{liveData=snap.val()||{};renderLive();});
   db.ref(STANDBY_NODE).on('value',snap=>{sbData=snap.val()||{};renderStandby();});

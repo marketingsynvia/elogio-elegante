@@ -159,6 +159,13 @@ body.live-on .app{transform:translate(-50%,-50%) scale(.93);filter:blur(5px) bri
 .corner-photo img{width:100%;height:100%;object-fit:cover;display:block;}
 .corner-photo.in{opacity:1;transform:none;}
 .corner-photo.out{opacity:0;transform:translateY(-12px) scale(.95);}
+/* baralho de fotos assentadas (v02) */
+.deck-card{position:fixed;border-radius:1.6vh;overflow:hidden;background:#0d0d0d;transform-origin:center;opacity:0;
+  box-shadow:0 2vh 5vh rgba(0,0,0,.55),0 0 0 .5vh rgba(255,255,255,.92),0 0 0 1vh var(--gold),0 0 6vh rgba(244,184,27,.5);
+  transition:opacity .5s ease, transform .65s cubic-bezier(.2,.8,.25,1);}
+.deck-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.deck-card .dc-rib{position:absolute;left:0;right:0;bottom:0;padding:2vh .8vh .8vh;text-align:center;
+  font-weight:800;font-size:1.7vh;color:#fff;line-height:1.1;background:linear-gradient(180deg,transparent,rgba(11,25,18,.82));}
 /* ===== TARJA INFERIOR (v02): uma mensagem por vez, sem sobrepor, fontes proporcionais (vh) ===== */
 .tarja{position:fixed;left:0;right:0;bottom:0;z-index:12;display:none;padding:6vh 4vw 4vh;
   background:linear-gradient(180deg,transparent,rgba(11,25,18,.5) 34%,rgba(11,25,18,.9));
@@ -376,6 +383,41 @@ function cornerPhoto(src){
   requestAnimationFrame(()=>el.classList.add('in'));
   setTimeout(()=>{el.classList.add('out');setTimeout(()=>el.remove(),700);},16000);
 }
+// ---- baralho de fotos no canto (clean): empilha em lote, as de baixo perdem opacidade ----
+let fotoEsc=1;                 // regulável pelo admin (config.fotoEscala)
+const deck=[];                 // fotos assentadas (mais nova = último)
+const DECK_MAX=4, DECK_LIFE=13000;
+function layoutDeck(){
+  const n=deck.length;
+  deck.forEach((c,i)=>{
+    const p=n-1-i;             // 0 = da frente (mais nova)
+    const op=Math.max(0,1-p*0.4);
+    c.style.zIndex=String(140-p);
+    c.style.opacity=(op<=0.02?'0':op.toFixed(2));
+    c.style.transform='translate('+(-p*1.3)+'vh,'+(-p*1.7)+'vh) scale('+(1-p*0.055).toFixed(3)+') rotate('+(-p*2.4)+'deg)';
+  });
+}
+function removeCard(card,now){
+  const i=deck.indexOf(card); if(i>=0)deck.splice(i,1);
+  clearTimeout(card._exp);
+  if(now){card.remove();layoutDeck();return;}
+  card.style.transition='opacity .55s ease, transform .55s ease';
+  card.style.opacity='0';
+  setTimeout(()=>card.remove(),560);
+  layoutDeck();
+}
+function deckSettle(src,ribbon,rect){
+  const card=document.createElement('div');card.className='deck-card';
+  card.style.left=rect.left+'px';card.style.top=rect.top+'px';
+  card.style.width=rect.width+'px';card.style.height=rect.height+'px';
+  const img=document.createElement('img');img.src=src;card.appendChild(img);
+  if(ribbon){const r=document.createElement('div');r.className='dc-rib';r.textContent=ribbon;card.appendChild(r);}
+  document.body.appendChild(card);
+  deck.push(card);
+  while(deck.length>DECK_MAX){removeCard(deck[0],true);}   // tira a mais antiga (já transparente)
+  requestAnimationFrame(()=>requestAnimationFrame(layoutDeck));
+  card._exp=setTimeout(()=>removeCard(card),DECK_LIFE);
+}
 // ---- takeover: elogio ao vivo / em destaque ----
 async function deliverLive(item,kind){
   const gold=kind==='live';
@@ -402,12 +444,16 @@ async function deliverLive(item,kind){
     if(gold)setTimeout(()=>fireShow(true),820);
     if(CLEAN){
       await wait(5200);                                                   // permanece no centro
+      const set=(0.34*fotoEsc).toFixed(3);
       livephoto.style.transition='transform 1.4s cubic-bezier(.32,.86,.24,1)';
-      livephoto.style.transform='translate(34vw,30vh) scale(.34) rotate(3deg)';  // desliza e assenta no canto inf. direito
-      await wait(12000);                                                  // fica no cantinho
-      livephoto.style.transition='transform .8s ease,opacity .8s ease';
-      livephoto.style.opacity='0';livephoto.style.transform='translate(34vw,27vh) scale(.30) rotate(3deg)';
-      await wait(800);
+      livephoto.style.transform='translate(34vw,30vh) scale('+set+') rotate(3deg)';  // desliza p/ o canto
+      await wait(1400);
+      const rect=livephoto.getBoundingClientRect();                       // posição exata p/ o baralho
+      const nf=(item.para||item.de||'').trim();
+      deckSettle(item.fotoUrl||item.foto||'', nf?('📸 '+nf):'', rect);     // entra no baralho e fica assentada
+      livephoto.style.transition='opacity .35s ease';                     // some enquanto o card do baralho aparece
+      livephoto.style.opacity='0';
+      await wait(360);
     } else {
       await wait(gold?9000:7500);
       livephoto.style.transition='transform .6s ease,opacity .55s ease';
@@ -457,7 +503,7 @@ async function deliverLive(item,kind){
     firebase.initializeApp(FB);db=firebase.database();
     db.ref(Q).on('value',s=>{const v=s.val()||{};queueArr=Object.keys(v).map(k=>Object.assign({key:k},v[k])).sort((a,b)=>(a.ts||0)-(b.ts||0));});
     db.ref(APROV).on('value',s=>{const v=s.val()||{};rebuildIdle(Object.keys(v).map(k=>recFromFB(v[k])));});
-    db.ref(CONFIG).on('value',s=>{const c=s.val()||{};const e=(typeof c.escala==='number')?c.escala:1;const st=el('notifStack');if(st){st.style.transformOrigin='top right';st.style.transform='scale('+e+')';}});
+    db.ref(CONFIG).on('value',s=>{const c=s.val()||{};const e=(typeof c.escala==='number')?c.escala:1;const st=el('notifStack');if(st){st.style.transformOrigin='top right';st.style.transform='scale('+e+')';}fotoEsc=(typeof c.fotoEscala==='number')?c.fotoEscala:1;});
   }catch(e){console.warn('Firebase off — telão em rotação local.',e);}
 
   // preenche a caixa de mensagens
